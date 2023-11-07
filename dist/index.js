@@ -1,15 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+import { logger } from "./utils.js";
 dotenv.config();
+const MODULE = "main";
 function main() {
-    console.log("connect to db");
-    console.log(process.env.TEST);
-    // const supabaseUrl = 'https://gdjgbelgtbrpdottixno.supabase.co'
+    logger(MODULE, "connecting to db...");
     const supabaseUrl = process.env.SUPABASE_URL;
     console.log(supabaseUrl);
     const supabaseKey = process.env.SUPABASE_KEY;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('done');
+    logger(MODULE, "connected to db");
 }
 main();
 //# sourceMappingURL=index.js.map
