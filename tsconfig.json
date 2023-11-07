@@ -9,7 +9,10 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*",
+        "src/utils/interfaces/**/*",
+    ],
     "exclude": [
         "./node_modules"
     ]
