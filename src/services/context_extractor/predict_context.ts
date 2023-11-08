@@ -1,14 +1,23 @@
 import { PredictionRequest } from "../../models/context_extractor/prediction.js"
-import { validatePredictionRequest } from "../../validators/context_extractor/prediction.js"
-import { logger } from "../../utils/logger.js"
+import { validatePredictionRequest } from "../../middlewares/validators/context_extractor/prediction.js"
+import { logger, LogType } from "../../utils/logger.js"
 
 const MODULE = "services :: context_extractor :: predict_context"
 
-export const requestContextPrediction = (req: PredictionRequest) => {
-    const valid = validatePredictionRequest(req)
+export async function requestContextPrediction(req: PredictionRequest) {
+
+    const valid = await validatePredictionRequest(req)
     if (!valid) {
-        logger(MODULE, "Failed to validate prediction request", )
+        return logger(MODULE, "Failed to validate prediction request", LogType.ERR)
     }
 
-    // actual request to GCF
+
+    try {
+    
+        
+
+    } catch (err) {
+        
+    }    
+
 }
