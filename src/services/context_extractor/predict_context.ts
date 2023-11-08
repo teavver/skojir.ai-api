@@ -36,7 +36,7 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
             }
         })
 
-        console.log("STATUS : ", res.status)
+        // console.log("STATUS : ", res.status)
         clipboard.writeSync(res.data.result) // copy to clipboard
 
         return {

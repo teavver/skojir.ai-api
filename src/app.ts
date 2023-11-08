@@ -19,7 +19,8 @@ function main() {
         exit(1)
     }
 
-    app.use(express.json())
+    // https://stackoverflow.com/a/40745569/17721532 <- future nginx solver?
+    app.use(express.json({limit: '2mb'}))
     app.use('/predict', contextPredictionRoutes)
 
     logger(MODULE, "connecting to db...")
