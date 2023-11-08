@@ -1,33 +1,39 @@
+import contextPredictionRoutes from "./routes/context_extractor/predict_context.js"
 import { createClient } from "@supabase/supabase-js"
-import dotenv from "dotenv"
 import { logger, LogType } from "./utils/logger.js"
+import dotenv from "dotenv"
 import express from "express"
-
+import { exit } from "process"
 dotenv.config()
+
+export const app = express()
 
 const MODULE = "main"
 
 function main() {
 
-    logger(MODULE, "starting express server...")
-    const server = express()
-    const port = process.env.PORT || 3000
-    logger(MODULE, "express started.")
+    logger(MODULE, "setting up...")
+    const env = process.env.ENV
+    if (!env) {
+        logger(MODULE, "No ENV value in .env", LogType.ERR)
+        exit(1)
+    }
+
+    app.use(express.json())
+    app.use('/predict', contextPredictionRoutes)
 
     logger(MODULE, "connecting to db...")
-
     const supabaseUrl = process.env.SUPABASE_URL
     const supabaseKey = process.env.SUPABASE_KEY
     if (!supabaseUrl || !supabaseKey) {
         logger(MODULE, "failed to get supabase .env keys", LogType.ERR)
-        return
-    } 
-    const db_client = createClient(supabaseUrl, supabaseKey)
+        exit(1)
+    }
     
+    const db_client = createClient(supabaseUrl, supabaseKey)
     // db_client.
 
     logger(MODULE, "connected to db")
-
 
 }
 

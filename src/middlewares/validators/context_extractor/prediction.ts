@@ -4,20 +4,21 @@ import { logger, LogType } from "../../../utils/logger.js"
 
 const MODULE = "validators :: context_extractor :: prediction"
 
-export const validatePredictionRequest = async (req: PredictionRequest): Promise<boolean> => {
-    const validate = await predictionRequestSchema.validateAsync(req)
-    if (validate.error){
-        logger(MODULE, validate.error.message, LogType.ERR)
-        return false
+export const validatePredictionRequest = async (req: PredictionRequest): Promise<[boolean, Object]> => {
+    try {
+        const value = await predictionRequestSchema.validateAsync(req)
+        logger(MODULE, `Validated prediction request`)
+        return [true, value]
+    } catch (err) {
+        logger(MODULE, `Could not validate prediction reuqest: ${err}`, LogType.ERR)
+        return [false, { error: err }]
     }
-    if (validate.warning) logger(MODULE, validate.warning.message, LogType.WARN)
-    return true
 }
 
 const predictionRequestSchema = Joi.object({
     threshold: Joi.number()
-        .min(0.1)
-        .max(0.5)
+        .min(0.10)
+        .max(0.50)
         .required(),
         
     img: Joi.string()
