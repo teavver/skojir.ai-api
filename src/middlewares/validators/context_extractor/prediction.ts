@@ -1,5 +1,5 @@
 import Joi from "joi"
-import { PredictionRequest } from "../../../models/context_extractor/prediction.js"
+import { PredictionRequest } from "../../../types/context_extractor/PredictionRequest.js"
 import { logger, LogType } from "../../../utils/logger.js"
 
 const MODULE = "validators :: context_extractor :: prediction"

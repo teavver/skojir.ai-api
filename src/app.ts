@@ -4,9 +4,12 @@ import { logger, LogType } from "./utils/logger.js"
 import dotenv from "dotenv"
 import express from "express"
 import { exit } from "process"
+import { OpenAI }  from "openai/index.mjs"
+
 dotenv.config()
 
-export const app = express()
+const app = express()
+const openAIClient = new OpenAI({apiKey: process.env.OPENAI_KEY})
 
 const MODULE = "main"
 
@@ -39,3 +42,5 @@ function main() {
 }
 
 main()
+
+export { app, openAIClient }

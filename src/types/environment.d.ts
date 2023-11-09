@@ -4,6 +4,9 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
 
+        // openai
+        OPENAI_KEY: string
+
         // db
         SUPABASE_URL: string
         SUPABASE_KEY: string

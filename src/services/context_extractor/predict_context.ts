@@ -1,4 +1,4 @@
-import { PredictionRequest } from "../../models/context_extractor/prediction.js"
+import { PredictionRequest } from "../../types/context_extractor/PredictionRequest.js"
 import { validatePredictionRequest } from "../../middlewares/validators/context_extractor/prediction.js"
 import { logger, LogType } from "../../utils/logger.js"
 import { ResponseMessage } from "../../types/ResponseMessage.js"
