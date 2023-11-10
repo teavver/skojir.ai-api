@@ -1,10 +1,10 @@
-import contextPredictionRoutes from "./routes/context_extractor/predict_context.js"
 import { createClient } from "@supabase/supabase-js"
 import { logger, LogType } from "./utils/logger.js"
 import dotenv from "dotenv"
 import express from "express"
 import { exit } from "process"
 import { OpenAI }  from "openai/index.mjs"
+import solverRoute from "./routes/solver.js"
 
 dotenv.config()
 
@@ -24,7 +24,7 @@ function main() {
 
     // https://stackoverflow.com/a/40745569/17721532 <- future nginx solver?
     app.use(express.json({limit: '2mb'}))
-    app.use('/predict', contextPredictionRoutes)
+    app.use('/solve', solverRoute)
 
     logger(MODULE, "connecting to db...")
     const supabaseUrl = process.env.SUPABASE_URL
