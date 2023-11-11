@@ -4,7 +4,7 @@ import { logger, LogType } from "../utils/logger.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import axios from "axios"
 
-const MODULE = "services :: context_extractor :: predict_context"
+const MODULE = "services :: predictContext"
 
 /**
  * Sends a request to GCF endpoint and returns b64-encoded string of cropped context region
