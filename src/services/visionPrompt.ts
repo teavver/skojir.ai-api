@@ -24,7 +24,7 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
     }
 
     const { header, img, footer, max_tokens } = reqData
-    logger(MODULE, "sending request to GPT...")
+    logger(MODULE, "Sending request to GPT...")
 
     try {
         
@@ -49,10 +49,6 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
             max_tokens: max_tokens
         })
 
-        console.log(response.choices[0].finish_reason)
-        console.log(response.choices[0].index)
-        console.log(response.choices[0].message)
-
         return {
             err: false,
             data: response.choices[0].message.content as string
@@ -61,7 +57,7 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
         
     } catch (err) {
 
-        logger(MODULE, `request err: ${err}`, LogType.ERR)
+        logger(MODULE, `Request err: ${err}`, LogType.ERR)
         return {
             err: true,
             errMsg: (err as Error).message,

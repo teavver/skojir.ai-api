@@ -22,7 +22,7 @@ const visionPromptRequestSchema = Joi.object({
         .required(),
     img: Joi.string()
         .min(20)
-        .max(4000000) // ~4MB string
+        .max(2500000) // ~2.5MB string
         .required(),
     footer: Joi.string()
         .min(20)

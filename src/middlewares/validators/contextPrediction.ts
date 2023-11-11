@@ -23,6 +23,6 @@ const predictionRequestSchema = Joi.object({
         
     img: Joi.string()
         .min(10)
-        .max(4000000) // ~4MB string
+        .max(2500000) // ~2.5MB string
         .required()
 })

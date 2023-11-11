@@ -12,7 +12,7 @@ export async function solveScreenshot(req: Request<SolverRequest>, res: Response
     const { header, img, footer, threshold, max_tokens } = req.body
 
     // first upload the ss to GCF and compute + crop the context region
-    logger(MODULE, "sending context req to GCF")
+    logger(MODULE, "Sending context req to GCF")
     const { err: gcfErr, errMsg: gcfErrMsg, data: gcfCroppedImg } = await requestContextPrediction({ threshold, img })
     
     if (gcfErr) {
@@ -23,7 +23,7 @@ export async function solveScreenshot(req: Request<SolverRequest>, res: Response
         })
     }
     
-    logger(MODULE, "sending vision prompt req to OpenAI")
+    logger(MODULE, "Sending vision prompt req to OpenAI")
     const { err: gptErr, errMsg: gptErrMsg, data: gptData } = await requestVisionPrompt({
         header: header,
         img: gcfCroppedImg,
