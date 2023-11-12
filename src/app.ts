@@ -5,6 +5,7 @@ import express from "express"
 import { exit } from "process"
 import { OpenAI }  from "openai/index.mjs"
 import solverRoute from "./routes/solver.js"
+import statusRoute from "./routes/status.js"
 
 dotenv.config()
 
@@ -23,8 +24,9 @@ function main() {
     }
 
     // https://stackoverflow.com/a/40745569/17721532 <- future nginx solver?
-    app.use(express.json({limit: '2.5mb'}))
-    app.use('/solve', solverRoute)
+    app.use(express.json({limit: "2.5mb"}))
+    app.use("/solve", solverRoute)
+    app.use("/", statusRoute)
 
     logger(MODULE, "Connecting to db...")
     const supabaseUrl = process.env.SUPABASE_URL
@@ -35,8 +37,6 @@ function main() {
     }
     
     const db_client = createClient(supabaseUrl, supabaseKey)
-    // db_client.
-
     logger(MODULE, "Connected to db")
 
 }

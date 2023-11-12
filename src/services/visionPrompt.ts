@@ -4,7 +4,7 @@ import { logger, LogType } from "../utils/logger.js"
 import { validateVisionPromptRequest } from "../middlewares/validators/visionPrompt.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 
-const MODULE = "services :: openai :: prompter"
+const MODULE = "services :: visionPrompt"
 
 /**
  * Sends a full request (image + header, footer) to gpt-4-1106-vision-preview
