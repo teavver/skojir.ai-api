@@ -2,7 +2,7 @@ import Joi from "joi"
 import { VisionRequest } from "../../types/requests/VisionRequest.js"
 import { logger, LogType } from "../../utils/logger.js"
 
-const MODULE = "validators :: openai :: visionPrompt"
+const MODULE = "middlewares :: validators :: visionPrompt"
 
 export const validateVisionPromptRequest = async (req: VisionRequest): Promise<[boolean, Object]> => {
     try {

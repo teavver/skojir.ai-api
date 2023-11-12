@@ -3,6 +3,7 @@ import { VisionRequest } from "../types/requests/VisionRequest.js"
 import { logger, LogType } from "../utils/logger.js"
 import { validateVisionPromptRequest } from "../middlewares/validators/visionPrompt.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
+import clipboard from "clipboardy"
 
 const MODULE = "services :: visionPrompt"
 
@@ -24,7 +25,11 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
     }
 
     const { header, img, footer, max_tokens } = reqData
+    logger(MODULE, `req: header: ${header} , footer: ${footer} maxTokens: ${max_tokens}`)
     logger(MODULE, "Sending request to GPT...")
+
+    clipboard.writeSync(img)
+    console.log('123')
 
     try {
         
@@ -49,11 +54,23 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
             max_tokens: max_tokens
         })
 
-        return {
-            err: false,
-            data: response.choices[0].message.content as string
+        const res = response.choices[0].message.content
+
+        if (!res) {
+            const err = "Failed to get response from ChatGPT"
+            logger(MODULE, err, LogType.ERR)
+            return {
+                err: true,
+                errMsg: err,
+                data: ""
+            }
         }
 
+        logger(MODULE, "Request handled successfully.")
+        return {
+            err: false,
+            data: res,
+        }
         
     } catch (err) {
 
@@ -65,6 +82,4 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
         }
 
     }
-
-
 }

@@ -2,7 +2,7 @@ import Joi from "joi"
 import { PredictionRequest } from "../../types/requests/PredictionRequest.js"
 import { logger, LogType } from "../../utils/logger.js"
 
-const MODULE = "validators :: context_extractor :: contextPrediction"
+const MODULE = "middlewares :: validators :: contextPrediction"
 
 export const validateContextPredictionRequest = async (req: PredictionRequest): Promise<[boolean, Object]> => {
     try {
