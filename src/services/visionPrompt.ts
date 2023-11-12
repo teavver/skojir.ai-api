@@ -3,7 +3,6 @@ import { VisionRequest } from "../types/requests/VisionRequest.js"
 import { logger, LogType } from "../utils/logger.js"
 import { validateVisionPromptRequest } from "../middlewares/validators/visionPrompt.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
-import clipboard from "clipboardy"
 
 const MODULE = "services :: visionPrompt"
 
@@ -25,11 +24,8 @@ export async function requestVisionPrompt(req: VisionRequest): Promise<ServiceRe
     }
 
     const { header, img, footer, max_tokens } = reqData
-    logger(MODULE, `req: header: ${header} , footer: ${footer} maxTokens: ${max_tokens}`)
-    logger(MODULE, "Sending request to GPT...")
-
-    clipboard.writeSync(img)
-    console.log('123')
+    // logger(MODULE, `req: header: ${header} , footer: ${footer} maxTokens: ${max_tokens}`)
+    logger(MODULE, "Sending vision prompt to openAI...")
 
     try {
         
