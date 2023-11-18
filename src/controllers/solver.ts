@@ -1,19 +1,24 @@
 import { Request, Response } from "express"
 import { ResponseMessage } from "../types/responses/ResponseMessage.js"
 import { logger, LogType } from "../utils/logger.js"
-import { SolverRequest } from "../types/requests/SolverRequest.js"
+import { validOutputFormats, SolveRequest } from "../types/requests/SolveRequest.js"
 import { requestContextPrediction } from "../services/predictContext.js"
-import { requestVisionPrompt } from "../services/visionPrompt.js"
+import { PredictionRequest } from "../types/requests/PredictionRequest.js"
+import { sendVisionPrompt } from "../services/sendVisionPrompt.js"
 
 const MODULE = "controllers :: solver"
 
-export async function solveScreenshot(req: Request<SolverRequest>, res: Response<ResponseMessage>) {
+export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
 
-    const { header, img, footer, threshold, max_tokens } = req.body
+    const { img, outputFormat, threshold } = req.body
 
-    // first upload the ss to GCF and compute + crop the context region
+    // first upload the screenshot to GCF to compute + crop the context region
     logger(MODULE, "Sending context req to GCF")
-    const { err: gcfErr, errMsg: gcfErrMsg, data: gcfCroppedImg } = await requestContextPrediction({ threshold, img })
+    const contextPredictionReq: PredictionRequest = {
+        img: img,
+        threshold: threshold
+    }
+    const { err: gcfErr, errMsg: gcfErrMsg, data: extractedContextImg } = await requestContextPrediction(contextPredictionReq)
     
     if (gcfErr) {
         logger(MODULE, gcfErrMsg!, LogType.ERR)
@@ -22,13 +27,19 @@ export async function solveScreenshot(req: Request<SolverRequest>, res: Response
             message: gcfErrMsg
         })
     }
+
+    // validate outputFormat
+    if (!validOutputFormats.includes(outputFormat)) return res.status(400).json({
+        state: "error",
+        message: "Unsupported 'outputFormat' value"
+    })
     
-    logger(MODULE, "Sending vision prompt req to OpenAI")
-    const { err: gptErr, errMsg: gptErrMsg, data: gptData } = await requestVisionPrompt({
-        header: header,
-        img: gcfCroppedImg,
-        footer: footer,
-        max_tokens: max_tokens
+    
+    logger(MODULE, "Sending vision request to OpenAI")
+    const { err: gptErr, errMsg: gptErrMsg, data: gptData } = await sendVisionPrompt({
+        outputFormat: outputFormat,
+        img: extractedContextImg,
+        threshold,
     })
 
     if (gptErr) {
@@ -43,6 +54,4 @@ export async function solveScreenshot(req: Request<SolverRequest>, res: Response
         state: "success",
         message: gptData
     })
-    
-
 }

@@ -1,4 +1,4 @@
 export interface PredictionRequest {
-    threshold: number
-    img: string
+    img: string // b64 string
+    threshold?: number
 }
