@@ -18,6 +18,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         img: img,
         threshold: threshold
     }
+
     const { err: gcfErr, errMsg: gcfErrMsg, data: extractedContextImg } = await requestContextPrediction(contextPredictionReq)
     
     if (gcfErr) {
@@ -33,12 +34,12 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         state: "error",
         message: "Unsupported 'outputFormat' value"
     })
-    
-    
-    logger(MODULE, "Sending vision request to OpenAI")
+
+    const b64Prefix = "data:image/jpg;base64," // OpenAI needs the prefix for some reason
+    const fullExtractedImg = b64Prefix + extractedContextImg
     const { err: gptErr, errMsg: gptErrMsg, data: gptData } = await sendVisionPrompt({
         outputFormat: outputFormat,
-        img: extractedContextImg,
+        img: fullExtractedImg,
         threshold,
     })
 

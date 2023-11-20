@@ -5,7 +5,7 @@ import { SolveRequest, SolverOutputFormat } from "../types/requests/SolveRequest
 import { GPTSettings } from "../types/GPTSettings.js"
 import { validOutputFormats } from "../types/requests/SolveRequest.js"
 
-const MODULE = "services :: visionPrompt"
+const MODULE = "services :: sendVisionPrompt"
 
 /**
  * GPT Settings / Default prompt stuff
