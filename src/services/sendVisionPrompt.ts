@@ -16,21 +16,21 @@ const defaultSystemInstructions = `
     Your task includes analyzing provided images to interpret and solve the problems presented.
     Apply advanced image recognition and analytical skills to accurately decipher the questions.
     If the solution isn't clear, make an educated guess.
-    Your Responses should strictly adhere to the format specified by the user.`
+    Your Responses should strictly follow the format specified by the user.`
 
 const gptSettings: GPTSettings = {
 
     minimal: {
         system: defaultSystemInstructions,
         header: "",
-        footer: "Expected output eg: {Question Nr} - {Answer}. Keep the answers as short as possible",
+        footer: "Expected output eg: {Question Nr} - {Answer/s}. Keep the answers as short as possible, but don't skip any.",
         max_tokens: 100
     },
 
     standard: {
         system: defaultSystemInstructions,
         header: "",
-        footer: "Expected output: {Question Nr} - {Answer}. Upper word limit: 300. Try to provide a short, concise explanation for each answer (one to two sentences)",
+        footer: "Expected output: {Question Nr} - {Answer/s}. Upper word limit: 300. Try to provide a short, concise explanation for each answer (one to two sentences)",
         max_tokens: 300
     }
 }
@@ -84,7 +84,8 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
             ],
         },
         ],
-            max_tokens: max_tokens
+            max_tokens: max_tokens,
+            temperature: 0.25 // FIXME : Find good value
         })
 
         const res = response.choices[0].message.content
