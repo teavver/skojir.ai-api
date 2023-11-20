@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js"
 import { logger, LogType } from "./utils/logger.js"
 import dotenv from "dotenv"
 import express from "express"
-import { OpenAI } from "openai/index.mjs"
+import { OpenAI } from "openai"
 import solverRoute from "./routes/solver.js"
 import statusRoute from "./routes/status.js"
 
