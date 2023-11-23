@@ -1,7 +1,7 @@
-import { createClient } from "@supabase/supabase-js"
 import { logger, LogType } from "./utils/logger.js"
 import dotenv from "dotenv"
 import express from "express"
+import mongoose from "mongoose"
 import { OpenAI } from "openai"
 import solverRoute from "./routes/solver.js"
 import statusRoute from "./routes/status.js"
@@ -14,31 +14,39 @@ const MODULE = "main"
 function createOpenAIClient() {
     const apiKey = process.env.OPENAI_KEY
     if (!apiKey) {
-        logger(MODULE, "Failed to get OpenAI .env key", LogType.ERR)
+        logger(MODULE, "failed to get OpenAI .env key", LogType.ERR)
         process.exit(1)
     }
-    logger(MODULE, "Init openAI Client")
+    logger(MODULE, "init openAI Client")
     return new OpenAI({ apiKey })
 }
 
-function createDbClient() {
-    const dbUrl = process.env.SUPABASE_URL
-    const dbKey = process.env.SUPABASE_KEY
-    if (!dbUrl || !dbKey) {
-        logger(MODULE, "Failed to get db .env keys", LogType.ERR)
+async function createDbClient() {
+    const dbURL = process.env.DB_URL
+    if (!dbURL) {
+        logger(MODULE, "missing db URL key in .env")
         process.exit(1)
     }
-    logger(MODULE, "Connected to DB")
-    return createClient(dbUrl, dbKey )
+    try {
+        await mongoose.connect(dbURL)
+        logger(MODULE, "connected to db")
+    } catch (err) {
+        logger(MODULE, `err while connecting to db: ${err}`)
+        process.exit(1)
+    }
 }
 
-function initialize() {
-    logger(MODULE, "Setting up environment...")
+async function init() {
+
+    logger(MODULE, "setting up environment")
     const env = process.env.ENV
     if (!env) {
-        logger(MODULE, "No ENV value in .env", LogType.ERR)
+        logger(MODULE, "no ENV value in .env", LogType.ERR)
         process.exit(1)
     }
+
+    logger(MODULE, "connecting to db...")
+    await createDbClient()
 
     app.use(express.json({ limit: "2.5mb" }))
     app.use("/solve", solverRoute)
@@ -48,7 +56,6 @@ function initialize() {
 }
 
 const openAIClient = createOpenAIClient()
-const dbClient = createDbClient()
-initialize()
+init()
 
-export { app, openAIClient, dbClient }
+export { app, openAIClient }

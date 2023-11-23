@@ -8,8 +8,7 @@ declare global {
         OPENAI_KEY: string
 
         // db
-        SUPABASE_URL: string
-        SUPABASE_KEY: string
+        DB_URL: string // Full connection string
 
         // gcf
         CONTEXT_EXTRACTOR_URL: string
