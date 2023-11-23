@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "main": "tsc && node ./dist/server.js",
-    "test": "mocha"
+    "test": "mocha src/tests/**/*.ts -r dotenv/config"
   },
   "keywords": [],
   "author": "",
