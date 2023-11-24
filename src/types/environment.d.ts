@@ -8,7 +8,10 @@ declare global {
         OPENAI_KEY: string
 
         // db
-        DB_URL: string // Full connection string
+        DB_URL: string // Full server connection string
+        DB_NAME_PROD: string
+        DB_NAME_DEV: string
+        DB_COLLECTION: string
 
         // gcf
         CONTEXT_EXTRACTOR_URL: string

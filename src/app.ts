@@ -1,7 +1,7 @@
 import { logger, LogType } from "./utils/logger.js"
 import dotenv from "dotenv"
 import express from "express"
-import mongoose from "mongoose"
+import { MongoClient } from "mongodb"
 import { OpenAI } from "openai"
 import solverRoute from "./routes/solver.js"
 import statusRoute from "./routes/status.js"
@@ -14,39 +14,41 @@ const MODULE = "main"
 function createOpenAIClient() {
     const apiKey = process.env.OPENAI_KEY
     if (!apiKey) {
-        logger(MODULE, "failed to get OpenAI .env key", LogType.ERR)
+        logger(MODULE, "Failed to get OpenAI .env key", LogType.ERR)
         process.exit(1)
     }
-    logger(MODULE, "init openAI Client")
+    logger(MODULE, "Init openAI client")
     return new OpenAI({ apiKey })
 }
 
 async function createDbClient() {
     const dbURL = process.env.DB_URL
-    if (!dbURL) {
-        logger(MODULE, "missing db URL key in .env")
+    if (!dbURL) { 
+        logger(MODULE, "Missing DB .env", LogType.ERR)
         process.exit(1)
     }
+    logger(MODULE, "Connecting to db...")
+    const dbClient = new MongoClient(dbURL)
     try {
-        await mongoose.connect(dbURL)
-        logger(MODULE, "connected to db")
+        await dbClient.connect()
+        logger(MODULE, "Connected to db.")
+        return dbClient
     } catch (err) {
-        logger(MODULE, `err while connecting to db: ${err}`)
+        logger(MODULE, `Err while connecting to db: ${err}`, LogType.ERR)
         process.exit(1)
+    } finally {
+        await dbClient.close()
     }
 }
 
 async function init() {
 
-    logger(MODULE, "setting up environment")
+    logger(MODULE, "Setting up environment")
     const env = process.env.ENV
     if (!env) {
-        logger(MODULE, "no ENV value in .env", LogType.ERR)
+        logger(MODULE, "No ENV value in .env", LogType.ERR)
         process.exit(1)
     }
-
-    logger(MODULE, "connecting to db...")
-    await createDbClient()
 
     app.use(express.json({ limit: "2.5mb" }))
     app.use("/solve", solverRoute)
@@ -56,6 +58,7 @@ async function init() {
 }
 
 const openAIClient = createOpenAIClient()
+const dbClient = createDbClient()
 init()
 
-export { app, openAIClient }
+export { app, openAIClient, dbClient }
