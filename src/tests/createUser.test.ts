@@ -1,33 +1,42 @@
-import mongoose from "mongoose"
+import { logger, LogType } from "../utils/logger.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
-import { logger, LogType } from "../utils/logger.js"
+import { init } from "../app.js"
 
 const MODULE = "tests :: createUser"
 
-describe('create a dummy User', () => {
+describe('create a dummy User', function () {
+
+  this.timeout(5000)
 
   before(async () => {
-    const dbURL = process.env.DB_URL
-    if (!dbURL) {
-        logger(MODULE, "Couldn't find dbURL in .env")
-        return
+
+    await init()
+
+    logger(MODULE, "Setting up test file...")
+    const dbCollection = process.env.DB_COLLECTION
+    if (!dbCollection) {
+        logger(MODULE, "Can't run tests - .env is not set up correctly", LogType.ERR)
+        process.exit(1)
     }
-    await mongoose.connect(dbURL)
+    logger(MODULE, "Setup finished.")
+
   })
 
-  after(async () => {
-    await mongoose.disconnect()
-  })
+    it('should create a new user', async () => {
 
-  it('should create a new user', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', verificationCode: '123456' })
-    const savedUser = await user.save()
+        const dummyUser = new User({
+            email: 'test@example.com', 
+            password: 'password123', 
+            verificationCode: '123456',
+        })
 
-    expect(savedUser).to.have.property('email', 'test@example.com')
-    expect(savedUser).to.have.property('password')
-    expect(savedUser).to.have.property('verificationCode', '123456')
-    expect(savedUser).to.have.property('isEmailVerified', false)
-  })
+        const savedUser = await dummyUser.save()
+
+        expect(savedUser).to.have.property('email', 'test@example.com')
+        expect(savedUser).to.have.property('password', 'password123')
+        expect(savedUser).to.have.property('verificationCode', '123456')
+        expect(savedUser).to.have.property('isEmailVerified', false)
+    })
 
 })

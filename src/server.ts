@@ -1,10 +1,11 @@
-import { app } from "./app.js"
+import { app, init } from "./app.js"
 import { logger, LogType } from "./utils/logger.js"
 
 const MODULE = "server"
 
-logger(MODULE, "starting express...")
+init()
+logger(MODULE, "Starting server...")
 const port = process.env.PORT || 3000
 app.listen(port, () => {
-    logger(MODULE, `express running on port ${port}`)
+    logger(MODULE, `Express running on port ${port}`)
 })
