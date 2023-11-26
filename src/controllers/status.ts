@@ -21,7 +21,7 @@ export async function checkStatus(req: Request, res: Response<ResponseMessage>) 
     logger(MODULE, "Status check OK")
     return res.status(200).json({
         state: "success",
-        message: `(${ts}) OK`
+        message: `${status.data}`
     })
 
 }

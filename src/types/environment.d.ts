@@ -13,7 +13,7 @@ declare global {
         DB_COLLECTION: string
 
         // gcf
-        CONTEXT_EXTRACTOR_URL: string
+        BACKEND_URL: string
 
         // misc
         ENV: string

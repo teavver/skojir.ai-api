@@ -5,6 +5,7 @@ import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import axios from "axios"
 
 const MODULE = "services :: predictContext"
+const BACKEND_URL_BASE = process.env.BACKEND_URL
 const DEFAULT_THRESHOLD_VALUE = 0.25
 
 /**
@@ -29,18 +30,8 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
         }
     }
 
-    if (!process.env.CONTEXT_EXTRACTOR_URL){
-        const err = "GCF Url not found in .env"
-        logger(MODULE, err, LogType.ERR)
-        return {
-            err: true,
-            errMsg: err,
-            data: ""
-        }
-    }
-
     try {
-        const res = await axios.post(process.env.CONTEXT_EXTRACTOR_URL, reqData, {
+        const res = await axios.post(BACKEND_URL_BASE + "/predict", reqData, {
             headers: {
                 'Content-Type': 'application/json'
             }
