@@ -24,22 +24,4 @@ const userSchema = new Schema({
     }
 })
 
-const membershipSchema = new Schema({
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    isActive: {
-        type: Boolean,
-        default: false
-    },
-    endDate: {
-        type: Date
-    }
-})
-
-const User = mongoose.model('User', userSchema)
-const Membership = mongoose.model('Membership', membershipSchema)
-
-export { User, Membership }
+export const User = mongoose.model('User', userSchema)
