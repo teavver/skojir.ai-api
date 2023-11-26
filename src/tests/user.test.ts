@@ -2,12 +2,13 @@ import { logger, LogType } from "../utils/logger.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
 import { init } from "../app.js"
+import { hashPwd } from "../utils/hashPwd.js"
 
 const MODULE = "tests :: createUser"
 
 describe('create a dummy User', function () {
 
-  this.timeout(5000)
+  const dummyEmail = "test@example.com" 
 
   before(async () => {
 
@@ -26,16 +27,21 @@ describe('create a dummy User', function () {
 
     it('Create an account for dummy user', async () => {
 
+        const dummyPwd = "password123"
+        const hashedPwd = hashPwd(dummyPwd)
+
+        // console.log(hashedPwd)
+
         const dummyUser = new User({
-            email: 'test@example.com',
-            password: 'password123',
+            email: dummyEmail,
+            password: hashedPwd,
             verificationCode: '123456',
         })
 
         const savedUser = await dummyUser.save()
 
-        expect(savedUser).to.have.property('email', 'test@example.com')
-        expect(savedUser).to.have.property('password', 'password123')
+        expect(savedUser).to.have.property('email', dummyEmail)
+        expect(savedUser).to.have.property('password', hashedPwd)
         expect(savedUser).to.have.property('verificationCode', '123456')
         expect(savedUser).to.have.property('isEmailVerified', false)
 
@@ -43,11 +49,10 @@ describe('create a dummy User', function () {
 
     it('Delete the dummy user account', async () => {
         
-        const targetEmail = "test@example.com"
-        const deleteResult = await User.deleteOne({ email: targetEmail })
+        const deleteResult = await User.deleteOne({ email: dummyEmail })
         expect(deleteResult.deletedCount).to.equal(1)
 
-        const findResult = await User.findOne({ email: targetEmail })
+        const findResult = await User.findOne({ email: dummyEmail })
         expect(findResult).to.be.null
 
     })
