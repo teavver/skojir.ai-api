@@ -1,17 +1,24 @@
 import Joi from "joi"
 import { PredictionRequest } from "../../types/requests/PredictionRequest.js"
 import { logger, LogType } from "../../utils/logger.js"
+import { ValidatorResponse } from "../../types/responses/ValidatorResponse.js"
 
 const MODULE = "middlewares :: validators :: contextPrediction"
 
-export const validateContextPredictionRequest = async (req: PredictionRequest): Promise<[boolean, Object]> => {
+export const validateContextPredictionRequest = async (req: PredictionRequest): Promise<ValidatorResponse> => {
     try {
-        const value = await predictionRequestSchema.validateAsync(req)
+        const data = await predictionRequestSchema.validateAsync(req)
         logger(MODULE, `Validated prediction req data`)
-        return [true, value]
+        return {
+            isValid: true,
+            data: data
+        }
     } catch (err) {
         logger(MODULE, `Could not validate prediction req data: ${err}`, LogType.ERR)
-        return [false, { error: err }]
+        return {
+            isValid: false,
+            error: (err as Error).message
+        }
     }
 }
 

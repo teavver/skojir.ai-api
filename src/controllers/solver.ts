@@ -19,13 +19,13 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         threshold: threshold
     }
 
-    const { err: gcfErr, errMsg: gcfErrMsg, data: extractedContextImg } = await requestContextPrediction(contextPredictionReq)
+    const contextRes = await requestContextPrediction(contextPredictionReq)
     
-    if (gcfErr) {
-        logger(MODULE, gcfErrMsg!, LogType.ERR)
+    if (contextRes.err) {
+        logger(MODULE, contextRes.errMsg, LogType.ERR)
         return res.status(500).json({
             state: "error",
-            message: gcfErrMsg
+            message: contextRes.errMsg
         })
     }
 
@@ -36,23 +36,24 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
     })
 
     const b64Prefix = "data:image/jpg;base64," // OpenAI needs the prefix for some reason
-    const fullExtractedImg = b64Prefix + extractedContextImg
-    const { err: gptErr, errMsg: gptErrMsg, data: gptData } = await sendVisionPrompt({
+    const fullExtractedImg = b64Prefix + contextRes.data
+
+    const gptRes = await sendVisionPrompt({
         outputFormat: outputFormat,
         img: fullExtractedImg,
         threshold,
     })
 
-    if (gptErr) {
-        logger(MODULE, gptErrMsg!, LogType.ERR)
+    if (gptRes.err) {
+        logger(MODULE, gptRes.errMsg, LogType.ERR)
         return res.status(500).json({
             state: "error",
-            message: gptErrMsg
+            message: gptRes.errMsg
         })
     }
 
     return res.status(200).json({
         state: "success",
-        message: gptData
+        message: gptRes.data
     })
 }

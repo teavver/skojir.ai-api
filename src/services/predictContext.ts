@@ -18,20 +18,19 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
         req.threshold = DEFAULT_THRESHOLD_VALUE
     }
 
-    const [valid, reqData] = await validateContextPredictionRequest(req) as [boolean, PredictionRequest]
+    const vRes = await validateContextPredictionRequest(req)
 
-    if (!valid){
+    if (!vRes.isValid){
         const err = "Failed to validate prediction req"
         logger(MODULE, err, LogType.ERR)
         return {
             err: true,
             errMsg: err,
-            data: ""
         }
     }
 
     try {
-        const res = await axios.post(BACKEND_URL_BASE + "/predict", reqData, {
+        const res = await axios.post(BACKEND_URL_BASE + "/predict", vRes.data, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -46,7 +45,6 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
         return {
             err: true,
             errMsg: (err as Error).message,
-            data: ""
         }
     }
 

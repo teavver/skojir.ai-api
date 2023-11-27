@@ -48,7 +48,6 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: true,
             errMsg: err,
-            data: ""
         }
     }
 
@@ -96,7 +95,6 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
             return {
                 err: true,
                 errMsg: err,
-                data: ""
             }
         }
 
@@ -107,13 +105,10 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         }
         
     } catch (err) {
-
         logger(MODULE, `Request err: ${err}`, LogType.ERR)
         return {
             err: true,
             errMsg: (err as Error).message,
-            data: ""
         }
-
     }
 }

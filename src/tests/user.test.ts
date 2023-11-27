@@ -1,4 +1,6 @@
 import { logger, LogType } from "../utils/logger.js"
+import { CreateAccountRequest } from "../types/requests/CreateAccountReuqest.js"
+import { createUser } from "../services/user_services/createUser.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
 import { init } from "../app.js"
@@ -8,42 +10,41 @@ const MODULE = "tests :: createUser"
 
 describe('create a dummy User', function () {
 
-  const dummyEmail = "test@example.com" 
+    const dummyEmail = "test@example.com" 
+    const dummyPwd = "Password123!"
+    const hashedPwd = hashPwd(dummyPwd)
 
-  before(async () => {
+    before(async () => {
 
-    await init()
+        await init()
 
-    logger(MODULE, "Setting up test file...")
-    const dbCollection = process.env.DB_COLLECTION
-    if (!dbCollection) {
-        logger(MODULE, "Can't run tests - .env is not set up correctly", LogType.ERR)
-        process.exit(1)
-    }
-    await User.deleteMany({}) // clear the Users before running
-    logger(MODULE, "Setup finished.")
+        logger(MODULE, "Setting up test file...")
+        const dbCollection = process.env.DB_COLLECTION
+        if (!dbCollection) {
+            logger(MODULE, "Can't run tests - .env is not set up correctly", LogType.ERR)
+            process.exit(1)
+        }
+        await User.deleteMany({}) // clear the Users collection before running
+        logger(MODULE, "Setup finished.")
 
-  })
+    })
 
     it('Create an account for dummy user', async () => {
 
-        const dummyPwd = "password123"
-        const hashedPwd = hashPwd(dummyPwd)
-
-        // console.log(hashedPwd)
-
-        const dummyUser = new User({
+        const createUserReqData: CreateAccountRequest = {
             email: dummyEmail,
-            password: hashedPwd,
-            verificationCode: '123456',
-        })
+            password: dummyPwd
+        }
 
-        const savedUser = await dummyUser.save()
+        // check if service passed
+        const res = await createUser(createUserReqData)
+        expect(res.err).to.be.false
 
-        expect(savedUser).to.have.property('email', dummyEmail)
-        expect(savedUser).to.have.property('password', hashedPwd)
-        expect(savedUser).to.have.property('verificationCode', '123456')
-        expect(savedUser).to.have.property('isEmailVerified', false)
+        // check if new user is in db
+        const newUserEmailFind = await User.findOne({ email: dummyEmail })
+        const newUserHashedPwdFind = await User.findOne({ password: hashedPwd })
+        expect(newUserEmailFind).to.not.be.null
+        expect(newUserHashedPwdFind).to.not.be.null
 
     })
 

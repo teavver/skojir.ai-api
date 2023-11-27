@@ -10,5 +10,10 @@ export function createOpenAIClient() {
         process.exit(1)
     }
     logger(MODULE, "Init openAI client")
-    return new OpenAI({ apiKey })
+    return new OpenAI({
+        apiKey,
+        timeout: 60,
+        maxRetries: 3,
+        organization: "skojir"
+    })
 }
