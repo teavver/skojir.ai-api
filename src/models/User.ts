@@ -14,6 +14,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    verificationCodeExpires: {
+        type: Date,
+        required: true
+    },
     isEmailVerified: {
         type: Boolean,
         default: false

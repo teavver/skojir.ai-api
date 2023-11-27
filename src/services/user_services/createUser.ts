@@ -5,6 +5,7 @@ import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 import { validateCreateUserRequest } from "../../middlewares/validators/user_services/createUser.js";
 import { generateVerificationCode } from "./generateVerificationCode.js";
+import { generateExpiryDate } from "./generateExpiryDate.js";
 
 const MODULE = "services :: user_services :: createUser"
 
@@ -37,7 +38,8 @@ export async function createUser(userData: CreateAccountRequest): Promise<Servic
     const newUser = new User({
         email: userData.email,
         password: hashPwd(userData.password),
-        verificationCode: generateVerificationCode()
+        verificationCode: generateVerificationCode(),
+        verificationCodeExpires: generateExpiryDate()
         // ^^^^ FIXME: integrate a full service for this
         // (send email to user, add expiry date to the ver code in db)
     })

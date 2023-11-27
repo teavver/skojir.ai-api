@@ -48,14 +48,12 @@ describe('create a dummy User', function () {
 
     })
 
+    // cleanup
     it('Delete the dummy user account', async () => {
-        
         const deleteResult = await User.deleteOne({ email: dummyEmail })
         expect(deleteResult.deletedCount).to.equal(1)
-
         const findResult = await User.findOne({ email: dummyEmail })
         expect(findResult).to.be.null
-
     })
 
 })
