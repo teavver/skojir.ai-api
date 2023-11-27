@@ -7,6 +7,7 @@ import { envSetup } from "./utils/envSetup.js"
 import { OpenAI } from "openai"
 import solverRoute from "./routes/solver.js"
 import statusRoute from "./routes/status.js"
+import rootRoute from "./routes/root.js"
 import { createMailjetClient } from "./clients/mailjet.js"
 import Mailjet from "node-mailjet"
 
@@ -28,6 +29,7 @@ async function init() {
     await createDbClient()
 
     app.use(express.json({ limit: "2.5mb" }))
+    app.use("/", rootRoute)
     app.use("/solve", solverRoute)
     app.use("/status", statusRoute)
 
