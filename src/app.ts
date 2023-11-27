@@ -29,7 +29,7 @@ async function init() {
 
     app.use(express.json({ limit: "2.5mb" }))
     app.use("/solve", solverRoute)
-    app.use("/", statusRoute)
+    app.use("/status", statusRoute)
 
     logger(MODULE, "All set up!")
 }

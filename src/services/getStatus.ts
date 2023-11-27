@@ -1,24 +1,19 @@
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import mongoose from "mongoose"
-import { openAIClient } from "../app.js"
 import axios from "axios"
 import { logger, LogType } from "../utils/logger.js"
 
 const MODULE = "services :: getStatus"
 
 /**
- * Get status of API services
+ * Get status of API and underlying clients
  */
 
 export async function getStatus(): Promise<ServiceResponse> {
 
-    let res: ServiceResponse = {
-        err: false,
-        data: ""
-    }
-
     let backendStatus = "unknown"
     let dbStatus = "unknown"
+    let openAIStatus = "unknown"
 
     // Check DB status
     switch (mongoose.connection.readyState) {
@@ -30,23 +25,37 @@ export async function getStatus(): Promise<ServiceResponse> {
     
     // Check backend status
     try {
-        const res = await axios.get(process.env.BACKEND_URL + "/status", {
+        const backendRes = await axios.get(process.env.BACKEND_URL + "/status", {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        backendStatus = res.data.status
+        backendStatus = backendRes.data.status
     } catch (err) {
         logger(MODULE, `Backend status err: ${err}`, LogType.WARN)
         backendStatus = "offline"
     }
 
-    const data = {
-        backendStatus,
-        dbStatus
+    // Check openAI / GPT status
+    try {
+        const openAIRes = await axios.get("https://status.openai.com/api/v2/status.json")
+        const status = openAIRes.data.status.description
+        logger(MODULE, status)
+        openAIStatus = status
+    } catch (err) {
+        logger(MODULE, `Failed to get OpenAI status`)
+        openAIStatus = "error"
     }
 
-    res.data = JSON.stringify(data)
-    return res
+    const data = {
+        backendStatus,
+        dbStatus,
+        openAIStatus
+    }
+
+    return {
+        err: false,
+        data: JSON.stringify(data)
+    }
 
 }
