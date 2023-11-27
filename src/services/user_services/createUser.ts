@@ -6,6 +6,7 @@ import { User } from "../../models/User.js";
 import { validateCreateUserRequest } from "../../middlewares/validators/user_services/createUser.js";
 import { generateVerificationCode } from "./generateVerificationCode.js";
 import { generateExpiryDate } from "./generateExpiryDate.js";
+import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
 
 const MODULE = "services :: user_services :: createUser"
 
@@ -25,7 +26,7 @@ export async function createUser(userData: CreateAccountRequest): Promise<Servic
         }
     }
 
-    // check for duplicates
+    // check for duplicates (MOVE THIS PART TO CONTROLLER)
     const user = await User.findOne({ email: userData.email })
     if (user) {
         logger(MODULE, `createUser req rejected - duplicate`, LogType.WARN)
@@ -35,13 +36,23 @@ export async function createUser(userData: CreateAccountRequest): Promise<Servic
         }
     }
 
+    const verificationCode = generateVerificationCode()
+    const emailRes = await sendVerificationCodeEmail(userData.email, verificationCode)
+    if (emailRes.err) {
+        return {
+            err: true,
+            errMsg: emailRes.errMsg
+        }
+    }
+
     const newUser = new User({
         email: userData.email,
         password: hashPwd(userData.password),
-        verificationCode: generateVerificationCode(),
+        verificationCode: verificationCode,
         verificationCodeExpires: generateExpiryDate()
         // ^^^^ FIXME: integrate a full service for this
         // (send email to user, add expiry date to the ver code in db)
+        // MOVE ALL OF THE ABOVE TO CONTROLLER. THIS FILE SHOULD RECEIVE THE OBJECT ABOVE AND ONLY PUT IT TO DB
     })
 
     logger(MODULE, `New user created: e-mail: ${newUser.email}, code: ${newUser.verificationCode}`)

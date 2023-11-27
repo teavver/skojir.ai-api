@@ -13,6 +13,10 @@ declare global {
         // gcf
         BACKEND_URL: string
 
+        // mail
+        MAILJET_API_KEY: string
+        MAILJET_SECRET_KEY: string
+
         // misc
         ENV: string
         PORT: string
