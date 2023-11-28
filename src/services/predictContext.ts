@@ -5,7 +5,6 @@ import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import axios from "axios"
 
 const MODULE = "services :: predictContext"
-const BACKEND_URL_BASE = process.env.BACKEND_URL
 const DEFAULT_THRESHOLD_VALUE = 0.25
 
 /**
@@ -30,7 +29,8 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
     }
 
     try {
-        const res = await axios.post(BACKEND_URL_BASE + "/predict", vRes.data, {
+        const url = process.env.BACKEND_URL + "/predict"
+        const res = await axios.post(url, vRes.data, {
             headers: {
                 'Content-Type': 'application/json'
             }

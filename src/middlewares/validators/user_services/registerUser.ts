@@ -1,18 +1,36 @@
 import Joi from "joi";
-import { CreateAccountRequest } from "../../../types/requests/CreateAccountReuqest.js";
+import { RegisterRequest } from "../../../types/requests/RegisterRequest.js";
 import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
+import { User } from "../../../models/User.js";
 
 const MODULE = "middlewares :: validators :: user_services :: createUser"
 
-export const validateCreateUserRequest = async (req: CreateAccountRequest): Promise<ValidatorResponse> => {
+/**
+ * Validates register user input with schema and checks if user has an account already
+ */
+export const validateRegisterUserRequest = async (req: RegisterRequest): Promise<ValidatorResponse> => {
+
     try {
+
+        // validate with schema
         const data = await createUserSchema.validateAsync(req)
-        logger(MODULE, `Validated createUser req data`)
+
+        // check for user duplicates
+        const user = await User.findOne({ email: req.email })
+        if (user) {
+            logger(MODULE, `Failed to create new user. Reason: duplicate`, LogType.WARN)
+            return {
+                isValid: false,
+                error: `Registration failed: an account with this e-mail address exists already.`,
+            }
+        }
+
         return {
             isValid: true,
             data: data
         }
+
     } catch (err) {
         logger(MODULE, `Could not validate createUser req data: ${err}`, LogType.ERR)
         return {

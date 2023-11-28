@@ -1,10 +1,11 @@
 import { logger, LogType } from "../utils/logger.js"
-import { CreateAccountRequest } from "../types/requests/CreateAccountReuqest.js"
+import { RegisterRequest } from "../types/requests/RegisterRequest.js"
 import { createUser } from "../services/user_services/createUser.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
 import { init } from "../app.js"
 import { hashPwd } from "../utils/hashPwd.js"
+import { generateVerificationCode } from "../services/user_services/generateVerificationCode.js"
 
 const MODULE = "tests :: createUser"
 
@@ -31,20 +32,24 @@ describe('create a dummy User', function () {
 
     it('Create an account for dummy user', async () => {
 
-        const createUserReqData: CreateAccountRequest = {
+        const createUserReqData: RegisterRequest = {
             email: dummyEmail,
             password: dummyPwd
         }
+        
+        const dummyCode = generateVerificationCode()
 
         // check if service passed
-        const res = await createUser(createUserReqData)
+        const res = await createUser(createUserReqData, dummyCode)
         expect(res.err).to.be.false
 
         // check if new user is in db
         const newUserEmailFind = await User.findOne({ email: dummyEmail })
         const newUserHashedPwdFind = await User.findOne({ password: hashedPwd })
+        const newUserVerCode = await User.findOne({ verificationCode: dummyCode })
         expect(newUserEmailFind).to.not.be.null
         expect(newUserHashedPwdFind).to.not.be.null
+        expect(newUserVerCode).to.not.be.null
 
     })
 

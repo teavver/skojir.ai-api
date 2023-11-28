@@ -10,7 +10,7 @@ const MODULE = "controllers :: solver"
 
 export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
 
-    const { img, outputFormat, threshold } = req.body
+    const { img, outputFormat, threshold }: SolveRequest = req.body
 
     // first upload the screenshot to GCF to compute + crop the context region
     logger(MODULE, "Sending context req to GCF")
