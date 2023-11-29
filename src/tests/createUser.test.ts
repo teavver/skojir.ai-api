@@ -5,7 +5,7 @@ import { User } from "../models/User.js"
 import { expect } from "chai"
 import { init } from "../app.js"
 import { hashPwd } from "../utils/hashPwd.js"
-import { generateVerificationCode } from "../services/user_services/generateVerificationCode.js"
+import { generateVerificationCode } from "../utils/generateVerificationCode.js"
 
 const MODULE = "tests :: createUser"
 

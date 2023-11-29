@@ -1,6 +1,6 @@
-import { logger } from "../../utils/logger.js";
+import { logger } from "./logger.js";
 
-const MODULE = "services :: user_services :: generateVerificationCode"
+const MODULE = "utils :: generateVerificationCode"
 
 /**
  * Generates a random 6-digit verification code and returns it as string
