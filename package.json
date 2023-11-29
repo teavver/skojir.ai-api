@@ -23,6 +23,7 @@
     "@types/chai": "^4.3.10",
     "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.4",
+    "@types/sjcl": "^1.0.34",
     "axios": "^1.6.0",
     "chai": "^4.3.10",
     "dotenv": "^16.3.1",
@@ -33,6 +34,7 @@
     "mongoose": "^8.0.1",
     "node-mailjet": "^6.0.4",
     "openai": "^4.17.1",
+    "sjcl": "^1.0.8",
     "yarn": "^1.22.19"
   }
 }

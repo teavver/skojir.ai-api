@@ -1,10 +1,11 @@
 import { RegisterRequest } from "../../types/requests/client/RegisterRequest.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { hashPwd } from "../../utils/hashPwd.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 import { validateRegisterUserRequest } from "../../middlewares/validators/user_services/registerUser.js";
-import { generateExpiryDate } from "../../utils/generateExpiryDate.js";
+import { generateExpiryDate } from "../../utils/genExpiryDate.js";
+import { generateSalt } from "../../utils/crypto/salt.js";
+import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 
 const MODULE = "services :: user_services :: createUser"
 
@@ -23,10 +24,15 @@ export async function createUser(userData: RegisterRequest, verificationCode: st
             errMsg: vRes.error,
         }
     }
+
+    const salt = generateSalt()
+    const saltedPwd = salt + userData.password
+    const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
     const newUser = new User({
         email: userData.email,
-        password: hashPwd(userData.password),
+        password: hashedPwd,
+        salt: salt,
         verificationCode: verificationCode,
         verificationCodeExpires: generateExpiryDate()
     })

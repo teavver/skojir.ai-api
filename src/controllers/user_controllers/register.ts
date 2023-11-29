@@ -3,7 +3,7 @@ import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { RegisterRequest } from "../../types/requests/client/RegisterRequest.js";
 import { createUser } from "../../services/user_services/createUser.js";
-import { generateVerificationCode } from "../../utils/generateVerificationCode.js";
+import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { sendVerificationCodeEmail } from "../../services/user_services/sendVerificationCodeEmail.js";
 
 const MODULE = "controllers :: user_controllers :: register"

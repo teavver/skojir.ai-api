@@ -4,16 +4,15 @@ import { createUser } from "../services/user_services/createUser.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
 import { init } from "../main.js"
-import { hashPwd } from "../utils/hashPwd.js"
-import { generateVerificationCode } from "../utils/generateVerificationCode.js"
+import { generateVerificationCode } from "../utils/crypto/genVerificationCode.js"
+import { deriveKey } from "../utils/crypto/pbkdf2.js"
 
 const MODULE = "tests :: createUser"
 
 describe('create a dummy User', function () {
 
-    const dummyEmail = "test@example.com" 
+    const dummyEmail = "test@example.com"
     const dummyPwd = "Password123!"
-    const hashedPwd = hashPwd(dummyPwd)
 
     before(async () => {
 
@@ -44,10 +43,16 @@ describe('create a dummy User', function () {
         expect(res.err).to.be.false
 
         // check if new user is in db
-        const newUserEmailFind = await User.findOne({ email: dummyEmail })
+        const newUser = await User.findOne({ email: dummyEmail })
+        expect(newUser).to.not.be.null
+
+        // compute and compare passwords
+        const saltedPwd = newUser!.salt + dummyPwd
+        const hashedPwd = deriveKey({ password: saltedPwd, salt: newUser!.salt })
+
+        // verify data
         const newUserHashedPwdFind = await User.findOne({ password: hashedPwd })
         const newUserVerCode = await User.findOne({ verificationCode: dummyCode })
-        expect(newUserEmailFind).to.not.be.null
         expect(newUserHashedPwdFind).to.not.be.null
         expect(newUserVerCode).to.not.be.null
 

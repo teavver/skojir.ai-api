@@ -1,4 +1,4 @@
-import { logger } from "./logger.js";
+import { logger } from "../logger.js";
 import { randomBytes } from "crypto";
 
 const MODULE = "utils :: generateVerificationCode"
