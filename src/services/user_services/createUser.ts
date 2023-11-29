@@ -31,7 +31,17 @@ export async function createUser(userData: RegisterRequest, verificationCode: st
         verificationCodeExpires: generateExpiryDate()
     })
 
-    await newUser.save()
+    try {
+        await newUser.save()
+    } catch (err) {
+        const dbErr = (err as Error).message
+        logger(MODULE, dbErr, LogType.WARN)
+        return {
+            err: true,
+            errMsg: `Internal database error.`
+        }
+    }
+
 
     return {
         err: false,

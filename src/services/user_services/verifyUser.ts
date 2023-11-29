@@ -50,11 +50,11 @@ export async function verifyUser(reqData: VerifyRequest): Promise<ServiceRespons
     }
 
     try {
-        const updateRes = await User.updateOne({ email: user.email }, {
+        const dbRes = await User.updateOne({ email: user.email }, {
             $set: { isEmailVerified: true }
         })
 
-        if (!updateRes.acknowledged || updateRes.modifiedCount !== 1) {
+        if (!dbRes.acknowledged || dbRes.modifiedCount !== 1) {
             return {
                 err: true,
                 errMsg: `Database update error.`
@@ -66,7 +66,7 @@ export async function verifyUser(reqData: VerifyRequest): Promise<ServiceRespons
         logger(MODULE, dbErr, LogType.WARN)
         return {
             err: true,
-            errMsg: dbErr
+            errMsg: `Internal database error.`
         }
     }
 
