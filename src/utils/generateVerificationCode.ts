@@ -1,20 +1,21 @@
 import { logger } from "./logger.js";
+import { randomBytes } from "crypto";
 
 const MODULE = "utils :: generateVerificationCode"
 
 /**
  * Generates a random 6-digit verification code and returns it as string
- * Any digit can be repeated twice, but not more 
  */
 export function generateVerificationCode(): string {
-    let code = ''
-    while (code.length < 6) {
-        const digit = Math.floor(Math.random() * 10).toString()
-        if (code.endsWith(digit.repeat(2))) {
-            continue
-        }
-        code += digit
+    const codeLength = 6
+    let code: string = ''
+
+    while (code.length < codeLength) {
+        const randomValue = randomBytes(1)[0]
+        const digit = randomValue % 10
+        code += digit.toString()
     }
+
     logger(MODULE, `Verification code generated: ${code}`)
     return code
 }
