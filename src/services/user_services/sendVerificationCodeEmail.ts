@@ -5,6 +5,9 @@ import { MailjetRequest } from "../../types/requests/MailjetRequest.js";
 
 const MODULE = "services :: user_services :: sendVerificationCodeEmail"
 
+/**
+ * Send e-mail with verification code to a user
+ */
 export async function sendVerificationCodeEmail(userEmail: string, code: string): Promise<ServiceResponse> {
 
     const reqData: MailjetRequest = {

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { RegisterRequest } from "../../types/requests/RegisterRequest.js";
+import { RegisterRequest } from "../../types/requests/client/RegisterRequest.js";
 import { createUser } from "../../services/user_services/createUser.js";
 import { generateVerificationCode } from "../../utils/generateVerificationCode.js";
 import { sendVerificationCodeEmail } from "../../services/user_services/sendVerificationCodeEmail.js";
@@ -35,7 +35,7 @@ export async function registerUser(req: Request<RegisterRequest>, res: Response<
 
     return res.status(200).json({
         state: "success",
-        message: successMsg
+        message: `Your account has been created. Please check your e-mail for a verification code.`
     })
 
 }

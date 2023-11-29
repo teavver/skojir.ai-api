@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { ResponseMessage } from "../types/responses/ResponseMessage.js"
 import { logger, LogType } from "../utils/logger.js"
-import { validOutputFormats, SolveRequest } from "../types/requests/SolveRequest.js"
+import { validOutputFormats, SolveRequest } from "../types/requests/client/SolveRequest.js"
 import { requestContextPrediction } from "../services/predictContext.js"
 import { PredictionRequest } from "../types/requests/PredictionRequest.js"
 import { sendVisionPrompt } from "../services/sendVisionPrompt.js"

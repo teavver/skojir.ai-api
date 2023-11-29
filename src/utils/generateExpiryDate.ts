@@ -1,7 +1,7 @@
 import { logger } from "./logger.js"
 
 /**
- * Generates an expiry Date for an event
+ * Generates timestamp (Date) for an event
  */
 
 const MODULE = "utils :: generateExpiryDate"

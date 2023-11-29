@@ -8,6 +8,7 @@ import solverRoute from "./routes/solver.js"
 import statusRoute from "./routes/status.js"
 import rootRoute from "./routes/root.js"
 import registerRoute from "./routes/user_routes/register.js"
+import verifyRoute from "./routes/user_routes/verify.js"
 import { createMailjetClient } from "./clients/mailjet.js"
 import Mailjet from "node-mailjet"
 
@@ -32,6 +33,7 @@ async function init() {
     app.use("/status", statusRoute)
     app.use("/solve", solverRoute)
     app.use("/register", registerRoute)
+    app.use("/verify", verifyRoute)
 
     logger(MODULE, "All set up!")
 }

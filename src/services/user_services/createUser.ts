@@ -1,10 +1,10 @@
-import { RegisterRequest } from "../../types/requests/RegisterRequest.js";
+import { RegisterRequest } from "../../types/requests/client/RegisterRequest.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { hashPwd } from "../../utils/hashPwd.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 import { validateRegisterUserRequest } from "../../middlewares/validators/user_services/registerUser.js";
-import { generateExpiryDate } from "./generateExpiryDate.js";
+import { generateExpiryDate } from "../../utils/generateExpiryDate.js";
 
 const MODULE = "services :: user_services :: createUser"
 

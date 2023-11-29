@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { RegisterRequest } from "../../../types/requests/RegisterRequest.js";
+import { RegisterRequest } from "../../../types/requests/client/RegisterRequest.js";
 import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
 import { User } from "../../../models/User.js";
@@ -14,7 +14,7 @@ export const validateRegisterUserRequest = async (req: RegisterRequest): Promise
     try {
 
         // validate with schema
-        const data = await createUserSchema.validateAsync(req)
+        const data: RegisterRequest = await createUserSchema.validateAsync(req)
 
         // check for user duplicates
         const user = await User.findOne({ email: req.email })
@@ -35,7 +35,7 @@ export const validateRegisterUserRequest = async (req: RegisterRequest): Promise
         logger(MODULE, `Could not validate createUser req data: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: (err as Error).message
+            error: `Your password is not strong enough.`
         }
     }
 }

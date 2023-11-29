@@ -1,4 +1,4 @@
-import { SolverOutputFormat } from "./requests/SolveRequest.js"
+import { SolverOutputFormat } from "./requests/client/SolveRequest.js"
 import { VisionRequest } from "./requests/VisionRequest.js"
 
 /**

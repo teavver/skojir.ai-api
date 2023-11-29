@@ -1,5 +1,5 @@
 import express from "express"
-import { solveScreenshot } from "../controllers/solver.js"
+import { solveScreenshot } from "../controllers/solve.js"
 
 const router = express.Router()
 router.post("/", solveScreenshot)
