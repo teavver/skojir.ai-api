@@ -1,5 +1,5 @@
 import { logger, LogType } from "../../utils/logger.js";
-import { mailjetClient } from "../../app.js";
+import { mailjetClient } from "../../main.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { MailjetRequest } from "../../types/requests/MailjetRequest.js";
 

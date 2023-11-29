@@ -3,7 +3,7 @@ import { RegisterRequest } from "../types/requests/client/RegisterRequest.js"
 import { createUser } from "../services/user_services/createUser.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
-import { init } from "../app.js"
+import { init } from "../main.js"
 import { hashPwd } from "../utils/hashPwd.js"
 import { generateVerificationCode } from "../utils/generateVerificationCode.js"
 

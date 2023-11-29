@@ -1,4 +1,4 @@
-import { openAIClient } from "../app.js"
+import { openAIClient } from "../main.js"
 import { logger, LogType } from "../utils/logger.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import { SolveRequest, SolverOutputFormat } from "../types/requests/client/SolveRequest.js"

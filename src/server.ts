@@ -1,4 +1,4 @@
-import { app, init } from "./app.js"
+import { app, init } from "./main.js"
 import { logger, LogType } from "./utils/logger.js"
 
 const MODULE = "server"
