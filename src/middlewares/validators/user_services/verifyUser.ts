@@ -1,7 +1,7 @@
-import Joi from "joi";
 import { VerifyRequest } from "../../../types/requests/client/VerifyRequest.js";
 import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
+import { verifyUserSchema } from "../schemas/verifySchema.js";
 
 /**
  * Validates verify request with schema
@@ -31,15 +31,3 @@ export const validateVerifyUserRequest = async (req: VerifyRequest): Promise<Val
         }
     }
 }
-
-const verifyUserSchema = Joi.object({
-    email: Joi.string()
-        .email({ tlds: { allow: true } })
-        .min(6)
-        .max(254)
-        .required(),
-    
-    code: Joi.string()
-        .length(6)
-        .required()
-})

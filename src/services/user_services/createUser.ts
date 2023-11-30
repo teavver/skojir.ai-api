@@ -1,4 +1,4 @@
-import { RegisterRequest } from "../../types/requests/client/RegisterRequest.js";
+import { UserCredentialsRequest } from "../../types/requests/client/UserCredentialsRequest.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
@@ -10,12 +10,12 @@ import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 const MODULE = "services :: user_services :: createUser"
 
 /**
- * Validates userData with the schema, checks for duplicates
+ * Validates userCredentials with the schema, checks for duplicates
  * Once verified, creates a new user in the database
  */ 
-export async function createUser(userData: RegisterRequest, verificationCode: string): Promise<ServiceResponse> {
+export async function createUser(userCredentials: UserCredentialsRequest, verificationCode: string): Promise<ServiceResponse> {
 
-    const vRes = await validateRegisterUserRequest(userData)
+    const vRes = await validateRegisterUserRequest(userCredentials)
 
     if (!vRes.isValid) {
         logger(MODULE, `createUser req rejected.`, LogType.WARN)
@@ -26,11 +26,11 @@ export async function createUser(userData: RegisterRequest, verificationCode: st
     }
 
     const salt = generateSalt()
-    const saltedPwd = salt + userData.password
+    const saltedPwd = salt + userCredentials.password
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
     const newUser = new User({
-        email: userData.email,
+        email: userCredentials.email,
         password: hashedPwd,
         salt: salt,
         verificationCode: verificationCode,
@@ -47,7 +47,6 @@ export async function createUser(userData: RegisterRequest, verificationCode: st
             errMsg: `Internal database error.`
         }
     }
-
 
     return {
         err: false,
