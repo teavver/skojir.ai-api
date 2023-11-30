@@ -20,6 +20,8 @@ export function envSetup(): boolean {
         'MAILJET_API_KEY',
         'MAILJET_SECRET_KEY',
         'ENV',
+        'JWT_SECRET',
+        'JWT_REFRESH_SECRET',
         'PORT'
     ]
 
