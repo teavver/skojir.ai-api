@@ -14,21 +14,26 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
     verificationCode: {
         type: String,
-        required: true
     },
     verificationCodeExpires: {
         type: Date,
-        required: true
-    },
-    isEmailVerified: {
-        type: Boolean,
-        default: false
     },
     membershipDetails: {
         type: Schema.Types.ObjectId,
-        ref: 'Membership'
+        ref: 'Membership',
+    },
+    accessToken: {
+        type: String,
+    },
+    refreshToken: {
+        type: String,
     }
 })
 

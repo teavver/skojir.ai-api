@@ -2,9 +2,10 @@ import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
 import IUserCredentials from "../../../types/interfaces/IUserCredentials.js";
 import { User } from "../../../models/User.js";
-import { userCredentialsSchema } from "../schemas/userCredentials.js";
+import { userCredentialsSchema } from "../schemas/userCredentialsSchema.js";
+import { IUserVerified } from "../../../types/interfaces/IUserVerified.js";
 
-const MODULE = "middlewares :: validators :: user_services :: createUser"
+const MODULE = "middlewares :: validators :: user_services :: loginUser"
 
 /**
  * Validates login user input request
@@ -14,7 +15,7 @@ export const validateLoginUserRequest = async (req: IUserCredentials): Promise<V
     try {
 
         // validate with schema
-        const data: IUserCredentials = await userCredentialsSchema.validateAsync(req)
+        await userCredentialsSchema.validateAsync(req)
 
         // check if user exists has an account
         const user = await User.findOne({ email: req.email })
@@ -44,14 +45,14 @@ export const validateLoginUserRequest = async (req: IUserCredentials): Promise<V
 
         return {
             isValid: true,
-            data: data
+            data: user as IUserVerified
         }
 
     } catch (err) {
         logger(MODULE, `Could not validate createUser req data: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: `Your password is not strong enough.`
+            error: `Incorrect password.`
         }
     }
 

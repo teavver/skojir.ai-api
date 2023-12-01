@@ -2,7 +2,7 @@ import { logger, LogType } from "../../../utils/logger.js";
 import IUserCredentials from "../../../types/interfaces/IUserCredentials.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
 import { User } from "../../../models/User.js";
-import { userCredentialsSchema } from "../schemas/userCredentials.js";
+import { userCredentialsSchema } from "../schemas/userCredentialsSchema.js";
 
 const MODULE = "middlewares :: validators :: user_services :: createUser"
 

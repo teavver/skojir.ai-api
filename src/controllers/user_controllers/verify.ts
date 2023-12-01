@@ -12,13 +12,13 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
     if (!validBody) {
         return res.status(400).json({
             state: "error",
-            message: `Request body is empty or incomplete`
+            message: `Request body is empty or incomplete.`
         })
     }
 
-    const userData: IUserVerification = req.body
+    const verificationData: IUserVerification = req.body
     
-    const verifyRes = await verifyService(userData)
+    const verifyRes = await verifyService(verificationData)
     if (verifyRes.err) {
         return res.status(401).json({
             state: "unauthorized",
@@ -28,7 +28,7 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
 
     return res.status(200).json({
         state: "success",
-        message: verifyRes.data
+        message: `User account verified.`
     })
 
 }

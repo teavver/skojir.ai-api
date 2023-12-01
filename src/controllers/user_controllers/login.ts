@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
-import { loginUser as loginUserService } from "../../services/user_services/loginUser";
+import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
+import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { logger } from "../../utils/logger.js";
+import { User } from "../../models/User.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "controllers :: user_controllers :: login"
 
@@ -19,7 +22,6 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Re
 
     const userData: IUserCredentials = req.body
     const loginRes = await loginUserService(userData)
-
     if (loginRes.err) {
         return res.status(401).json({
             state: "unauthorized",
@@ -28,8 +30,21 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Re
     }
 
     // generate access & refresh tokens for user
-    
+    const user = loginRes.data as IUserVerified
+    const userAccessToken = generateAuthToken(user, "accessToken")
+    const userRefreshToken = generateAuthToken(user, "refreshToken")
 
+    await User.updateOne({ email: user.email }, {
+        $set: {
+            accessToken: userAccessToken,
+            refreshToken: userRefreshToken
+        },
+    })
 
+    logger(MODULE, `User ${user.email} logged in.`)
+    return res.status(200).json({
+        state: "success",
+        message: `User successfully logged in.`
+    })
     
 }

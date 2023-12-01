@@ -1,15 +1,22 @@
-import { rateLimit } from "express-rate-limit"
-import solverRoute from "../routes/solver.js"
-import statusRoute from "../routes/status.js"
-import rootRoute from "../routes/root.js"
-import registerRoute from "../routes/user_routes/register.js"
-import verifyRoute from "../routes/user_routes/verify.js"
-import { logger, LogType } from "./logger.js"
-import { Express } from "express"
+import express, { Express } from "express";
+import { rateLimit } from "express-rate-limit";
+import solverRoute from "../routes/solver.js";
+import statusRoute from "../routes/status.js";
+import rootRoute from "../routes/root.js";
+import registerRoute from "../routes/user_routes/register.js";
+import verifyRoute from "../routes/auth/verify.js";
+import loginRoute from "../routes/auth/login.js"
+import { logger, LogType } from "./logger.js";
 
 const MODULE = "utils :: setupRoutes"
 
 export function setupRoutes(app: Express) {
+
+    const authRoutesLimiter = rateLimit({
+        windowMs: 60 * 60 * 1000, // 1 hour
+        max: 5, // 5 per hour
+        message: "Too many requests."
+    })
 
     const userRoutesLimiter = rateLimit({
         windowMs: 60 * 60 * 1000, // 1 hour
@@ -23,8 +30,14 @@ export function setupRoutes(app: Express) {
         message: "Too many requests."
     })
 
+    const authRouter = express.Router()
+
+    authRouter.use("/login", authRoutesLimiter, loginRoute)
+    authRouter.use("/verify", authRoutesLimiter, verifyRoute)
+
+    app.use("/auth", authRouter)
+
     app.use("/register", userRoutesLimiter, registerRoute)
-    app.use("/verify", userRoutesLimiter, verifyRoute)
     app.use("/solve", solveRouteLimiter, solverRoute)
 
     app.use("/", rootRoute)

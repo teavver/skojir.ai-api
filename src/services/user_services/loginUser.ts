@@ -3,7 +3,7 @@ import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { validateLoginUserRequest } from "../../middlewares/validators/user_services/loginUser.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { User } from "../../models/User.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "services :: user_services :: loginUser"
 
@@ -20,7 +20,7 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
     }
 
     // verify user password
-    const user = await User.findOne({ email: userCredentials.email })
+    const user = vRes.data as IUserVerified
     const saltedPwd = userCredentials.password + user!.salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: user!.salt })
 
@@ -37,7 +37,7 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
 
     return {
         err: false,
-        data: `Login success.`
+        data: user
     }
 
 }

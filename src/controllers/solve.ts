@@ -54,6 +54,6 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
 
     return res.status(200).json({
         state: "success",
-        message: gptRes.data
+        message: gptRes.data as string
     })
 }

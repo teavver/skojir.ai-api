@@ -1,6 +1,6 @@
 import { logger, LogType } from "../utils/logger.js"
-import { UserCredentialsRequest } from "../types/requests/client/UserCredentialsRequest.js"
 import { createUser } from "../services/user_services/createUser.js"
+import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
 import { init } from "../main.js"
@@ -31,7 +31,7 @@ describe('create a dummy User', function () {
 
     it('Create an account for dummy user', async () => {
 
-        const createUserReqData: UserCredentialsRequest = {
+        const createUserReqData: IUserCredentials = {
             email: dummyEmail,
             password: dummyPwd
         }

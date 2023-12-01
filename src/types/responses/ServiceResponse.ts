@@ -1,6 +1,6 @@
 interface SuccessfulServiceResponse {
     err: false
-    data: string
+    data: Object | string // Object allows services to return Db documents; less dbOps
 }
 
 interface FailedServiceResponse {
