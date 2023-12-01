@@ -1,4 +1,4 @@
-import { VerifyRequest } from "../../../types/requests/client/VerifyRequest.js";
+import IUserVerification from "../../../types/interfaces/IUserVerification.js";
 import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
 import { verifyUserSchema } from "../schemas/verifySchema.js";
@@ -9,12 +9,12 @@ import { verifyUserSchema } from "../schemas/verifySchema.js";
 
 const MODULE = "middlewares :: validators :: user_services :: verifyUser"
 
-export const validateVerifyUserRequest = async (req: VerifyRequest): Promise<ValidatorResponse> => {
+export const validateVerifyUserRequest = async (req: IUserVerification): Promise<ValidatorResponse> => {
 
     try {
 
         // validate with schema
-        const data: VerifyRequest = await verifyUserSchema.validateAsync(req)
+        const data: IUserVerification = await verifyUserSchema.validateAsync(req)
 
         return {
             isValid: true,

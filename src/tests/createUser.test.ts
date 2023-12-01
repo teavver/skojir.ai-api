@@ -1,5 +1,5 @@
 import { logger, LogType } from "../utils/logger.js"
-import { RegisterRequest } from "../types/requests/client/RegisterRequest.js"
+import { UserCredentialsRequest } from "../types/requests/client/UserCredentialsRequest.js"
 import { createUser } from "../services/user_services/createUser.js"
 import { User } from "../models/User.js"
 import { expect } from "chai"
@@ -31,7 +31,7 @@ describe('create a dummy User', function () {
 
     it('Create an account for dummy user', async () => {
 
-        const createUserReqData: RegisterRequest = {
+        const createUserReqData: UserCredentialsRequest = {
             email: dummyEmail,
             password: dummyPwd
         }
@@ -47,7 +47,7 @@ describe('create a dummy User', function () {
         expect(newUser).to.not.be.null
 
         // compute and compare passwords
-        const saltedPwd = newUser!.salt + dummyPwd
+        const saltedPwd = dummyPwd + newUser!.salt
         const hashedPwd = deriveKey({ password: saltedPwd, salt: newUser!.salt })
 
         // verify data

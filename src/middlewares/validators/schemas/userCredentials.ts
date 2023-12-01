@@ -1,11 +1,9 @@
-import { emailSchema } from "./emailSchema";
-import { passwordSchema } from "./passwordSchema";
 import Joi from "joi";
+import { emailSchema } from "./emailSchema.js";
+import { passwordSchema } from "./passwordSchema.js";
+import IUserCredentials from "../../../types/interfaces/IUserCredentials.js";
 
-/**
- * Schema for generic user credentials input (email + password)
- */
-export const userCredentialsSchema = Joi.object({
-    emailSchema,
-    passwordSchema
+export const userCredentialsSchema = Joi.object<IUserCredentials>({
+    email: emailSchema,
+    password: passwordSchema
 })

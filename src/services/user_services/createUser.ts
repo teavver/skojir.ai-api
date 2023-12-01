@@ -1,4 +1,4 @@
-import { UserCredentialsRequest } from "../../types/requests/client/UserCredentialsRequest.js";
+import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
@@ -13,12 +13,12 @@ const MODULE = "services :: user_services :: createUser"
  * Validates userCredentials with the schema, checks for duplicates
  * Once verified, creates a new user in the database
  */ 
-export async function createUser(userCredentials: UserCredentialsRequest, verificationCode: string): Promise<ServiceResponse> {
+export async function createUser(userCredentials: IUserCredentials, verificationCode: string): Promise<ServiceResponse> {
 
     const vRes = await validateRegisterUserRequest(userCredentials)
 
     if (!vRes.isValid) {
-        logger(MODULE, `createUser req rejected.`, LogType.WARN)
+        logger(MODULE, `createUser req rejected: Failed to validate input`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
@@ -26,7 +26,7 @@ export async function createUser(userCredentials: UserCredentialsRequest, verifi
     }
 
     const salt = generateSalt()
-    const saltedPwd = salt + userCredentials.password
+    const saltedPwd = userCredentials.password + salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
     const newUser = new User({
@@ -44,7 +44,7 @@ export async function createUser(userCredentials: UserCredentialsRequest, verifi
         logger(MODULE, dbErr, LogType.WARN)
         return {
             err: true,
-            errMsg: `Internal database error.`
+            errMsg: `createUser req rejected: Error while updating db`
         }
     }
 

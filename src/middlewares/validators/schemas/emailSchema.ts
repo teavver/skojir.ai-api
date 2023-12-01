@@ -1,6 +1,7 @@
-import Joi from 'joi';
+import Joi from "joi";
+import IUserBase from "../../../types/interfaces/IUserBase.js";
 
-export const emailSchema = Joi.string()
+export const emailSchema = Joi.string<IUserBase>()
     .email({ tlds: { allow: true } })
     .min(6)
     .max(254)

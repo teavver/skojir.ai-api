@@ -1,12 +1,13 @@
-import Joi from "joi";
-import { emailSchema } from "./emailSchema";
+import Joi, { number } from "joi";
+import { emailSchema } from "./emailSchema.js";
+import IUserVerification from "../../../types/interfaces/IUserVerification.js";
 
 /**
  * Schema for account verification request
  */
-export const verifyUserSchema = Joi.object({
-    emailSchema,
-    code: Joi.string()
-        .length(6)
+export const verifyUserSchema = Joi.object<IUserVerification>({
+    email: emailSchema,
+    verificationCode: Joi.string()
+        .pattern(/^[0-9]{6}$/) // 6 digit code
         .required()
 })
