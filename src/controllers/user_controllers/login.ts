@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
@@ -7,10 +6,11 @@ import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { logger } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { LoginResponse } from "../../types/responses/LoginResponse.js";
 
 const MODULE = "controllers :: user_controllers :: login"
 
-export async function loginUser(req: Request<IUserCredentials>, res: Response<ResponseMessage>) {
+export async function loginUser(req: Request<IUserCredentials>, res: Response<LoginResponse>) {
 
     const validBody = validateRequestBody(req.body)
     if (!validBody) {
@@ -25,7 +25,7 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Re
     if (loginRes.err) {
         return res.status(401).json({
             state: "unauthorized",
-            message: loginRes.errMsg
+            message: loginRes.errMsg,
         })
     }
 
@@ -44,7 +44,11 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Re
     logger(MODULE, `User ${user.email} logged in.`)
     return res.status(200).json({
         state: "success",
-        message: `User successfully logged in.`
+        message: `User successfully logged in.`,
+        data: {
+            accessToken: userAccessToken,
+            refreshToken: userRefreshToken
+        }
     })
     
 }

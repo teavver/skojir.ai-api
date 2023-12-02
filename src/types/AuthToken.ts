@@ -6,8 +6,8 @@ export type RefreshToken = "refreshToken"
 export type AuthTokenType = AccessToken | RefreshToken
 
 export interface UserAuthTokens {
-    accessToken: AccessToken
-    refreshToken: RefreshToken
+    accessToken: string
+    refreshToken: string
 }
 
 export interface AuthTokenPayload extends IUserBase {
