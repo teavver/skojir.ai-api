@@ -25,7 +25,7 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
     const hashedPwd = deriveKey({ password: saltedPwd, salt: user!.salt })
 
     if (hashedPwd !== user!.password) {
-        logger(MODULE, `loginUser req rejected: Invalid password`)
+        logger(MODULE, `loginUser req rejected: Invalid password`, LogType.WARN)
         return {
             err: true,
             errMsg: `

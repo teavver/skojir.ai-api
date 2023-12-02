@@ -4,9 +4,10 @@ import solverRoute from "../routes/solver.js";
 import statusRoute from "../routes/status.js";
 import rootRoute from "../routes/root.js";
 import registerRoute from "../routes/user_routes/register.js";
+import deleteRoute from "../routes/user_routes/delete.js"
 import verifyRoute from "../routes/auth/verify.js";
 import loginRoute from "../routes/auth/login.js"
-import { logger, LogType } from "./logger.js";
+import { logger } from "./logger.js";
 
 const MODULE = "utils :: setupRoutes"
 
@@ -30,16 +31,18 @@ export function setupRoutes(app: Express) {
         message: "Too many requests."
     })
 
+    // auth
     const authRouter = express.Router()
-
     authRouter.use("/login", authRoutesLimiter, loginRoute)
     authRouter.use("/verify", authRoutesLimiter, verifyRoute)
-
     app.use("/auth", authRouter)
 
+    // user routes
     app.use("/register", userRoutesLimiter, registerRoute)
     app.use("/solve", solveRouteLimiter, solverRoute)
+    app.use("/delete", userRoutesLimiter, deleteRoute)
 
+    // general
     app.use("/", rootRoute)
     app.use("/status", statusRoute)
 

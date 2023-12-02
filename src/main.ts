@@ -1,4 +1,4 @@
-import { logger, LogType } from "./utils/logger.js"
+import { logger } from "./utils/logger.js"
 import { createOpenAIClient } from "./clients/openAI.js"
 import { createDbClient } from "./clients/db.js"
 import express, { Express } from "express"

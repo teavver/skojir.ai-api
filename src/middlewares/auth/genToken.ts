@@ -19,11 +19,11 @@ export function generateAuthToken(user: IUserVerified, tokenType: AuthTokenType)
     if (tokenType === "accessToken") {
         // accessToken
         secretKey = process.env.JWT_SECRET as string
-        expiresIn = "1d"
+        expiresIn = "1h"
     } else {
         // refreshToken
         secretKey = process.env.JWT_REFRESH_SECRET as string
-        expiresIn = "365d"
+        expiresIn = "365 days"
     }
 
     const payload: AuthTokenPayload = {
