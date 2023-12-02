@@ -20,3 +20,79 @@
 ### Auth
 - `JWT_SECRET`
 - `JWT_REFRESH_SECRET`
+
+# Endpoints
+
+## Legend
+- 🔒 -> Requires JWT
+- 🔑 -> Returns new JWT
+
+## General
+
+### (GET): api/ - Root
+### (GET): api/status - Get status of all services
+- API status
+- DB status
+- OpenAI status
+- Backend module status
+
+## User account related endpoints
+### (POST) api/register - Register a new user
+```json
+{
+    "email": "youraccount@mail.com",
+    "password": "yourPassword!"
+}
+
+Email must have a valid TLD:
+//https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+Password must be 8 chars min, min 1 upper + lower, min 1 special char
+
+On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in. Verification code expires after 10 minutes and requires re-generating it using /re-verify // <- TODO this endpoint
+```
+
+### 🔒 (POST) `api/solve` - Solver route for users with membership
+```json
+{
+    "img": "base64 encoded image",
+    "threshold?": 0.1 - 0.5, // dev
+    "outputFormat": "minimal" | "standard"
+}
+```
+
+### 🔒 (POST) `api/delete` - Delete user account
+User account will be deleted immediately on success (!)
+```json
+{
+    "email": "email",
+    "password": "pwd"
+}
+```
+
+## Auth endpoints
+
+### (POST) `api/auth/verify` - Verify account
+Used to verify registered users to finish up creating the account. Requires the 6-digit code from registration email.
+```json
+{
+    "email": "email",
+    "verificationCode": "228822"
+}
+```
+
+### (POST) `api/auth/re-verify` - Resend verification code
+Can only be used if the account if unverified and there's an existing verificationCode and is expired.
+TODO
+
+### 🔑 (POST) `api/auth/login` - Login to verfied account
+Grants two JWTs on success:
+- accessToken (expires in 1h)
+- refreshToken (expires in 1y)
+
+```json
+{
+    "email": "email",
+    "password": "pwd"
+}
+```
+
