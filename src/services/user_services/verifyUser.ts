@@ -3,9 +3,7 @@ import { logger, LogType } from "../../utils/logger.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { validateVerifyUserRequest } from "../../middlewares/validators/user_services/verifyUser.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
-import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "services :: user_services :: verifyUser"
 

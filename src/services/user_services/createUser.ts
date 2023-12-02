@@ -34,7 +34,7 @@ export async function createUser(userCredentials: IUserCredentials, verification
         password: hashedPwd,
         salt: salt,
         verificationCode: verificationCode,
-        verificationCodeExpires: generateExpiryDate()
+        verificationCodeExpires: generateExpiryDate() // 10 minutes default
     })
 
     try {

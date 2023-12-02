@@ -5,10 +5,19 @@ import { validOutputFormats, SolveRequest } from "../types/requests/client/Solve
 import { requestContextPrediction } from "../services/predictContext.js"
 import { PredictionRequest } from "../types/requests/PredictionRequest.js"
 import { sendVisionPrompt } from "../services/sendVisionPrompt.js"
+import { validateRequestBody } from "../utils/verifyRequestBody.js"
 
 const MODULE = "controllers :: solver"
 
 export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
+
+    const validBody = validateRequestBody(req.body)
+    if (!validBody) {
+        return res.status(400).json({
+            state: "error",
+            message: `Request body is empty or incomplete`
+        })
+    }
 
     const { img, outputFormat, threshold }: SolveRequest = req.body
 
