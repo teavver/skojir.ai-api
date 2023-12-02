@@ -38,30 +38,31 @@
 
 ## User account related endpoints
 ### (POST) api/register - Register a new user
+Email must have a valid [TLD](https://data.iana.org/TLD/tlds-alpha-by-domain.txt)
+
+Password must be 8 chars min, min 1 upper + lower, min 1 special char
+
+On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in. Verification code expires after 10 minutes and requires re-generating it using the [/re-verify](#post-apiauthre-verify---resend-verification-code) endpoint.
+
 ```json
 {
     "email": "youraccount@mail.com",
     "password": "yourPassword!"
 }
-
-Email must have a valid TLD:
-//https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-Password must be 8 chars min, min 1 upper + lower, min 1 special char
-
-On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in. Verification code expires after 10 minutes and requires re-generating it using /re-verify // <- TODO this endpoint
 ```
 
 ### 🔒 (POST) `api/solve` - Solver route for users with membership
 ```json
+Threshold must be between 0.1 and 0.5, defaults to 0.25
 {
     "img": "base64 encoded image",
-    "threshold?": 0.1 - 0.5, // dev
-    "outputFormat": "minimal" | "standard"
+    "threshold?": 0.25,
+    "outputFormat": "minimal or standard"
 }
 ```
 
 ### 🔒 (POST) `api/delete` - Delete user account
-User account will be deleted immediately on success (!)
+User account will be deleted **immediately** on success (!)
 ```json
 {
     "email": "email",
