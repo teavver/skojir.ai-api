@@ -20,6 +20,10 @@ describe("create and verify a dummy User", function() {
     before(async () => {
         await setupTests(MODULE)
     })
+    
+    after(async () => {
+        await teardownTests(MODULE)
+    })
 
     it("Create an account for dummy user", async () => {
         const registerURL = testBaseURL + "/register"
@@ -61,8 +65,10 @@ describe("create and verify a dummy User", function() {
 
     })
 
-    after(async () => {
-        await teardownTests(MODULE)
+
+    it("Account should be verified", async () => {
+        const user = await User.findOne({ email: dummyEmail })
+        expect(user?.isEmailVerified).to.be.true
     })
 
 })

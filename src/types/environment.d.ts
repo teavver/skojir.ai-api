@@ -24,6 +24,7 @@ declare global {
         JWT_REFRESH_SECRET: string
 
         // misc
+        LOG: int
         ENV: string
         PORT: string
     }

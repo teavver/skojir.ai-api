@@ -12,6 +12,7 @@ export function envSetup(): boolean {
 
     // This array should ALWAYS match the ProcessEnv interface in /types/environment.d.ts
     const envKeys = [
+        'LOG',
         'ENV',
         'PORT',
         'OPENAI_KEY',
@@ -24,18 +25,15 @@ export function envSetup(): boolean {
         'JWT_SECRET',
         'JWT_REFRESH_SECRET',
     ]
-
-    logger(MODULE, "Setting up environment")
-    logger(MODULE, `App ENV mode: ${process.env.ENV}`, LogType.SERVER)
-
+    
     for (const key of envKeys) {
         if (!process.env[key]) {
-            logger(MODULE, `.Env key ${key} is missing.`, LogType.ERR)
+            console.error(`.Env key ${key} is missing.`)
             return false
         }
     }
 
-    logger(MODULE, "Environment set up")
-    
+    logger(MODULE, `App ENV mode: ${process.env.ENV}`, LogType.SERVER, true)
+    logger(MODULE, "Environment set up", LogType.NORMAL, true)
     return true
 }

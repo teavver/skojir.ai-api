@@ -3,6 +3,7 @@
 ## .env
 
 ### Local config
+- `LOG` - 1= all logs, 0= no logs
 - `ENV` - `DEV` or `PROD` - app environment
 - `PORT` - express
 
