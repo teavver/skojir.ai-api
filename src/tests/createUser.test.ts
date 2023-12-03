@@ -27,9 +27,8 @@ describe("create a dummy User", function () {
         await teardownTests(MODULE)
     })
 
-    it("Create an account for dummy user", async () => {
+    it("Create a valid account for dummy user", async () => {
 
-        
         const res = await axios.post(registerURL, userData)
         expect(res.status).to.equal(200)
 
@@ -45,8 +44,34 @@ describe("create a dummy User", function () {
 
     it("Should not be able to create duplicate account", async () => {
         const req = axios.post(registerURL, userData)
-        const res = await testAxiosRequest(req, 409)
+        const res = await testAxiosRequest(MODULE, req, 409)
         expect(res).to.be.true
+    })
+
+    it("Should reject account with insanely long email", async () => {
+
+        const tooLongUserData: IUserCredentials = {
+            email: "aaskashdashdhashdhashdahsdhashdhsahdhasdhahsdhasdhashdashdhashdasdhahsdhahsdhah@gmail.com",
+            password: "Valid!Password@"
+        }
+
+        const req = axios.post(registerURL, tooLongUserData)
+        const res = await testAxiosRequest(MODULE, req, 409)
+        expect(res).to.be.true
+
+    })
+
+    it("Should reject weak password", async () => {
+
+        const tooWeakUserData: IUserCredentials = {
+            email: "user@gmail.com",
+            password: "weak1"
+        }
+
+        const req = axios.post(registerURL, tooWeakUserData)
+        const res = await testAxiosRequest(MODULE, req, 409)
+        expect(res).to.be.true
+
     })
 
 

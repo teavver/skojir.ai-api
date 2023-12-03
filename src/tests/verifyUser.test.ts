@@ -11,7 +11,9 @@ describe("create and verify a dummy User", function() {
 
     const dummyEmail = "test@example.com"
     const dummyPwd = "Password123!"
+
     const verifyURL = testBaseURL + "/auth/verify"
+    const registerURL = testBaseURL + "/register"
 
     const userData: IUserCredentials = {
         email: dummyEmail,
@@ -28,9 +30,8 @@ describe("create and verify a dummy User", function() {
 
     it("Create an account for dummy user", async () => {
         
-        const registerURL = testBaseURL + "/register"
         const req = axios.post(registerURL, userData)
-        const res = await testAxiosRequest(req, 200)
+        const res = await testAxiosRequest(MODULE, req, 200)
         expect(res).to.be.true
     })
 
@@ -42,7 +43,7 @@ describe("create and verify a dummy User", function() {
         }
 
         const req = axios.post(verifyURL, invalidVerifyData)
-        const res = await testAxiosRequest(req, 401)
+        const res = await testAxiosRequest(MODULE, req, 401)
         expect(res).to.be.true
 
     })
@@ -57,11 +58,10 @@ describe("create and verify a dummy User", function() {
         }
 
         const req = axios.post(verifyURL, validVerifyData)
-        const res = await testAxiosRequest(req, 200)
+        const res = await testAxiosRequest(MODULE, req, 200)
         expect(res).to.be.true
 
     })
-
 
     it("Account should be verified", async () => {
         const user = await User.findOne({ email: dummyEmail })

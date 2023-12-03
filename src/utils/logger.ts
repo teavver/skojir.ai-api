@@ -6,8 +6,9 @@ export enum LogType {
     ERR = "\x1b[31m", // Red
 }
 
-export function logger(module: string, msg: string, logType: LogType = LogType.NORMAL, time: boolean = true) {
+export function logger(module: string, msg: string, logType: LogType = LogType.NORMAL, overrideLog: boolean = false, time: boolean = true) {
     const log = +process.env.LOG!
+    const overrideSetting = overrideLog || log
     const timestamp = time ? `[${new Date().toLocaleTimeString()}] ` : ""
-    log && console.log(`${logType}${timestamp}[${module}]: ${msg}${LogType.NORMAL}`)
+    overrideSetting && console.log(`${logType}${timestamp}[${module}]: ${msg}${LogType.NORMAL}`)
 }

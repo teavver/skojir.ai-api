@@ -33,7 +33,7 @@ export function envSetup(): boolean {
         }
     }
 
-    logger(MODULE, `App ENV mode: ${process.env.ENV}`, LogType.SERVER, true)
-    logger(MODULE, "Environment set up", LogType.NORMAL, true)
+    logger(MODULE, `App ENV mode: ${process.env.ENV}`, LogType.SERVER)
+    logger(MODULE, "Environment set up", LogType.NORMAL)
     return true
 }
