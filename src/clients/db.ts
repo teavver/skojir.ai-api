@@ -12,7 +12,7 @@ export async function createDbClient() {
     logger(MODULE, "Connecting to db...")
     try {
         await mongoose.connect(dbURL)
-        logger(MODULE, "Connected to db.")
+        logger(MODULE, "Connected to db.", LogType.SUCCESS)
     } catch (err) {
         logger(MODULE, `Err while connecting to db: ${err}`, LogType.ERR)
         process.exit(1)

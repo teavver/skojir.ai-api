@@ -12,6 +12,8 @@ export function envSetup(): boolean {
 
     // This array should ALWAYS match the ProcessEnv interface in /types/environment.d.ts
     const envKeys = [
+        'ENV',
+        'PORT',
         'OPENAI_KEY',
         'DB_URL_PROD',
         'DB_URL_DEV',
@@ -19,13 +21,12 @@ export function envSetup(): boolean {
         'BACKEND_URL',
         'MAILJET_API_KEY',
         'MAILJET_SECRET_KEY',
-        'ENV',
         'JWT_SECRET',
         'JWT_REFRESH_SECRET',
-        'PORT'
     ]
 
     logger(MODULE, "Setting up environment")
+    logger(MODULE, `App ENV mode: ${process.env.ENV}`, LogType.SERVER)
 
     for (const key of envKeys) {
         if (!process.env[key]) {

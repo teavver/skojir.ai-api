@@ -1,4 +1,4 @@
-import { logger } from "./utils/logger.js"
+import { logger, LogType } from "./utils/logger.js"
 import { createOpenAIClient } from "./clients/openAI.js"
 import { createDbClient } from "./clients/db.js"
 import express, { Express } from "express"
@@ -26,7 +26,7 @@ async function init() {
     app.use(express.json({ limit: "2.5mb" }))
     setupRoutes(app)
 
-    logger(MODULE, "All set up!")
+    logger(MODULE, "All set up!", LogType.SUCCESS)
 }
 
 export { app, init, openAIClient, mailjetClient }
