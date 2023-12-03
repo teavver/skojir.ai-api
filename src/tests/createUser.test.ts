@@ -4,6 +4,7 @@ import { User } from "../models/User.js"
 import { setupTests, teardownTests, testBaseURL } from "./_setup.js"
 import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { deriveKey } from "../utils/crypto/pbkdf2.js"
+import { testAxiosRequest } from "./_utils.js"
 
 const MODULE = "createUser"
 
@@ -43,18 +44,9 @@ describe("create a dummy User", function () {
     })
 
     it("Should not be able to create duplicate account", async () => {
-
-        try {
-            const res = await axios.post(registerURL)
-            expect.fail("This request should've failed")
-        } catch (err) {
-            if (axios.isAxiosError(err)) {
-                const res = err.response
-                expect(res).to.exist
-                console.log(res?.data)
-            }
-        }
-
+        const req = axios.post(registerURL, userData)
+        const res = await testAxiosRequest(req, 409)
+        expect(res).to.be.true
     })
 
 

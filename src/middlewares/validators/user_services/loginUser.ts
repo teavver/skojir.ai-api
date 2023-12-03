@@ -23,8 +23,7 @@ export const validateLoginUserRequest = async (req: IUserCredentials): Promise<V
             logger(MODULE, `Failed to login user. Reason: No account matches user email`, LogType.WARN)
             return {
                 isValid: false,
-                error: `
-                    Sorry, we couldn't find your account.
+                error: `Sorry, we couldn't find your account.
                     Please double check your email address.
                     If you haven't created an account yet, sign up using the "Create Account" button.
                     `

@@ -28,8 +28,7 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
         logger(MODULE, `loginUser req rejected: Invalid password`, LogType.WARN)
         return {
             err: true,
-            errMsg: `
-                Incorrect password.
+            errMsg: `Incorrect password.
                 If you've forgotten your password, you can reset it using the "Forgot Password" button.
                 `
         }

@@ -3,6 +3,7 @@ import { expect } from "chai"
 import { User } from "../models/User.js"
 import { testBaseURL, setupTests, teardownTests } from "./_setup.js"
 import IUserCredentials from "../types/interfaces/IUserCredentials.js"
+import { testAxiosRequest } from "./_utils.js"
 
 const MODULE = "verifyUser"
 
@@ -20,15 +21,17 @@ describe("create and verify a dummy User", function() {
     before(async () => {
         await setupTests(MODULE)
     })
-    
+
     after(async () => {
         await teardownTests(MODULE)
     })
 
     it("Create an account for dummy user", async () => {
+        
         const registerURL = testBaseURL + "/register"
-        const res = await axios.post(registerURL, userData)
-        expect(res.status).to.equal(200)
+        const req = axios.post(registerURL, userData)
+        const res = await testAxiosRequest(req, 200)
+        expect(res).to.be.true
     })
 
     it("Try to verify with invalid code", async () => {
@@ -38,16 +41,9 @@ describe("create and verify a dummy User", function() {
             verificationCode: "123123"
         }
 
-        try {
-            await axios.post(verifyURL, invalidVerifyData)
-            expect.fail("This request should've failed")
-        } catch (err) {
-            if (axios.isAxiosError(err)) {
-                const res = err.response
-                expect(res).to.exist
-                expect(res?.status).to.equal(401) // invalid code
-            }
-        }
+        const req = axios.post(verifyURL, invalidVerifyData)
+        const res = await testAxiosRequest(req, 401)
+        expect(res).to.be.true
 
     })
 
@@ -60,8 +56,9 @@ describe("create and verify a dummy User", function() {
             verificationCode: user?.verificationCode
         }
 
-        const vres = await axios.post(verifyURL, validVerifyData)
-        expect(vres.status).to.equal(200)
+        const req = axios.post(verifyURL, validVerifyData)
+        const res = await testAxiosRequest(req, 200)
+        expect(res).to.be.true
 
     })
 

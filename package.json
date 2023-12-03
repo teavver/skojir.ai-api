@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "nodemon ./dist/server.js",
     "main": "yarn build && yarn start",
-    "test": "cross-env ENV=DEV PORT=3000 && mocha src/tests/**/*.ts -r dotenv/config"
+    "test": "cross-env ENV=DEV PORT=3000 && mocha src/tests/**/*.test.ts -r dotenv/config"
   },
   "keywords": [],
   "author": "",
