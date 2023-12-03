@@ -16,4 +16,4 @@ export function main(): Server {
 
 if (process.env.ENV !== "DEV") {
     main() // autostart only in PROD mode
-} 
+}
