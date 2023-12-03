@@ -52,8 +52,8 @@ On success, an email will be sent to the user. They will need to verify their ac
 ```
 
 ### 🔒 (POST) `api/solve` - Solver route for users with membership
-```json
 Threshold must be between 0.1 and 0.5, defaults to 0.25
+```json
 {
     "img": "base64 encoded image",
     "threshold?": 0.25,
