@@ -1,10 +1,15 @@
 # skojir.ai-public-api
 
-## .env
+Public api for [skojir.ai](https://skojir.ai)
+
+---
+# .env
 
 ### Local config
 - `LOG` - 1= all logs, 0= no logs
-- `ENV` - `DEV` or `PROD` - app environment
+- `ENV` - app environment
+    - `DEV` - uses the test db collection, no middleware on endpoints
+    - `PROD` - for production only
 - `PORT` - express
 
 ### External clients
@@ -22,6 +27,15 @@
 - `JWT_SECRET`
 - `JWT_REFRESH_SECRET`
 
+---
+# App setup
+
+1. `yarn install` in root dir
+2. create `.env` file and config all keys
+3. test locally with `yarn test`
+4. run with `yarn main`
+
+---
 # Endpoints
 
 ## Legend
@@ -38,7 +52,8 @@
 - Backend module status
 
 ## User account related endpoints
-### (POST) api/register - Register a new user
+
+### (POST) `api/register` - Register a new user
 Email must have a valid [TLD](https://data.iana.org/TLD/tlds-alpha-by-domain.txt)
 
 Password must be 8 chars min, min 1 upper + lower, min 1 special char
