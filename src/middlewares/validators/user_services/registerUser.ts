@@ -16,19 +16,6 @@ export const validateRegisterUserRequest = async (req: IUserCredentials): Promis
         // validate with schema
         const data: IUserCredentials = await userCredentialsSchema.validateAsync(req)
 
-        // check if user exists already
-        const user = await User.findOne({ email: req.email })
-        if (user) {
-            logger(MODULE, `Failed to create new user. Reason: user already has an account`, LogType.WARN)
-            return {
-                isValid: false,
-                error: `An account with this email address already exists.
-                    If this is your email address, please try logging in instead.
-                    If you've forgotten your password, you can reset it using the "Forgot Password" button.
-                    `,
-            }
-        }
-
         return {
             isValid: true,
             data: data
@@ -38,7 +25,8 @@ export const validateRegisterUserRequest = async (req: IUserCredentials): Promis
         logger(MODULE, `Could not validate createUser req data: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: `Your password is not strong enough.`
+            error: `Invalid request data`,
+            statusCode: 400
         }
     }
 }

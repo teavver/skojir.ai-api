@@ -20,11 +20,12 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
     const vRes = await validateContextPredictionRequest(req)
 
     if (!vRes.isValid){
-        const err = "Failed to validate prediction req"
+        const err = "Failed to validate request"
         logger(MODULE, err, LogType.ERR)
         return {
             err: true,
             errMsg: err,
+            statusCode: 400
         }
     }
 
@@ -38,13 +39,15 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
 
         return {
             err: false,
-            data: res.data.result
+            data: res.data.result,
+            statusCode: 200
         }
     } catch (err) {
         logger(MODULE, `Err: ${err}`, LogType.ERR)
         return {
             err: true,
             errMsg: (err as Error).message,
+            statusCode: 500
         }
     }
 

@@ -1,7 +1,7 @@
+import { User } from "../../models/User.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { User } from "../../models/User.js";
 import { validateRegisterUserRequest } from "../../middlewares/validators/user_services/registerUser.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 import { generateSalt } from "../../utils/crypto/salt.js";
@@ -22,6 +22,21 @@ export async function createUser(userCredentials: IUserCredentials, verification
         return {
             err: true,
             errMsg: vRes.error,
+            statusCode: 400
+        }
+    }
+
+    // check if user exists already
+    const user = await User.findOne({ email: userCredentials.email })
+    if (user) {
+        logger(MODULE, `Failed to create new user. Reason: user already has an account`, LogType.WARN)
+        return {
+            err: true,
+            errMsg: `An account with this email address already exists.
+                If this is your email address, please try logging in instead.
+                If you've forgotten your password, you can reset it using the "Forgot Password" button.
+                `,
+            statusCode: 409
         }
     }
 
@@ -34,7 +49,7 @@ export async function createUser(userCredentials: IUserCredentials, verification
         password: hashedPwd,
         salt: salt,
         verificationCode: verificationCode,
-        verificationCodeExpires: generateExpiryDate() // 10 minutes default
+        verificationCodeExpires: generateExpiryDate() // 10 minutes by default
     })
 
     try {
@@ -44,12 +59,14 @@ export async function createUser(userCredentials: IUserCredentials, verification
         logger(MODULE, dbErr, LogType.WARN)
         return {
             err: true,
-            errMsg: `createUser req rejected: Error while updating db`
+            errMsg: `createUser req rejected: Error while updating db`,
+            statusCode: 500
         }
     }
 
     return {
         err: false,
-        data: "User created"
+        data: `User created`,
+        statusCode: 201
     }
 }

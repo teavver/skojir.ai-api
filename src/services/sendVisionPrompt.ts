@@ -48,6 +48,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: true,
             errMsg: err,
+            statusCode: 400
         }
     }
 
@@ -95,6 +96,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
             return {
                 err: true,
                 errMsg: err,
+                statusCode: 500
             }
         }
 
@@ -102,6 +104,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: false,
             data: res,
+            statusCode: 200
         }
         
     } catch (err) {
@@ -109,6 +112,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: true,
             errMsg: (err as Error).message,
+            statusCode: 500
         }
     }
 }

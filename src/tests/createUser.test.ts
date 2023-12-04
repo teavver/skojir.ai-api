@@ -48,15 +48,15 @@ describe("create a dummy User", function () {
         expect(res).to.be.true
     })
 
-    it("Should reject account with insanely long email", async () => {
+    it("Should reject account with invalid email domain", async () => {
 
-        const tooLongUserData: IUserCredentials = {
-            email: "aaskashdashdhashdhashdahsdhashdhsahdhasdhahsdhasdhashdashdhashdasdhahsdhahsdhah@gmail.com",
-            password: "Valid!Password@"
+        const weirdEmailUser: IUserCredentials = {
+            email: "weirdemail@xk.ex",
+            password: "Valid!Password123"
         }
 
-        const req = axios.post(registerURL, tooLongUserData)
-        const res = await testAxiosRequest(MODULE, req, 409)
+        const req = axios.post(registerURL, weirdEmailUser)
+        const res = await testAxiosRequest(MODULE, req, 400)
         expect(res).to.be.true
 
     })
@@ -69,7 +69,7 @@ describe("create a dummy User", function () {
         }
 
         const req = axios.post(registerURL, tooWeakUserData)
-        const res = await testAxiosRequest(MODULE, req, 409)
+        const res = await testAxiosRequest(MODULE, req, 400)
         expect(res).to.be.true
 
     })

@@ -16,6 +16,7 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
         return {
             err: true,
             errMsg: vRes.error,
+            statusCode: 400
         }
     }
 
@@ -28,15 +29,23 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
         logger(MODULE, `loginUser req rejected: Invalid password`, LogType.WARN)
         return {
             err: true,
-            errMsg: `Incorrect password.
+            errMsg: `
+                Incorrect password.
                 If you've forgotten your password, you can reset it using the "Forgot Password" button.
-                `
+                `,
+            statusCode: 400
         }
+    }
+
+    const successfulLoginRes = {
+        accessToken: user.accessToken,
+        refreshToken: user.refreshToken
     }
 
     return {
         err: false,
-        data: user
+        data: successfulLoginRes,
+        statusCode: 200
     }
 
 }

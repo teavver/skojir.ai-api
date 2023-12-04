@@ -21,6 +21,13 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
 
     const { img, outputFormat, threshold }: SolveRequest = req.body
 
+    if (!validOutputFormats.includes(outputFormat)) {
+        return res.status(400).json({
+            state: "error",
+            message: "Unsupported 'outputFormat' value"
+        })
+    }
+
     // first upload the screenshot to GCF to compute + crop the context region
     logger(MODULE, "Sending context req to GCF")
     const contextPredictionReq: PredictionRequest = {
@@ -32,17 +39,11 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
     
     if (contextRes.err) {
         logger(MODULE, contextRes.errMsg, LogType.ERR)
-        return res.status(500).json({
+        return res.status(contextRes.statusCode).json({
             state: "error",
             message: contextRes.errMsg
         })
     }
-
-    // validate outputFormat
-    if (!validOutputFormats.includes(outputFormat)) return res.status(400).json({
-        state: "error",
-        message: "Unsupported 'outputFormat' value"
-    })
 
     const b64Prefix = "data:image/jpg;base64," // OpenAI needs the prefix for some reason
     const fullExtractedImg = b64Prefix + contextRes.data
@@ -55,13 +56,13 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
 
     if (gptRes.err) {
         logger(MODULE, gptRes.errMsg, LogType.ERR)
-        return res.status(500).json({
+        return res.status(gptRes.statusCode).json({
             state: "error",
             message: gptRes.errMsg
         })
     }
 
-    return res.status(200).json({
+    return res.status(gptRes.statusCode).json({
         state: "success",
         message: gptRes.data as string
     })

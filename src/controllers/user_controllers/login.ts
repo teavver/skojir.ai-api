@@ -23,7 +23,7 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Lo
     const userData: IUserCredentials = req.body
     const loginRes = await loginUserService(userData)
     if (loginRes.err) {
-        return res.status(401).json({
+        return res.status(loginRes.statusCode).json({
             state: "unauthorized",
             message: loginRes.errMsg,
         })
@@ -42,7 +42,7 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Lo
     })
 
     logger(MODULE, `User ${user.email} logged in.`)
-    return res.status(200).json({
+    return res.status(loginRes.statusCode).json({
         state: "success",
         message: `User successfully logged in.`,
         data: {

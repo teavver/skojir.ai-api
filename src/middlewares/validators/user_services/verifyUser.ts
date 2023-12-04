@@ -27,7 +27,8 @@ export const validateVerifyUserRequest = async (req: IUserVerification): Promise
 
         return {
             isValid: false,
-            error: errMsg
+            error: `Invalid request data`,
+            statusCode: 400
         }
     }
 }

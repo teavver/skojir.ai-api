@@ -43,7 +43,7 @@ describe("create and verify a dummy User", function() {
         }
 
         const req = axios.post(verifyURL, invalidVerifyData)
-        const res = await testAxiosRequest(MODULE, req, 401)
+        const res = await testAxiosRequest(MODULE, req, 400)
         expect(res).to.be.true
 
     })

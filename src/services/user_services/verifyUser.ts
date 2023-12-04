@@ -18,7 +18,8 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
     if (!vRes.isValid) {
         return {
             err: true,
-            errMsg: vRes.error
+            errMsg: vRes.error,
+            statusCode: 400,
         }
     }
 
@@ -26,28 +27,32 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
     if (!user) {
         return {
             err: true,
-            errMsg: `User does not exist.`
+            errMsg: `User does not exist.`,
+            statusCode: 404,
         }
     }
 
     if (user.isEmailVerified) {
         return {
             err: true,
-            errMsg: `Account is already verified.`
+            errMsg: `Account is already verified.`,
+            statusCode: 409
         }
     }
 
     if (user.verificationCode !== reqData.verificationCode) {
         return {
             err: true,
-            errMsg: 'Invalid verification code.'
+            errMsg: 'Invalid verification code.',
+            statusCode: 400
         }
     }
 
     if (new Date() >= user.verificationCodeExpires) {
         return {
             err: true,
-            errMsg: 'Verification code expired.'
+            errMsg: 'Verification code expired.',
+            statusCode: 400
         }
     }
 
@@ -69,13 +74,15 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
         logger(MODULE, dbErr, LogType.WARN)
         return {
             err: true,
-            errMsg: `Internal database error.`
+            errMsg: `Internal database error.`,
+            statusCode: 500,
         }
     }
 
     logger(MODULE, `User ${user.email} verified their account`)
     return {
         err: false,
-        data: user
+        data: user,
+        statusCode: 200
     } 
 }

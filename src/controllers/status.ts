@@ -10,15 +10,16 @@ export async function checkStatus(req: Request, res: Response<ResponseMessage>) 
     const statusRes = await getStatus()
 
     if (statusRes.err) {
-        logger(MODULE, `Status check unavailable`)
-        return res.status(503).json({
+        const err = `Status check unavailable`
+        logger(MODULE, err)
+        return res.status(statusRes.statusCode).json({
             state: "error",
-            message: `API is offline`
+            message: err
         })
     }
     
     logger(MODULE, "Status check OK")
-    return res.status(200).json({
+    return res.status(statusRes.statusCode).json({
         state: "success",
         message: `${statusRes.data}`
     })

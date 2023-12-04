@@ -18,15 +18,15 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
 
     const verificationData: IUserVerification = req.body
     
-    const verifyRes = await verifyService(verificationData)
-    if (verifyRes.err) {
-        return res.status(401).json({
+    const vRes = await verifyService(verificationData)
+    if (vRes.err) {
+        return res.status(vRes.statusCode).json({
             state: "unauthorized",
-            message: verifyRes.errMsg
+            message: vRes.errMsg
         })
     }
 
-    return res.status(200).json({
+    return res.status(vRes.statusCode).json({
         state: "success",
         message: `User account verified.`
     })

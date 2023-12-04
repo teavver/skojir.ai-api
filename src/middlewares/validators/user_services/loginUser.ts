@@ -26,7 +26,8 @@ export const validateLoginUserRequest = async (req: IUserCredentials): Promise<V
                 error: `Sorry, we couldn't find your account.
                     Please double check your email address.
                     If you haven't created an account yet, sign up using the "Create Account" button.
-                    `
+                    `,
+                statusCode: 404
             }
         }
 
@@ -38,7 +39,8 @@ export const validateLoginUserRequest = async (req: IUserCredentials): Promise<V
                 error: `
                     You need to verify your account first.
                     Check your email inbox for the verification code or click here to create a new one.
-                    `
+                    `,
+                statusCode: 409
             }
         }
 
@@ -51,7 +53,8 @@ export const validateLoginUserRequest = async (req: IUserCredentials): Promise<V
         logger(MODULE, `Could not validate createUser req data: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: `Incorrect password.`
+            error: `Invalid request data`,
+            statusCode: 400
         }
     }
 

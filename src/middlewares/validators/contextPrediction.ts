@@ -17,7 +17,8 @@ export const validateContextPredictionRequest = async (req: PredictionRequest): 
         logger(MODULE, `Could not validate prediction req data: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: (err as Error).message
+            error: (err as Error).message,
+            statusCode: 400
         }
     }
 }

@@ -5,4 +5,6 @@ export interface IUserVerified extends IUserCredentials {
     salt: string
     isEmailVerified: true
     membershipDetails?: IMembership
+    accessToken?: string
+    refreshToken?: string
 }

@@ -24,7 +24,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
 
     const createRes = await createUser(userData, verCode)
     if (createRes.err) {
-        return res.status(409).json({
+        return res.status(createRes.statusCode).json({
             state: "conflict",
             message: createRes.errMsg
         })
@@ -33,7 +33,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
     // send verification email to new user
     const emailRes = await sendVerificationCodeEmail(userData.email, verCode)
     if (emailRes.err) {
-        return res.status(500).json({
+        return res.status(emailRes.statusCode).json({
             state: "error",
             message: emailRes.errMsg
         })
@@ -42,7 +42,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
     const successMsg = `User: ${userData.email} created an account`
     logger(MODULE, successMsg)
 
-    return res.status(200).json({
+    return res.status(emailRes.statusCode).json({
         state: "success",
         message: `Your account has been created. Please check your e-mail for a verification code.`
     })

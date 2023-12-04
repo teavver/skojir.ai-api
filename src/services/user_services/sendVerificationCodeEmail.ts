@@ -40,14 +40,16 @@ export async function sendVerificationCodeEmail(userEmail: string, code: string)
         logger(MODULE, `Verification e-mail sent to: ${userEmail}`)
         return {
             err: false,
-            data: request.body as string
+            data: request.body as string,
+            statusCode: 200
         }
     } catch (err) {
         const errMsg = (err as Error).message
         logger(MODULE, `Failed to send verification e-mail to: ${userEmail}. Err: ${errMsg}`, LogType.WARN)
         return {
             err: true,
-            errMsg: errMsg
+            errMsg: errMsg,
+            statusCode: 500
         }
     }
 }
