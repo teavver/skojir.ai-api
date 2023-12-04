@@ -37,14 +37,9 @@ export async function loginUser(userCredentials: IUserCredentials): Promise<Serv
         }
     }
 
-    const successfulLoginRes = {
-        accessToken: user.accessToken,
-        refreshToken: user.refreshToken
-    }
-
     return {
         err: false,
-        data: successfulLoginRes,
+        data: user,
         statusCode: 200
     }
 

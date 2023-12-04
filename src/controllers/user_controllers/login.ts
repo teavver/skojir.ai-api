@@ -45,7 +45,7 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Lo
     return res.status(loginRes.statusCode).json({
         state: "success",
         message: `User successfully logged in.`,
-        data: {
+        tokens: {
             accessToken: userAccessToken,
             refreshToken: userRefreshToken
         }
