@@ -30,7 +30,7 @@ describe("Verify an account", function() {
 
     it("Create an account for dummy user", async () => {
         
-        const req = axios.post(registerURL, userData)
+        const req = () => axios.post(registerURL, userData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
     })
@@ -42,7 +42,7 @@ describe("Verify an account", function() {
             verificationCode: "123123"
         }
 
-        const req = axios.post(verifyURL, invalidVerifyData)
+        const req = () => axios.post(verifyURL, invalidVerifyData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(400)
 
@@ -57,7 +57,7 @@ describe("Verify an account", function() {
             verificationCode: user?.verificationCode
         }
 
-        const req = axios.post(verifyURL, validVerifyData)
+        const req = () => axios.post(verifyURL, validVerifyData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
 

@@ -31,7 +31,7 @@ describe("Login to an account", function () {
 
     it("Setup (create and verify account)", async () => {
 
-        const regReq = axios.post(registerURL, userData)
+        const regReq = () => axios.post(registerURL, userData)
         const _res = await testAxiosRequest(MODULE, regReq)
         expect(_res?.status).to.be.equal(200)
 
@@ -42,7 +42,7 @@ describe("Login to an account", function () {
             verificationCode: user?.verificationCode
         }
 
-        const req = axios.post(verifyURL, validVerifyData)
+        const req = () => axios.post(verifyURL, validVerifyData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
 
@@ -55,7 +55,7 @@ describe("Login to an account", function () {
             password: userData.password + "aaa"
         }
 
-        const req = axios.post(loginURL, invalidUserData)
+        const req = () => axios.post(loginURL, invalidUserData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(400)
 
@@ -69,7 +69,7 @@ describe("Login to an account", function () {
             someOtherField: "why"
         }
 
-        const req = axios.post(loginURL, invalidUserData)
+        const req = () => axios.post(loginURL, invalidUserData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(400)
 
@@ -77,10 +77,10 @@ describe("Login to an account", function () {
 
     it("Log in with valid credentials", async () => {
 
-        const req = axios.post(loginURL, userData)
+        const req = () => axios.post(loginURL, userData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
-
+        
     })
 
 

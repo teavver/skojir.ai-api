@@ -16,9 +16,8 @@ const MODULE = "services :: user_services :: createUser"
 export async function createUser(userCredentials: IUserCredentials, verificationCode: string): Promise<ServiceResponse> {
 
     const vRes = await validateRegisterUserRequest(userCredentials)
-
     if (!vRes.isValid) {
-        logger(MODULE, `createUser req rejected: Failed to validate input`, LogType.WARN)
+        logger(MODULE, `createUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,

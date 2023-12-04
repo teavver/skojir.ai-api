@@ -3,10 +3,6 @@ import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
 import { verifyUserSchema } from "../schemas/verifySchema.js";
 
-/**
- * Validates verify request with schema
- */
-
 const MODULE = "middlewares :: validators :: user_services :: verifyUser"
 
 export const validateVerifyUserRequest = async (req: IUserVerification): Promise<ValidatorResponse> => {

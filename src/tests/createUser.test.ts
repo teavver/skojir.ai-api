@@ -43,7 +43,7 @@ describe("Create an account", function () {
     })
 
     it("Should not be able to create duplicate account", async () => {
-        const req = axios.post(registerURL, userData)
+        const req = () => axios.post(registerURL, userData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(409)
     })
@@ -55,7 +55,7 @@ describe("Create an account", function () {
             password: "Valid!Password123"
         }
 
-        const req = axios.post(registerURL, weirdEmailUser)
+        const req = () => axios.post(registerURL, weirdEmailUser)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(400)
 
@@ -68,7 +68,7 @@ describe("Create an account", function () {
             password: "weak1"
         }
 
-        const req = axios.post(registerURL, tooWeakUserData)
+        const req = () => axios.post(registerURL, tooWeakUserData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(400)
 

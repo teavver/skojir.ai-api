@@ -7,9 +7,6 @@ import { IUserVerified } from "../../../types/interfaces/IUserVerified.js";
 
 const MODULE = "middlewares :: validators :: user_services :: loginUser"
 
-/**
- * Validates login user input request
- */
 export const validateLoginUserRequest = async (req: IUserCredentials): Promise<ValidatorResponse> => {
 
     try {
