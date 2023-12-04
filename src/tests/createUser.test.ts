@@ -8,7 +8,7 @@ import { testAxiosRequest } from "./_utils.js"
 
 const MODULE = "createUser"
 
-describe("create a dummy User", function () {
+describe("Create an account", function () {
 
     const registerURL = testBaseURL + "/register"
     const dummyEmail = "test@example.com"
@@ -27,7 +27,7 @@ describe("create a dummy User", function () {
         await teardownTests(MODULE)
     })
 
-    it("Create a valid account for dummy user", async () => {
+    it("Create the dummy User account", async () => {
 
         const res = await axios.post(registerURL, userData)
         expect(res.status).to.equal(200)
@@ -44,8 +44,8 @@ describe("create a dummy User", function () {
 
     it("Should not be able to create duplicate account", async () => {
         const req = axios.post(registerURL, userData)
-        const res = await testAxiosRequest(MODULE, req, 409)
-        expect(res).to.be.true
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(409)
     })
 
     it("Should reject account with invalid email domain", async () => {
@@ -56,8 +56,8 @@ describe("create a dummy User", function () {
         }
 
         const req = axios.post(registerURL, weirdEmailUser)
-        const res = await testAxiosRequest(MODULE, req, 400)
-        expect(res).to.be.true
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(400)
 
     })
 
@@ -69,8 +69,8 @@ describe("create a dummy User", function () {
         }
 
         const req = axios.post(registerURL, tooWeakUserData)
-        const res = await testAxiosRequest(MODULE, req, 400)
-        expect(res).to.be.true
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(400)
 
     })
 

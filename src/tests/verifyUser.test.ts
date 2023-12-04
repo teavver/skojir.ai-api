@@ -7,7 +7,7 @@ import { testAxiosRequest } from "./_utils.js"
 
 const MODULE = "verifyUser"
 
-describe("create and verify a dummy User", function() {
+describe("Verify an account", function() {
 
     const dummyEmail = "test@example.com"
     const dummyPwd = "Password123!"
@@ -31,8 +31,8 @@ describe("create and verify a dummy User", function() {
     it("Create an account for dummy user", async () => {
         
         const req = axios.post(registerURL, userData)
-        const res = await testAxiosRequest(MODULE, req, 200)
-        expect(res).to.be.true
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(200)
     })
 
     it("Try to verify with invalid code", async () => {
@@ -43,8 +43,8 @@ describe("create and verify a dummy User", function() {
         }
 
         const req = axios.post(verifyURL, invalidVerifyData)
-        const res = await testAxiosRequest(MODULE, req, 400)
-        expect(res).to.be.true
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(400)
 
     })
 
@@ -58,8 +58,8 @@ describe("create and verify a dummy User", function() {
         }
 
         const req = axios.post(verifyURL, validVerifyData)
-        const res = await testAxiosRequest(MODULE, req, 200)
-        expect(res).to.be.true
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(200)
 
     })
 

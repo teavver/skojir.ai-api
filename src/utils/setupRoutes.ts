@@ -1,4 +1,5 @@
 import express, { Express } from "express";
+import { conditionalMiddleware } from "./condMiddleware.js";
 import { rateLimit } from "express-rate-limit";
 import solverRoute from "../routes/solver.js";
 import statusRoute from "../routes/status.js";
@@ -33,14 +34,16 @@ export function setupRoutes(app: Express) {
 
     // auth
     const authRouter = express.Router()
-    authRouter.use("/login", authRoutesLimiter, loginRoute)
-    authRouter.use("/verify", authRoutesLimiter, verifyRoute)
+    authRouter.use("/login", conditionalMiddleware(authRoutesLimiter), loginRoute)
+    authRouter.use("/verify", conditionalMiddleware(authRoutesLimiter), verifyRoute)
     app.use("/auth", authRouter)
 
     // user routes
-    app.use("/register", userRoutesLimiter, registerRoute)
-    app.use("/solve", solveRouteLimiter, solverRoute)
-    app.use("/delete", userRoutesLimiter, deleteRoute)
+    app.use("/register", conditionalMiddleware(userRoutesLimiter), registerRoute)
+    app.use("/delete", conditionalMiddleware(userRoutesLimiter), deleteRoute)
+
+    // secured routes
+    app.use("/solve", conditionalMiddleware(solveRouteLimiter), solverRoute)
 
     // general
     app.use("/", rootRoute)

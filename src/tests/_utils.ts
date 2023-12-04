@@ -3,23 +3,18 @@ import { logger, LogType } from "../utils/logger.js"
 
 /**
  * Wrapper for HTTP requests using axios
- * @returns Result of comparison between response status code and `expectedStatusCode`
+ * @returns Result of comparison between response status code and `expectedStatusCode` and the full Response object
  */
-export async function testAxiosRequest(module: string, axiosReq: Promise<AxiosResponse>, expectedStatusCode: number): Promise<boolean> {
+export async function testAxiosRequest(module: string, axiosReq: Promise<AxiosResponse>): Promise<AxiosResponse | undefined> {
     try {
         const res: AxiosResponse = await axiosReq
-        return res.status === expectedStatusCode
+        return res
     } catch (err: any) {
         if (axios.isAxiosError(err)) {
             const res: AxiosResponse | undefined = err.response
-            const compRes = res?.status === expectedStatusCode
-            if (!compRes) {
-                logger(module, `Data: ${JSON.stringify(res?.data)}`, LogType.WARN, true)
-                logger(module, `Status: ${res?.status}`, LogType.WARN, true)
-            }
-            return compRes
+            return res
         }
         logger(module, `Err: ${err}`, LogType.ERR, true)
-        return false
+        return undefined
     }
 }
