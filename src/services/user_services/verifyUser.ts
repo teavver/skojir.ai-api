@@ -57,13 +57,15 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
                     verificationCodeExpires: newExpDate
                 }
             })
+            
+            await sendVerificationCodeEmail(user.email, newCode)
+            logger(MODULE, `Re-sending verification code for: ${user.email}`)
 
-        logger(MODULE, `Re-sending verification code for: ${user.email}`)
-        return {
-            err: false,
-            data: `A new verification code was sent. Please check the email associated with your account`,
-            statusCode: 200
-        } 
+            return {
+                err: false,
+                data: `A new verification code was sent. Please check the email associated with your account`,
+                statusCode: 200
+            } 
 
         } catch (err) {
             const errMsg = (err as Error).message

@@ -88,18 +88,23 @@ User account will be deleted **immediately** on success (!)
 
 ## Auth endpoints
 
-### (POST) `api/auth/verify` - Verify account
-Used to verify registered users to finish up creating the account. Requires the 6-digit code from registration email.
+### (POST) `api/auth/verify` - Verify account with code or resend code
+Used to verify registered users to finish up creating the account. Requires the 6-digit code from registration email:
 ```json
 {
     "email": "email",
     "verificationCode": "228822"
 }
 ```
-
-### (POST) `api/auth/re-verify` - Resend verification code
-Can only be used if the account if unverified and there's an existing verificationCode and is expired.
-TODO
+Can also be used to **re-send the verification code** to generate a new code & resend the email:
+(Verification code is required in body, but the value doesn't matter)
+```json
+{
+    "email": "userEmail",
+    "verificationCode": "102030",
+    "resend": true
+}
+```
 
 ### 🔑 (POST) `api/auth/login` - Login to verfied account
 Grants two JWTs on success:
