@@ -4,6 +4,9 @@ import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { validateVerifyUserRequest } from "../../middlewares/validators/user_services/verifyUser.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
 import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
+import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
+import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
+import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 
 const MODULE = "services :: user_services :: verifyUser"
 
@@ -37,6 +40,39 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
             err: true,
             errMsg: `Account is already verified.`,
             statusCode: 409
+        }
+    }
+
+    // re-send case
+    if (reqData.resend) {
+
+        const newCode = generateVerificationCode()
+        const newExpDate = generateExpiryDate()
+        
+        try {
+
+            await User.updateOne({ email: user.email }, {
+                $set: {
+                    verificationCode: newCode,
+                    verificationCodeExpires: newExpDate
+                }
+            })
+
+        logger(MODULE, `Re-sending verification code for: ${user.email}`)
+        return {
+            err: false,
+            data: `A new verification code was sent. Please check the email associated with your account`,
+            statusCode: 200
+        } 
+
+        } catch (err) {
+            const errMsg = (err as Error).message
+            logger(MODULE, `Resend verification code case failed. Err: ${errMsg}`, LogType.WARN)
+            return {
+                err: true,
+                errMsg: errMsg,
+                statusCode: 500
+            }
         }
     }
 
@@ -82,7 +118,7 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
     logger(MODULE, `User ${user.email} verified their account`)
     return {
         err: false,
-        data: user,
+        data: `User account verified`,
         statusCode: 200
     } 
 }

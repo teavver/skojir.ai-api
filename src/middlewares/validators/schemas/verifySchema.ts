@@ -9,5 +9,6 @@ export const verifyUserSchema = Joi.object<IUserVerification>({
     email: emailSchema,
     verificationCode: Joi.string()
         .pattern(/^[0-9]{6}$/) // 6 digit code
-        .required()
+        .required(),
+    resend: Joi.bool() // optional
 })

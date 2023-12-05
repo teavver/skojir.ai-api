@@ -28,7 +28,7 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
 
     return res.status(vRes.statusCode).json({
         state: "success",
-        message: `User account verified.`
+        message: vRes.data as string
     })
 
 }
