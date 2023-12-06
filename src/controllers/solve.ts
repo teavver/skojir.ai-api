@@ -19,7 +19,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         })
     }
 
-    const { img, outputFormat, threshold }: SolveRequest = req.body
+    const { email, img, outputFormat, threshold }: SolveRequest = req.body
 
     if (!validOutputFormats.includes(outputFormat)) {
         return res.status(400).json({
@@ -49,6 +49,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
     const fullExtractedImg = b64Prefix + contextRes.data
 
     const gptRes = await sendVisionPrompt({
+        email: email,
         outputFormat: outputFormat,
         img: fullExtractedImg,
         threshold,

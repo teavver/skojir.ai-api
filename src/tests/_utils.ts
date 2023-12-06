@@ -8,7 +8,6 @@ import { logger, LogType } from "../utils/logger.js"
 export async function testAxiosRequest(module: string, axiosReq: (config?: AxiosRequestConfig) => Promise<AxiosResponse>, config?: AxiosRequestConfig): Promise<AxiosResponse | undefined> {
     try {
         const res: AxiosResponse = await axiosReq(config)
-        // console.log(res.data)
         return res
     } catch (err: any) {
         if (axios.isAxiosError(err)) {

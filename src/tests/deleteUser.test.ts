@@ -19,8 +19,7 @@ describe("Delete an account", function () {
     const dummyEmail = "user@example.com"
     const dummyPwd = "Password123!"
 
-    let accessToken: string
-    let refreshToken: string
+    let accessToken: string, refreshToken: string
 
     const userData: IUserCredentials = {
         email: dummyEmail,
@@ -51,7 +50,7 @@ describe("Delete an account", function () {
         // will throw unauthorized because we don't even have a JWT yet
     })
 
-    it("Setup - Create, verify, login to account", async () => {
+    it("Setup - Verify, login, store tokens", async () => {
 
         // verify
         const user = await User.findOne({ email: dummyEmail })
@@ -76,8 +75,8 @@ describe("Delete an account", function () {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
         const invalidDelReqData = { email: dummyEmail, password: "invalid@Pwd!123" }
-        const dReq = (config? : AxiosRequestConfig) => axios.post(deleteURL, invalidDelReqData, config)
-        const dRes = await testAxiosRequest(MODULE, dReq, reqConf)
+        const dReq = () => axios.post(deleteURL, invalidDelReqData, reqConf)
+        const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(401)
     })
     
@@ -86,8 +85,8 @@ describe("Delete an account", function () {
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${accessToken}` }
         }
-        const dReq = (config? :AxiosRequestConfig) => axios.post(deleteURL, userData, config)
-        const dRes = await testAxiosRequest(MODULE, dReq, reqConf)
+        const dReq = () => axios.post(deleteURL, userData, reqConf)
+        const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(200)
     })
 
