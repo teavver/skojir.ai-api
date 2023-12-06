@@ -9,10 +9,12 @@ const MODULE = "solve"
 
 describe("Test backend service (Docker)", function () {
 
+    this.timeout(15000)
+
     const dummyEmail = "test@example.com"
     const dummyPwd = "Password123!"
 
-    const gcfBaseURL = "http://localhost:8080"
+    const gcfBaseURL = process.env.BACKEND_URL || "http://localhost:8080"
     const gcfStatusURL = gcfBaseURL + "/status"
     const gcfSolveURL = gcfBaseURL + "/predict"
     const verifyURL = testBaseURL + "/auth/verify"
