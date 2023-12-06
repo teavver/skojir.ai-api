@@ -1,23 +1,14 @@
 import axios from "axios"
 import { expect } from "chai"
 import { User } from "../models/User.js"
-import { setupTests, teardownTests, testBaseURL } from "./_setup.js"
-import IUserCredentials from "../types/interfaces/IUserCredentials.js"
+import { testUser, setupTests, teardownTests, registerURL } from "./_setup.js"
 import { deriveKey } from "../utils/crypto/pbkdf2.js"
 import { testAxiosRequest } from "./_utils.js"
+import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 
 const MODULE = "createUser"
 
 describe("Create an account", function () {
-
-    const registerURL = testBaseURL + "/register"
-    const dummyEmail = "test@example.com"
-    const dummyPwd = "Password123!"
-
-    const userData: IUserCredentials = {
-        email: dummyEmail,
-        password: dummyPwd
-    }
 
     before(async () => {
         await setupTests(MODULE)
@@ -29,13 +20,13 @@ describe("Create an account", function () {
 
     it("Create the dummy User account", async () => {
 
-        const res = await axios.post(registerURL, userData)
+        const res = await axios.post(registerURL, testUser)
         expect(res.status).to.equal(200)
 
-        const newUser = await User.findOne({ email: dummyEmail })
+        const newUser = await User.findOne({ email: testUser.email })
         expect(newUser).to.not.be.null
 
-        const saltedPwd = dummyPwd + newUser!.salt
+        const saltedPwd = testUser.email + newUser!.salt
         const hashedPwd = deriveKey({ password: saltedPwd, salt: newUser!.salt })
         const newUserHashedPwdFind = await User.findOne({ password: hashedPwd })
         expect(newUserHashedPwdFind).to.not.be.null
@@ -43,7 +34,7 @@ describe("Create an account", function () {
     })
 
     it("Should not be able to create duplicate account", async () => {
-        const req = () => axios.post(registerURL, userData)
+        const req = () => axios.post(registerURL, testUser)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(409)
     })

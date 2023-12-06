@@ -1,9 +1,10 @@
 import axios, { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
 import { User } from "../models/User.js"
-import { setupTests, teardownTests, testBaseURL } from "./_setup.js"
+import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "./_setup.js"
 import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { testAxiosRequest } from "./_utils.js"
+import { UserAuthTokens } from "../types/AuthToken.js"
 
 const MODULE = "createUser"
 
@@ -11,20 +12,7 @@ describe("Delete an account", function () {
 
     this.timeout(5000)
 
-    const registerURL = testBaseURL + "/register"
-    const verifyURL = testBaseURL + "/auth/verify"
-    const loginURL = testBaseURL + "/auth/login"
-    const deleteURL = testBaseURL + "/delete"
-
-    const dummyEmail = "user@example.com"
-    const dummyPwd = "Password123!"
-
-    let accessToken: string, refreshToken: string
-
-    const userData: IUserCredentials = {
-        email: dummyEmail,
-        password: dummyPwd
-    }
+    let tokens: UserAuthTokens
 
     before(async () => {
         await setupTests(MODULE)
@@ -37,14 +25,14 @@ describe("Delete an account", function () {
     it("Setup - register an account", async () => {
 
         // register
-        const regReq = () => axios.post(registerURL, userData)
+        const regReq = () => axios.post(registerURL, testUser)
         const regRes = await testAxiosRequest(MODULE, regReq)
         expect(regRes?.status).to.equal(200)
 
     })
 
     it("Try to delete unverified account", async () => {
-        const delReq = () => axios.post(deleteURL, userData)
+        const delReq = () => axios.post(deleteURL, testUser)
         const delRes = await testAxiosRequest(MODULE, delReq)
         expect(delRes?.status).to.be.equal(401)
         // will throw unauthorized because we don't even have a JWT yet
@@ -53,28 +41,28 @@ describe("Delete an account", function () {
     it("Setup - Verify, login, store tokens", async () => {
 
         // verify
-        const user = await User.findOne({ email: dummyEmail })
+        const user = await User.findOne({ email: testUser.email })
 
-        const verifyData = { email: dummyEmail, verificationCode: user?.verificationCode }
+        const verifyData = { email: testUser.email, verificationCode: user?.verificationCode }
         const req = () => axios.post(verifyURL, verifyData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
 
         // login
-        const loginReq = () => axios.post(loginURL, userData)
+        const loginReq = () => axios.post(loginURL, testUser)
         const loginRes = await testAxiosRequest(MODULE, loginReq)
         expect(loginRes?.status).to.be.equal(200)
 
         // store the tokens
-        accessToken = loginRes?.data.tokens.accessToken
-        refreshToken = loginRes?.data.tokens.refreshToken
+        tokens.accessToken = loginRes?.data.tokens.accessToken
+        tokens.accessToken = loginRes?.data.tokens.refreshToken
     })
 
     it("Try to delete the account with invalid credentials", async () => {
         const reqConf: AxiosRequestConfig = {
-            headers: { Authorization: `Bearer ${accessToken}` }
+            headers: { Authorization: `Bearer ${tokens.accessToken}` }
         }
-        const invalidDelReqData = { email: dummyEmail, password: "invalid@Pwd!123" }
+        const invalidDelReqData = { email: testUser.email, password: "invalid@Pwd!123" }
         const dReq = () => axios.post(deleteURL, invalidDelReqData, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(401)
@@ -83,9 +71,9 @@ describe("Delete an account", function () {
     
     it("Delete the account with valid credentials", async () => {
         const reqConf: AxiosRequestConfig = {
-            headers: { Authorization: `Bearer ${accessToken}` }
+            headers: { Authorization: `Bearer ${tokens.accessToken}` }
         }
-        const dReq = () => axios.post(deleteURL, userData, reqConf)
+        const dReq = () => axios.post(deleteURL, testUser, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(200)
     })

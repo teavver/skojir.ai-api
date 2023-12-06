@@ -1,25 +1,13 @@
 import axios from "axios"
 import { expect } from "chai"
 import { User } from "../models/User.js"
-import { setupTests, teardownTests, testBaseURL } from "./_setup.js"
+import { testUser, setupTests, teardownTests, registerURL, verifyURL, loginURL } from "./_setup.js"
 import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { testAxiosRequest } from "./_utils.js"
 
 const MODULE = "loginUser"
 
 describe("Login to an account", function () {
-
-    const dummyEmail = "test@example.com"
-    const dummyPwd = "Password123!"
-
-    const verifyURL = testBaseURL + "/auth/verify"
-    const registerURL = testBaseURL + "/register"
-    const loginURL = testBaseURL + "/auth/login"
-
-    const userData: IUserCredentials = {
-        email: dummyEmail,
-        password: dummyPwd
-    }
 
     before(async () => {
         await setupTests(MODULE)
@@ -31,14 +19,14 @@ describe("Login to an account", function () {
 
     it("Setup (create and verify account)", async () => {
 
-        const regReq = () => axios.post(registerURL, userData)
+        const regReq = () => axios.post(registerURL, testUser)
         const _res = await testAxiosRequest(MODULE, regReq)
         expect(_res?.status).to.be.equal(200)
 
-        const user = await User.findOne({ email: dummyEmail })
+        const user = await User.findOne({ email: testUser.email })
 
         const validVerifyData = {
-            email: dummyEmail,
+            email: testUser.email,
             verificationCode: user?.verificationCode
         }
 
@@ -51,8 +39,8 @@ describe("Login to an account", function () {
     it("Try to log in with invalid credentials", async () => {
 
         const invalidUserData: IUserCredentials = {
-            email: userData.email,
-            password: userData.password + "aaa"
+            email: testUser.email,
+            password: testUser.password + "aaa"
         }
 
         const req = () => axios.post(loginURL, invalidUserData)
@@ -64,8 +52,8 @@ describe("Login to an account", function () {
     it("Try to log in with valid credentials but invalid request body", async () => {
 
         const invalidUserData = {
-            email: userData.email,
-            password: userData.password + "aaa",
+            email: testUser.email,
+            password: testUser.password + "aaa",
             someOtherField: "why"
         }
 
@@ -77,7 +65,7 @@ describe("Login to an account", function () {
 
     it("Log in with valid credentials", async () => {
 
-        const req = () => axios.post(loginURL, userData)
+        const req = () => axios.post(loginURL, testUser)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
         

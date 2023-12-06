@@ -1,7 +1,7 @@
 import axios from "axios"
 import { expect } from "chai"
 import { User } from "../models/User.js"
-import { testBaseURL, setupTests, teardownTests } from "./_setup.js"
+import { registerURL, verifyURL, setupTests, teardownTests } from "./_setup.js"
 import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { testAxiosRequest } from "./_utils.js"
 
@@ -15,10 +15,6 @@ describe("Verify an account", function() {
 
     const dummyEmail2 = "hello@there.com"
     const dummyPwd2 = "YhBro!123*"
-
-    const verifyURL = testBaseURL + "/auth/verify"
-    const registerURL = testBaseURL + "/register"
-
 
     const userData: IUserCredentials = {
         email: dummyEmail,
