@@ -8,13 +8,13 @@ const MODULE = "services :: user_services :: sendVerificationCodeEmail"
 /**
  * Send e-mail with verification code to a user
  */
-export async function sendVerificationCodeEmail(userEmail: string, code: string): Promise<ServiceResponse> {
+export async function sendVerificationCodeEmail(userEmail: string, code: string, message: string = "Use this code to verify your account"): Promise<ServiceResponse> {
 
     const reqData: MailjetRequest = {
         from: "skojirai@gmail.com",
         name: "skojir.ai",
-        subject: `Verification code: ${code}`,
-        textPart: "Use this code to verify your account",
+        subject: `Code: ${code}`,
+        textPart: message,
         HTMLPart: `<h1>${code}<h1>`,
     }
 

@@ -58,7 +58,15 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
                 }
             })
             
-            await sendVerificationCodeEmail(user.email, newCode)
+            const emailRes = await sendVerificationCodeEmail(user.email, newCode)
+            if (emailRes.err) {
+                return {
+                    err: true,
+                    errMsg: emailRes.errMsg,
+                    statusCode: emailRes.statusCode
+                }
+            }
+
             logger(MODULE, `Re-sending verification code for: ${user.email}`)
 
             return {

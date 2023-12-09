@@ -5,6 +5,7 @@ import solverRoute from "../routes/solver.js";
 import statusRoute from "../routes/status.js";
 import rootRoute from "../routes/root.js";
 import registerRoute from "../routes/user_routes/register.js";
+import emailOTPRoute from "../routes/user_routes/emailOTP.js"
 import deleteRoute from "../routes/user_routes/delete.js"
 import verifyRoute from "../routes/auth/verify.js";
 import loginRoute from "../routes/auth/login.js"
@@ -32,7 +33,7 @@ export function setupRoutes(app: Express) {
         message: "Too many requests."
     })
 
-    // auth
+    // auth routes
     const authRouter = express.Router()
     authRouter.use("/login", conditionalMiddleware(authRoutesLimiter), loginRoute)
     authRouter.use("/verify", conditionalMiddleware(authRoutesLimiter), verifyRoute)
@@ -41,6 +42,7 @@ export function setupRoutes(app: Express) {
     // user routes
     app.use("/register", conditionalMiddleware(userRoutesLimiter), registerRoute)
     app.use("/delete", conditionalMiddleware(userRoutesLimiter), deleteRoute)
+    app.use("/email-otp", conditionalMiddleware(userRoutesLimiter), emailOTPRoute)
 
     // secured routes
     app.use("/solve", conditionalMiddleware(solveRouteLimiter), solverRoute)
