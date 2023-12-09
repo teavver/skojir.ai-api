@@ -8,7 +8,7 @@ const MODULE = "middlewares :: validators :: emailChange"
 
 export const validateEmailChange = async (userData: IUserVerification): Promise<ValidatorResponse> => {
     try {
-        const data = await verifyUserSchema.validateAsync(userData.email)
+        const data = await verifyUserSchema.validateAsync(userData)
         logger(MODULE, `Validated email change req data`)
         return {
             isValid: true,

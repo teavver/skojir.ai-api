@@ -6,9 +6,9 @@ import IUserVerification from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "services :: user_services :: emailChange"
 
-export async function emailChange(reqData: IUserVerification): Promise<ServiceResponse> {
+export async function emailChange(userData: IUserVerification): Promise<ServiceResponse> {
  
-    const vRes = await validateEmailChange(reqData)
+    const vRes = await validateEmailChange(userData)
     if (!vRes.isValid) {
         logger(MODULE, `email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -18,7 +18,7 @@ export async function emailChange(reqData: IUserVerification): Promise<ServiceRe
         }
     }
 
-    const user = await User.findOne({ email: reqData.email })
+    const user = await User.findOne({ email: userData.email })
     if (!user || !user.verificationCodeExpires) {
         logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)
         return {
@@ -47,7 +47,7 @@ export async function emailChange(reqData: IUserVerification): Promise<ServiceRe
         }
     }
 
-    if (reqData.verificationCode !== user.verificationCode) {
+    if (userData.verificationCode !== user.verificationCode) {
         return {
             err: true,
             errMsg: `Invalid OTP code.`,
@@ -56,9 +56,9 @@ export async function emailChange(reqData: IUserVerification): Promise<ServiceRe
     }
 
     try {
-        await User.updateOne({ email: reqData.email }, {
+        await User.updateOne({ email: userData.email }, {
             $set: {
-                email: reqData.email
+                email: userData.email
             },
             $unset: {
                 verificationCode: "",
@@ -75,7 +75,7 @@ export async function emailChange(reqData: IUserVerification): Promise<ServiceRe
         }
     }
 
-    logger(MODULE, `User ${oldEmail} changed their email address to: ${reqData.email}`)
+    logger(MODULE, `User ${oldEmail} changed their email address to: ${userData.email}`)
     return {
         err: false,
         data: ``,

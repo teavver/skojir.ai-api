@@ -17,7 +17,8 @@ export const registerURL = testBaseURL + "/register"
 export const verifyURL = testBaseURL + "/auth/verify"
 export const loginURL = testBaseURL + "/auth/login"
 export const deleteURL = testBaseURL + "/delete"
-export const emailChangeOTPURL = testBaseURL + "/email-otp"
+export const emailOTPURL = testBaseURL + "/email-otp"
+export const emailChangeURL = testBaseURL + "/email-change"
 
 // Test user
 export const testUser: IUserCredentials = {
