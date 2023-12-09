@@ -32,8 +32,8 @@ export async function deleteUser(req: Request<AuthCredentialsRequest>, res: Resp
     // Schedule deletion for in n days instead of instant
     // If active membership, warn user
 
-    await User.deleteOne({ email: req.body.user.email })
-    logger(MODULE, `User ${req.body.user.email} deleted their account.`)
+    await User.deleteOne({ email: userData.email })
+    logger(MODULE, `User ${userData.email} deleted their account.`)
 
     return res.status(200).json({
         state: "success",

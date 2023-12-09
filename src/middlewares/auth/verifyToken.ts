@@ -60,7 +60,7 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
         }
 
         if (error instanceof jwt.JsonWebTokenError) {
-            const err = "Invalid token."
+            const err = "Invalid token. Check for mismatch of access and refresh tokens"
             logger(MODULE, err, LogType.ERR)
             res.status(401).json({
                 state: "unauthorized",
