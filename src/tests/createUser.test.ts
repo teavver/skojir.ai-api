@@ -10,6 +10,8 @@ const MODULE = "createUser"
 
 describe("Create an account", function () {
 
+    this.timeout(25000)
+
     before(async () => {
         await setupTests(MODULE)
     })
@@ -17,20 +19,24 @@ describe("Create an account", function () {
     after(async () => {
         await teardownTests(MODULE)
     })
-
+    
     it("Create the dummy User account", async () => {
-
-        const res = await axios.post(registerURL, testUser)
-        expect(res.status).to.equal(200)
+        const req = () => axios.post(registerURL, testUser)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(200)
 
         const newUser = await User.findOne({ email: testUser.email })
-        expect(newUser).to.not.be.null
+        expect(newUser).to.exist
 
-        const saltedPwd = testUser.email + newUser!.salt
-        const hashedPwd = deriveKey({ password: saltedPwd, salt: newUser!.salt })
+        const saltedPwd = testUser.password + newUser?.salt
+        const hashedPwd = deriveKey({ password: saltedPwd, salt: newUser?.salt as string })
+
+        // console.log(newUser?.salt)
+        // console.log(hashedPwd)
+
         const newUserHashedPwdFind = await User.findOne({ password: hashedPwd })
-        expect(newUserHashedPwdFind).to.not.be.null
-
+        expect(newUserHashedPwdFind).to.exist
+        expect(newUserHashedPwdFind?.password).to.be.equal(hashedPwd)
     })
 
     it("Should not be able to create duplicate account", async () => {
@@ -64,6 +70,5 @@ describe("Create an account", function () {
         expect(res?.status).to.equal(400)
 
     })
-
 
 })
