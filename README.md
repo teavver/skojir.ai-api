@@ -58,7 +58,7 @@ Email must have a valid [TLD](https://data.iana.org/TLD/tlds-alpha-by-domain.txt
 
 Password must be 8 chars min, min 1 upper + lower, min 1 special char
 
-On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in. Verification code expires after 10 minutes and requires re-generating it using the [/re-verify](#post-apiauthre-verify---resend-verification-code) endpoint.
+On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in. Verification code expires after 10 minutes and requires re-generating it using the `"resend": true` property in the [`/auth/verify`](#post-apiauthverify---verify-account-with-code-or-resend-code) request body.
 
 ```json
 {
@@ -115,12 +115,12 @@ Used to verify registered users to finish up creating the account. Requires the 
     "verificationCode": "228822"
 }
 ```
-Can also be used to **re-send the verification code** to generate a new code & resend the email:
-(Verification code is required in body, but the value doesn't matter)
+#### Requesting new codes
+The same endpoint can also be used to **re-send the verification code** - generate a new code & resend the email:
 ```json
 {
     "email": "userEmail",
-    "verificationCode": "102030",
+    "verificationCode": "w/e",
     "resend": true
 }
 ```

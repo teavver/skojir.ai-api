@@ -6,6 +6,7 @@ import statusRoute from "../routes/status.js";
 import rootRoute from "../routes/root.js";
 import registerRoute from "../routes/user_routes/register.js";
 import emailOTPRoute from "../routes/user_routes/emailOTP.js"
+import emailChangeRoute from "../routes/user_routes/emailChange.js"
 import deleteRoute from "../routes/user_routes/delete.js"
 import verifyRoute from "../routes/auth/verify.js";
 import loginRoute from "../routes/auth/login.js"
@@ -43,6 +44,7 @@ export function setupRoutes(app: Express) {
     app.use("/register", conditionalMiddleware(userRoutesLimiter), registerRoute)
     app.use("/delete", conditionalMiddleware(userRoutesLimiter), deleteRoute)
     app.use("/email-otp", conditionalMiddleware(userRoutesLimiter), emailOTPRoute)
+    app.use("/email-change", conditionalMiddleware(userRoutesLimiter), emailChangeRoute)
 
     // secured routes
     app.use("/solve", conditionalMiddleware(solveRouteLimiter), solverRoute)

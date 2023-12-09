@@ -13,7 +13,7 @@ export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
  
     const vRes = await validateEmailOTP(userData)
     if (!vRes.isValid) {
-        logger(MODULE, `deleteUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
+        logger(MODULE, `emailOTP req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
@@ -42,7 +42,7 @@ export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
 
     const emailOTP = generateVerificationCode()
     const emailOTPExpiry = generateExpiryDate()
-    const emailChangeMsg = "Use this code to change your account's email address."
+    const emailChangeMsg = "Use this code to change your account's email address. This code will expire in 10 minutes."
 
     try {
 
