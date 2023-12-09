@@ -8,9 +8,9 @@ declare global {
         OPENAI_KEY: string
 
         // db
-        DB_URL_PROD: string
-        DB_URL_DEV: string
-        DB_COLLECTION: string
+        DB_URL: string
+        DB_COLLECTION_PROD: string
+        DB_COLLECTION_DEV: string
 
         // gcf
         BACKEND_URL: string

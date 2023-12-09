@@ -4,9 +4,10 @@ import mongoose from "mongoose"
 const MODULE = "clients :: db"
 
 export async function createDbClient() {
-    const dbURL = (process.env.ENV === "DEV") ? process.env.DB_URL_DEV : process.env.DB_URL_PROD
+    
+    const dbURL = process.env.DB_URL
     if (!dbURL) { 
-        logger(MODULE, "Missing DB .env", LogType.ERR)
+        logger(MODULE, "Missing DB .env keys", LogType.ERR)
         process.exit(1)
     }
     logger(MODULE, "Connecting to db...")

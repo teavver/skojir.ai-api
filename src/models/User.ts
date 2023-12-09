@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose"
 
+const collectionName = (process.env.ENV === "DEV") ? process.env.DB_COLLECTION_DEV : process.env.DB_COLLECTION_PROD
+
 const userSchema = new Schema({
     email: {
         type: String,
@@ -37,4 +39,4 @@ const userSchema = new Schema({
     }
 })
 
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model('User', userSchema, collectionName)

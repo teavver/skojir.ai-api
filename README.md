@@ -14,9 +14,9 @@ Public api for [skojir.ai](https://skojir.ai)
 
 ### External clients
 - `OPENAI_KEY`
-- `DB_URL_PROD`
-- `DB_URL_DEV`
-- `DB_COLLECTION` - collection name should be the same for prod/dev envs
+- `DB_URL` - URL to db cluster
+- `DB_COLLECTION_PROD`
+- `DB_COLLECTION_DEV` - unit tests collection
 - `MAILJET_API_KEY`
 - `MAILJET_SECRET_KEY`
 
@@ -75,6 +75,24 @@ Threshold must be between 0.1 and 0.5, defaults to 0.25
     "img": "base64 encoded image",
     "threshold?": 0.25,
     "outputFormat": "minimal or standard"
+}
+```
+
+### 🔒 (POST) `api/email-otp` - Get OTP code to change email
+A request body with email is required to identify the user based on accessToken
+```json
+{
+    "email": "email"
+}
+```
+
+### 🔒 (POST) `api/email-change` - Change email for an account
+Requires accessToken, the account to be verified and the OTP code from `api/email-otp`. Will send an email to the new email adddress on success
+
+```json
+{
+    "email": "email",
+    "code": "6 digit OTP code"
 }
 ```
 
