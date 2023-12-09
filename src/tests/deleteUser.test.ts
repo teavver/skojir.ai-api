@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
 import { User } from "../models/User.js"
 import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "./_setup.js"
-import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { testAxiosRequest } from "./_utils.js"
 import { UserAuthTokens } from "../types/AuthToken.js"
 
@@ -12,7 +11,7 @@ describe("Delete an account", function () {
 
     this.timeout(5000)
 
-    let tokens: UserAuthTokens
+    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "" }
 
     before(async () => {
         await setupTests(MODULE)
@@ -52,10 +51,12 @@ describe("Delete an account", function () {
         const loginReq = () => axios.post(loginURL, testUser)
         const loginRes = await testAxiosRequest(MODULE, loginReq)
         expect(loginRes?.status).to.be.equal(200)
-
+        
         // store the tokens
+        console.log({testUser})
+        console.log(loginRes?.data.tokens)
         tokens.accessToken = loginRes?.data.tokens.accessToken
-        tokens.accessToken = loginRes?.data.tokens.refreshToken
+        tokens.refreshToken = loginRes?.data.tokens.refreshToken
     })
 
     it("Try to delete the account with invalid credentials", async () => {
@@ -73,8 +74,11 @@ describe("Delete an account", function () {
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` }
         }
+        console.log({testUser})
+        console.log(tokens.accessToken)
         const dReq = () => axios.post(deleteURL, testUser, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
+        console.log(dRes?.data)
         expect(dRes?.status).to.be.equal(200)
     })
 

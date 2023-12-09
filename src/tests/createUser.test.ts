@@ -10,8 +10,6 @@ const MODULE = "createUser"
 
 describe("Create an account", function () {
 
-    this.timeout(25000)
-
     before(async () => {
         await setupTests(MODULE)
     })
