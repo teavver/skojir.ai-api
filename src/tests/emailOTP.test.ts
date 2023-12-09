@@ -1,9 +1,7 @@
 import axios from "axios"
 import { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { User } from "../models/User.js"
 import { testUser, setupTests, teardownTests, emailChangeOTPURL } from "./_setup.js"
-import IUserCredentials from "../types/interfaces/IUserCredentials.js"
 import { fullUserSetup, testAxiosRequest } from "./_utils.js"
 import { UserAuthTokens } from "../types/AuthToken.js"
 
@@ -30,7 +28,6 @@ describe("Email change OTP service", function () {
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
         const req = () => axios.post(emailChangeOTPURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
-        console.log(res?.data)
         expect(res?.status).to.equal(200)
     })
 

@@ -53,8 +53,6 @@ describe("Delete an account", function () {
         expect(loginRes?.status).to.be.equal(200)
         
         // store the tokens
-        console.log({testUser})
-        console.log(loginRes?.data.tokens)
         tokens.accessToken = loginRes?.data.tokens.accessToken
         tokens.refreshToken = loginRes?.data.tokens.refreshToken
     })
@@ -74,11 +72,8 @@ describe("Delete an account", function () {
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` }
         }
-        console.log({testUser})
-        console.log(tokens.accessToken)
         const dReq = () => axios.post(deleteURL, testUser, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
-        console.log(dRes?.data)
         expect(dRes?.status).to.be.equal(200)
     })
 

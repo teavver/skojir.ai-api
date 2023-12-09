@@ -11,10 +11,6 @@ const MODULE = "services :: user_services :: emailOTP"
 
 export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
  
-
-    console.log('3333333333333333333333333333333')
-    console.log(userData)
-    console.log('3333333333333333333333333333333')
     const vRes = await validateEmailOTP(userData)
     if (!vRes.isValid) {
         logger(MODULE, `deleteUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
