@@ -29,7 +29,9 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
 
     try {
 
-        const authPayload = jwt.verify(token, process.env.JWT_SECRET as string) as AuthTokenPayload
+        const authPayload = jwt.verify(token, process.env.JWT_SECRET as string, {
+            clockTolerance: 300 // Allow slight timing skews
+        }) as AuthTokenPayload
 
         const user = await User.findOne({ email: authPayload.email })
         if (!user) {
