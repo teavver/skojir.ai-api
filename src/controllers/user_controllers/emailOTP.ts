@@ -1,8 +1,9 @@
+import IUserBase from "../../types/interfaces/IUserBase.js";
 import { Request, Response } from "express";
+import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { AuthRequestBase } from "../../types/requests/AuthRequestBase.js";
-import IUserBase from "../../types/interfaces/IUserBase.js";
 import { emailOTP as emailOTPService } from "../../services/user_services/emailOTP.js";
 
 const MODULE = "controllers :: user_controllers :: emailOTP"
@@ -17,8 +18,7 @@ export async function emailOTP(req: Request<AuthRequestBase>, res: Response<Resp
          })
     }
 
-    const userData: IUserBase = req.body
-    const sRes = await emailOTPService(userData)
+    const sRes = await emailOTPService(req.body)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "error",
@@ -26,6 +26,9 @@ export async function emailOTP(req: Request<AuthRequestBase>, res: Response<Resp
         })
     }
 
+    const vData = sRes.data as IUserBase
+
+    logger(MODULE, `User ${vData.email} requested an email change.`, LogType.SUCCESS)
     return res.status(200).json({
         state: "success",
         message: `Code sent. Please check your email for details`

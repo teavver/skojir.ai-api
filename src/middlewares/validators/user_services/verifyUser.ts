@@ -1,26 +1,20 @@
 import IUserVerification from "../../../types/interfaces/IUserVerification.js";
 import { logger, LogType } from "../../../utils/logger.js";
 import { ValidatorResponse } from "../../../types/responses/ValidatorResponse.js";
-import { verifyUserSchema } from "../schemas/verifySchema.js";
+import { verificationSchema } from "../schemas/verificationSchema.js";
 
 const MODULE = "middlewares :: validators :: user_services :: verifyUser"
 
-export const validateVerifyUserRequest = async (req: IUserVerification): Promise<ValidatorResponse> => {
-
+export const validateVerifyUserRequest = async (reqBody:any): Promise<ValidatorResponse> => {
     try {
-
-        // validate with schema
-        const data: IUserVerification = await verifyUserSchema.validateAsync(req)
-
+        const vRes: IUserVerification = await verificationSchema.validateAsync(reqBody)
+        logger(MODULE, `Validated verifyUser req body`)
         return {
             isValid: true,
-            data: data 
+            data: vRes 
         }
-
     } catch (err) {
-        const errMsg = (err as Error).message
-        logger(MODULE, errMsg, LogType.WARN)
-
+        logger(MODULE, `Couldn't validate verifyUser req body: ${err}`, LogType.ERR)
         return {
             isValid: false,
             error: `Invalid request data`,

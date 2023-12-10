@@ -1,6 +1,6 @@
 import IUserCredentials from "./IUserCredentials.js";
 
-export interface IUserUnverified extends IUserCredentials {
+export default interface IUserUnverified extends IUserCredentials {
     salt: string
     isEmailVerified: false
     verificationCode: string

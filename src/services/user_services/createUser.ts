@@ -9,13 +9,9 @@ import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 
 const MODULE = "services :: user_services :: createUser"
 
-/**
- * Validates userCredentials with the schema, checks for duplicates
- * Once verified, creates a new user in the database
- */ 
-export async function createUser(userCredentials: IUserCredentials, verificationCode: string): Promise<ServiceResponse> {
+export async function createUser(reqBody:any, verificationCode: string): Promise<ServiceResponse<IUserCredentials>> {
 
-    const vRes = await validateRegisterUserRequest(userCredentials)
+    const vRes = await validateRegisterUserRequest(reqBody)
     if (!vRes.isValid) {
         logger(MODULE, `createUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -24,9 +20,9 @@ export async function createUser(userCredentials: IUserCredentials, verification
             statusCode: 400
         }
     }
-
-    // check if user exists already
-    const user = await User.findOne({ email: userCredentials.email })
+    
+    const vData = vRes.data as IUserCredentials
+    const user = await User.findOne({ email: vData.email })
     if (user) {
         logger(MODULE, `Failed to create new user. Reason: user already has an account`, LogType.WARN)
         return {
@@ -40,11 +36,11 @@ export async function createUser(userCredentials: IUserCredentials, verification
     }
 
     const salt = generateSalt()
-    const saltedPwd = userCredentials.password + salt
+    const saltedPwd = vData.password + salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
     const newUser = new User({
-        email: userCredentials.email,
+        email: vData.email,
         password: hashedPwd,
         salt: salt,
         verificationCode: verificationCode,
@@ -65,7 +61,7 @@ export async function createUser(userCredentials: IUserCredentials, verification
 
     return {
         err: false,
-        data: `User created`,
+        data: vData,
         statusCode: 201
     }
 }

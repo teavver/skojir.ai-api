@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
-import { logger } from "../../utils/logger.js";
+import { logger, LogType } from "../../utils/logger.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { createUser } from "../../services/user_services/createUser.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
@@ -19,19 +19,18 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
         })
     }
 
-    const userData: IUserCredentials = req.body
     const verCode = generateVerificationCode()
-
-    const createRes = await createUser(userData, verCode)
-    if (createRes.err) {
-        return res.status(createRes.statusCode).json({
+    const sRes = await createUser(req.body, verCode)
+    if (sRes.err) {
+        return res.status(sRes.statusCode).json({
             state: "conflict",
-            message: createRes.errMsg
+            message: sRes.errMsg
         })
     }
 
     // send verification email to new user
-    const emailRes = await sendVerificationCodeEmail(userData.email, verCode)
+    const vData = sRes.data as IUserCredentials
+    const emailRes = await sendVerificationCodeEmail(vData.email, verCode)
     if (emailRes.err) {
         return res.status(emailRes.statusCode).json({
             state: "error",
@@ -39,9 +38,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
         })
     }
 
-    const successMsg = `User: ${userData.email} created an account`
-    logger(MODULE, successMsg)
-
+    logger(MODULE, `User: ${vData.email} created an account`, LogType.SUCCESS)
     return res.status(emailRes.statusCode).json({
         state: "success",
         message: `Your account has been created. Please check your e-mail for a verification code.`

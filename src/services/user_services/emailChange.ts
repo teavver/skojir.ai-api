@@ -6,9 +6,9 @@ import IUserVerification from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "services :: user_services :: emailChange"
 
-export async function emailChange(userData: IUserVerification): Promise<ServiceResponse> {
+export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVerification>> {
  
-    const vRes = await validateEmailChange(userData)
+    const vRes = await validateEmailChange(reqBody)
     if (!vRes.isValid) {
         logger(MODULE, `email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -18,7 +18,8 @@ export async function emailChange(userData: IUserVerification): Promise<ServiceR
         }
     }
 
-    const user = await User.findOne({ email: userData.email })
+    const vData = vRes.data as IUserVerification
+    const user = await User.findOne({ email: vData.email })
     if (!user || !user.verificationCodeExpires) {
         logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)
         return {
@@ -36,8 +37,6 @@ export async function emailChange(userData: IUserVerification): Promise<ServiceR
             statusCode: 401
         }
     }
-    
-    const oldEmail = user.email
 
     if (new Date() >= user.verificationCodeExpires) {
         return {
@@ -46,25 +45,29 @@ export async function emailChange(userData: IUserVerification): Promise<ServiceR
             statusCode: 400
         }
     }
-
-    if (userData.verificationCode !== user.verificationCode) {
+    
+    if (vData.verificationCode !== user.verificationCode) {
         return {
             err: true,
             errMsg: `Invalid OTP code.`,
             statusCode: 401
         }
     }
-
+    
     try {
-        await User.updateOne({ email: userData.email }, {
+        // const prevEmail = user.email
+        // Send email to old account & inform user about the change
+
+        await User.updateOne({ email: vData.email }, {
             $set: {
-                email: userData.email
+                email: vData.email
             },
             $unset: {
                 verificationCode: "",
                 verificationCodeExpires: ""
             }
         })
+
     } catch (err) {
         const dbErr = (err as Error).message
         logger(MODULE, dbErr, LogType.WARN)
@@ -75,10 +78,9 @@ export async function emailChange(userData: IUserVerification): Promise<ServiceR
         }
     }
 
-    logger(MODULE, `User ${oldEmail} changed their email address to: ${userData.email}`)
     return {
         err: false,
-        data: ``,
+        data: vData,
         statusCode: 200
     }
 }

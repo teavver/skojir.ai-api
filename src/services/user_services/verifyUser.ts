@@ -3,19 +3,14 @@ import { logger, LogType } from "../../utils/logger.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { validateVerifyUserRequest } from "../../middlewares/validators/user_services/verifyUser.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
-import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
+import IUserUnverified from "../../types/interfaces/IUserUnverified.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 
 const MODULE = "services :: user_services :: verifyUser"
 
-/**
- * Validates verify request from user, checks if account exists
- * Checks if verification code and expiry dates are valid
- * If everything is fine, verifies the User and generates authTokens for them
- */
-export async function verifyUser(reqData: IUserVerification): Promise<ServiceResponse> {
+export async function verifyUser(reqData: IUserVerification): Promise<ServiceResponse<IUserVerification>> {
 
     const vRes = await validateVerifyUserRequest(reqData)
     if (!vRes.isValid) {
@@ -26,6 +21,7 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
         }
     }
 
+    const vData = vRes.data as IUserVerification
     const user = await User.findOne({ email: reqData.email }) as IUserUnverified
     if (!user) {
         return {
@@ -68,10 +64,9 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
             }
 
             logger(MODULE, `Re-sending verification code for: ${user.email}`)
-
             return {
                 err: false,
-                data: `A new verification code was sent. Please check the email associated with your account`,
+                data: vData,
                 statusCode: 200
             } 
 
@@ -103,8 +98,6 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
     }
 
     try {
-
-        // User becomes verified
         await User.updateOne({ email: user.email }, {
             $set: {
                 isEmailVerified: true,
@@ -125,10 +118,9 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
         }
     }
 
-    logger(MODULE, `User ${user.email} verified their account`)
     return {
         err: false,
-        data: `User account verified`,
+        data: vData,
         statusCode: 200
     } 
 }

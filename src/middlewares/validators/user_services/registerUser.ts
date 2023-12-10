@@ -5,23 +5,20 @@ import { userCredentialsSchema } from "../schemas/userCredentialsSchema.js";
 
 const MODULE = "middlewares :: validators :: user_services :: createUser"
 
-export const validateRegisterUserRequest = async (req: IUserCredentials): Promise<ValidatorResponse> => {
-
+export const validateRegisterUserRequest = async (reqBody:any): Promise<ValidatorResponse> => {
     try {
-
-        // validate with schema
-        const data: IUserCredentials = await userCredentialsSchema.validateAsync(req)
-
+        const vRes: IUserCredentials = await userCredentialsSchema.validateAsync(reqBody)
+        logger(MODULE, `Validated register req body`)
         return {
             isValid: true,
-            data: data
+            data: vRes
         }
 
     } catch (err) {
-        logger(MODULE, `Could not validate createUser req data: ${err}`, LogType.ERR)
+        logger(MODULE, `Couldn't validate register req body: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: `Invalid request data`,
+            error: (err as Error).message,
             statusCode: 400
         }
     }

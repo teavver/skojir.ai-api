@@ -5,16 +5,16 @@ import { ValidatorResponse } from "../../types/responses/ValidatorResponse.js"
 
 const MODULE = "middlewares :: validators :: contextPrediction"
 
-export const validateContextPredictionRequest = async (req: PredictionRequest): Promise<ValidatorResponse> => {
+export const validateContextPredictionRequest = async (reqBody:any): Promise<ValidatorResponse> => {
     try {
-        const data = await predictionRequestSchema.validateAsync(req)
-        logger(MODULE, `Validated prediction req data`)
+        const vRes: PredictionRequest = await predictionRequestSchema.validateAsync(reqBody)
+        logger(MODULE, `Validated prediction req body`)
         return {
             isValid: true,
-            data: data
+            data: vRes
         }
     } catch (err) {
-        logger(MODULE, `Could not validate prediction req data: ${err}`, LogType.ERR)
+        logger(MODULE, `Couldn't validate prediction req body: ${err}`, LogType.ERR)
         return {
             isValid: false,
             error: (err as Error).message,
@@ -23,14 +23,13 @@ export const validateContextPredictionRequest = async (req: PredictionRequest): 
     }
 }
 
-const predictionRequestSchema = Joi.object({
-    threshold: Joi.number()
-        .min(0.10)
-        .max(0.50)
-        .required(),
-        
+const predictionRequestSchema = Joi.object<PredictionRequest>({
     img: Joi.string()
         .min(10)
         .max(2500000) // ~2.5MB string
+        .required(),
+    threshold: Joi.number()
+        .min(0.10)
+        .max(0.50)
         .required()
 })

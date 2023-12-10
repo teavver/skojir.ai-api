@@ -1,26 +1,17 @@
+import axios from "axios"
 import { PredictionRequest } from "../types/requests/PredictionRequest.js"
 import { validateContextPredictionRequest } from "../middlewares/validators/contextPrediction.js"
 import { logger, LogType } from "../utils/logger.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
-import axios from "axios"
 
 const MODULE = "services :: predictContext"
 const DEFAULT_THRESHOLD_VALUE = 0.25
 
-/**
- * Sends a request to GCF endpoint and returns b64-encoded string of cropped context region
- */
-export async function requestContextPrediction(req: PredictionRequest): Promise<ServiceResponse> {
+export async function requestContextPrediction(reqBody:any): Promise<ServiceResponse<PredictionRequest>> {
 
-    // handle optional threshold value
-    if (!req.threshold) {
-        req.threshold = DEFAULT_THRESHOLD_VALUE
-    }
-
-    const vRes = await validateContextPredictionRequest(req)
-
+    const vRes = await validateContextPredictionRequest(reqBody)
     if (!vRes.isValid){
-        const err = "Failed to validate request"
+        const err = `Failed to validate request: ${vRes.error}`
         logger(MODULE, err, LogType.ERR)
         return {
             err: true,
@@ -29,9 +20,15 @@ export async function requestContextPrediction(req: PredictionRequest): Promise<
         }
     }
 
+    // handle optional threshold value
+    const vData = vRes.data as PredictionRequest
+    if (!vData.threshold) {
+        vData.threshold = DEFAULT_THRESHOLD_VALUE
+    }
+
     try {
         const url = process.env.BACKEND_URL + "/predict"
-        const res = await axios.post(url, vRes.data, {
+        const res = await axios.post(url, vData, {
             headers: {
                 'Content-Type': 'application/json'
             }

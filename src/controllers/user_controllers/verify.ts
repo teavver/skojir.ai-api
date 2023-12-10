@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
+import { logger, LogType } from "../../utils/logger.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { verifyUser as verifyService } from "../../services/user_services/verifyUser.js";
-import IUserVerification from "../../types/interfaces/IUserVerification.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
+import IUserVerification from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "controllers :: user_controllers :: verify"
 
@@ -15,10 +16,8 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
             message: `Request body is empty or incomplete.`
         })
     }
-
-    const verificationData: IUserVerification = req.body
     
-    const vRes = await verifyService(verificationData)
+    const vRes = await verifyService(req.body)
     if (vRes.err) {
         return res.status(vRes.statusCode).json({
             state: "unauthorized",
@@ -26,9 +25,12 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
         })
     }
 
+    const vData = vRes.data as IUserVerification
+
+    logger(MODULE, `User ${vData.email} verified their account`, LogType.SUCCESS)
     return res.status(vRes.statusCode).json({
         state: "success",
-        message: vRes.data as string
+        message: `Account successfully verified.`
     })
 
 }

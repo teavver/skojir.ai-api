@@ -4,13 +4,12 @@ import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateDeleteUserRequest } from "../../middlewares/validators/user_services/deleteUser.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "services :: user_services :: deleteUser"
 
-export async function deleteUser(userCredentials: IUserCredentials): Promise<ServiceResponse> {
+export async function deleteUser(reqBody:any): Promise<ServiceResponse<IUserCredentials>> {
  
-    const vRes = await validateDeleteUserRequest(userCredentials)
+    const vRes = await validateDeleteUserRequest(reqBody)
     if (!vRes.isValid) {
         logger(MODULE, `deleteUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -20,8 +19,8 @@ export async function deleteUser(userCredentials: IUserCredentials): Promise<Ser
         }
     }
 
-    // check if user exists
-    const user = await User.findOne({ email: userCredentials.email })
+    const vData = vRes.data as IUserCredentials
+    const user = await User.findOne({ email: vData.email })
     if (!user) {
         logger(MODULE, `Failed to delete account - user does not exist`, LogType.WARN)
         return {
@@ -31,8 +30,7 @@ export async function deleteUser(userCredentials: IUserCredentials): Promise<Ser
         }
     }
 
-    // check if password is correct
-    const userPwdSalted = userCredentials.password + user.salt
+    const userPwdSalted = vData.password + user.salt
     const hashedPwd = deriveKey({ password: userPwdSalted, salt: user.salt })
     if (hashedPwd !== user.password) {
         logger(MODULE, `Failed to delete account - incorrect password input`, LogType.WARN)
@@ -45,7 +43,7 @@ export async function deleteUser(userCredentials: IUserCredentials): Promise<Ser
 
     return {
         err: false,
-        data: user as IUserVerified,
+        data: vData,
         statusCode: 200
     }
 

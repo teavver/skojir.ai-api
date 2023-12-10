@@ -9,9 +9,9 @@ import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 
 const MODULE = "services :: user_services :: emailOTP"
 
-export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
+export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>> {
  
-    const vRes = await validateEmailOTP(userData)
+    const vRes = await validateEmailOTP(reqBody)
     if (!vRes.isValid) {
         logger(MODULE, `emailOTP req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -21,7 +21,8 @@ export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
         }
     }
 
-    const user = await User.findOne({ email: userData.email })
+    const vData = vRes.data as IUserBase
+    const user = await User.findOne({ email: vData.email })
     if (!user) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
         return {
@@ -45,15 +46,14 @@ export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
     const emailChangeMsg = "Use this code to change your account's email address. This code will expire in 10 minutes."
 
     try {
-
-        await User.updateOne({ email: userData.email }, {
+        await User.updateOne({ email: user.email }, {
             $set: {
                 verificationCode: emailOTP,
                 verificationCodeExpires: emailOTPExpiry
             }
         })
 
-        const emailRes = await sendVerificationCodeEmail(userData.email, emailOTP, emailChangeMsg)
+        const emailRes = await sendVerificationCodeEmail(vData.email, emailOTP, emailChangeMsg)
         if (emailRes.err) {
             return {
                 err: true,
@@ -61,6 +61,8 @@ export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
                 statusCode: emailRes.statusCode
             }
         }
+
+        logger(MODULE, `Email OTP code sent to ${user.email}, code: ${emailOTP}`)
 
     } catch (err) {
         const errMsg = (err as Error).message
@@ -72,10 +74,9 @@ export async function emailOTP(userData: IUserBase): Promise<ServiceResponse> {
         }
     }
 
-    logger(MODULE, `User ${userData.email} requested an email change. Code: ${emailOTP}`)
     return {
         err: false,
-        data: `Code sent. Please check your email inbox for details.`,
+        data: vData,
         statusCode: 200
     }
 }

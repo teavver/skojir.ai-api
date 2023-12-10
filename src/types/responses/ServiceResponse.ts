@@ -1,6 +1,6 @@
-interface SuccessfulServiceResponse {
+interface SuccessfulServiceResponse<T> {
     err: false
-    data: Object | string // Object allows services to return Db documents; less dbOps
+    data: T // Services should pass validated request body back to controllers on success.
     statusCode: number
 }
 
@@ -10,4 +10,4 @@ interface FailedServiceResponse {
     statusCode: number
 }
 
-export type ServiceResponse = SuccessfulServiceResponse | FailedServiceResponse
+export type ServiceResponse<T> = SuccessfulServiceResponse<T> | FailedServiceResponse

@@ -5,11 +5,7 @@ import { logger, LogType } from "../utils/logger.js"
 
 const MODULE = "services :: getStatus"
 
-/**
- * Get status of API and underlying clients
- */
-
-export async function getStatus(): Promise<ServiceResponse> {
+export async function getStatus(): Promise<ServiceResponse<string>> {
 
     let backendStatus = "unknown"
     let dbStatus = "unknown"
@@ -17,7 +13,7 @@ export async function getStatus(): Promise<ServiceResponse> {
 
     try {
 
-        // Check DB status
+        // db
         switch (mongoose.connection.readyState) {
             case 0: dbStatus = 'disconnected'; break
             case 1: dbStatus = 'connected'; break
@@ -25,7 +21,7 @@ export async function getStatus(): Promise<ServiceResponse> {
             case 3: dbStatus = 'disconnecting'; break
         }
         
-        // Check backend status
+        // backend
         try {
             const backendRes = await axios.get(process.env.BACKEND_URL + "/status", {
                 headers: {
@@ -38,7 +34,7 @@ export async function getStatus(): Promise<ServiceResponse> {
             backendStatus = "offline"
         }
     
-        // Check openAI / GPT status
+        // openai
         try {
             const openAIRes = await axios.get("https://status.openai.com/api/v2/status.json")
             const status = openAIRes.data.status.description
@@ -62,11 +58,10 @@ export async function getStatus(): Promise<ServiceResponse> {
         }
 
     } catch (err) {
-        const errMsg = (err as Error).message
-        logger(MODULE, errMsg, LogType.WARN)        
+        logger(MODULE, `Get status err: ${err}`, LogType.WARN)        
         return {
             err: true,
-            errMsg: errMsg,
+            errMsg: (err as Error).message,
             statusCode: 500
         }
     }

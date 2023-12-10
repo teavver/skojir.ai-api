@@ -5,10 +5,7 @@ import { MailjetRequest } from "../../types/requests/MailjetRequest.js";
 
 const MODULE = "services :: user_services :: sendVerificationCodeEmail"
 
-/**
- * Send e-mail with verification code to a user
- */
-export async function sendVerificationCodeEmail(userEmail: string, code: string, message: string = "Use this code to verify your account"): Promise<ServiceResponse> {
+export async function sendVerificationCodeEmail(userEmail: string, code: string, message: string = "Use this code to verify your account"): Promise<ServiceResponse<string>> {
 
     const reqData: MailjetRequest = {
         from: "skojirai@gmail.com",
@@ -19,7 +16,6 @@ export async function sendVerificationCodeEmail(userEmail: string, code: string,
     }
 
     try {
-
         const request = await mailjetClient
             .post("send", { 'version': 'v3.1' })
             .request({

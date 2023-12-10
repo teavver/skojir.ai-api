@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { AuthVerificationRequest } from "../../types/requests/AuthVerificationRequest.js";
@@ -17,16 +18,17 @@ export async function emailChange(req: Request<AuthVerificationRequest>, res: Re
          })
     }
 
-    const { email, verificationCode } = req.body
-    const userData: IUserVerification = { email, verificationCode }
-    const sRes = await emailChangeService(userData)
+    const sRes = await emailChangeService(req.body)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "error",
             message: sRes.errMsg
         })
     }
-
+    
+    const vData = sRes.data as IUserVerification
+    const oldEmail = req.body.user.email
+    logger(MODULE, `User ${oldEmail} changed their email to: ${vData.email}.`, LogType.SUCCESS)
     return res.status(200).json({
         state: "success",
         message: `Email successfully changed.`

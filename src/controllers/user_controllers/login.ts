@@ -3,7 +3,7 @@ import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { generateAuthToken } from "../../middlewares/auth/genToken.js";
-import { logger } from "../../utils/logger.js";
+import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 import { LoginResponse } from "../../types/responses/LoginResponse.js";
@@ -20,29 +20,28 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Lo
         })
     }
 
-    const userData: IUserCredentials = req.body
-    const loginRes = await loginUserService(userData)
-    if (loginRes.err) {
-        return res.status(loginRes.statusCode).json({
+    const sRes = await loginUserService(req.body)
+    if (sRes.err) {
+        return res.status(sRes.statusCode).json({
             state: "unauthorized",
-            message: loginRes.errMsg,
+            message: sRes.errMsg,
         })
     }
-
+    
     // generate access & refresh tokens for user
-    const user = loginRes.data as IUserVerified
-    const userAccessToken = generateAuthToken(user, "accessToken")
-    const userRefreshToken = generateAuthToken(user, "refreshToken")
-
-    await User.updateOne({ email: user.email }, {
+    const vData = sRes.data as IUserVerified
+    const userAccessToken = generateAuthToken(vData, "accessToken")
+    const userRefreshToken = generateAuthToken(vData, "refreshToken")
+    
+    await User.updateOne({ email: vData.email }, {
         $set: {
             accessToken: userAccessToken,
             refreshToken: userRefreshToken
         },
     })
-
-    logger(MODULE, `User ${user.email} logged in.`)
-    return res.status(loginRes.statusCode).json({
+    
+    logger(MODULE, `User ${vData.email} logged in`, LogType.SUCCESS)
+    return res.status(sRes.statusCode).json({
         state: "success",
         message: `User successfully logged in.`,
         tokens: {

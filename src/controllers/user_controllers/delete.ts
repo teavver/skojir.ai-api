@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import { validateRequestBody } from "../../utils/verifyRequestBody.js";
-import { logger } from "../../utils/logger.js";
-import { AuthCredentialsRequest } from "../../types/requests/AuthCredentialsRequest.js";
 import { User } from "../../models/User.js";
+import { Request, Response } from "express";
+import { logger, LogType } from "../../utils/logger.js";
+import { validateRequestBody } from "../../utils/verifyRequestBody.js";
+import { AuthCredentialsRequest } from "../../types/requests/AuthCredentialsRequest.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { deleteUser as deleteUserService } from "../../services/user_services/deleteUser.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
@@ -19,22 +19,18 @@ export async function deleteUser(req: Request<AuthCredentialsRequest>, res: Resp
         })
     }
 
-    const userData: IUserCredentials = req.body
-    const delRes = await deleteUserService(userData)
-    if (delRes.err) {
-        return res.status(delRes.statusCode).json({
+    const sRes = await deleteUserService(req.body)
+    if (sRes.err) {
+        return res.status(sRes.statusCode).json({
             state: "error",
-            message: delRes.errMsg,
+            message: sRes.errMsg,
         })
     }
 
-    // TODO:
-    // Schedule deletion for in n days instead of instant
-    // If active membership, warn user
+    const vData = sRes.data as IUserCredentials
+    await User.deleteOne({ email: vData.email })
 
-    await User.deleteOne({ email: userData.email })
-    logger(MODULE, `User ${userData.email} deleted their account.`)
-
+    logger(MODULE, `User ${vData.email} deleted their account`, LogType.SUCCESS)
     return res.status(200).json({
         state: "success",
         message: "Account deleted."

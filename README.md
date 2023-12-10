@@ -87,11 +87,11 @@ A request body with email is required to identify the user based on accessToken
 ```
 
 ### 🔒 (POST) `api/email-change` - Change email for an account
-Requires accessToken, the account to be verified and the OTP code from `api/email-otp`. Will send an email to the new email adddress on success
+Requires accessToken, the account to be verified and the OTP code from `api/email-otp`. Will send an email to the old address on success
 
 ```json
 {
-    "email": "email",
+    "email": "yourNewEmail",
     "verificationCode": "6 digit OTP code"
 }
 ```

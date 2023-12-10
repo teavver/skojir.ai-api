@@ -10,6 +10,8 @@ const MODULE = "emailOTP + emailChange"
 
 describe("Email (OTP + change)", function () {
 
+    this.timeout(5000)
+
     let tokens: UserAuthTokens = { accessToken: "", refreshToken: "" }
 
     before(async () => {

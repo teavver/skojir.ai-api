@@ -38,7 +38,7 @@ const gptSettings: GPTSettings = {
 /**
  * Puts together and sends a full request (system, image, header, footer) to gpt-4-1106-vision-preview
  */
-export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceResponse> {
+export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceResponse<string>> {
 
     // check output format
     const validOutputFormat = validOutputFormats.includes(req.outputFormat)
