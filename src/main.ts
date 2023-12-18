@@ -4,6 +4,7 @@ import { createDbClient } from "./clients/db.js"
 import express, { Express } from "express"
 import { envSetup } from "./utils/envSetup.js"
 import { OpenAI } from "openai"
+import cors from "cors"
 import { setupRoutes } from "./utils/setupRoutes.js"
 import { createMailjetClient } from "./clients/mailjet.js"
 import Mailjet from "node-mailjet"
@@ -24,6 +25,12 @@ async function init() {
     await createDbClient()
 
     app.use(express.json({ limit: "2.5mb" }))
+    app.use(cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    }))
+
     setupRoutes(app)
 
     logger(MODULE, "All set up!", LogType.SUCCESS)
