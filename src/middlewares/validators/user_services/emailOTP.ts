@@ -5,13 +5,14 @@ import { authUserBaseSchema } from "../schemas/auth/authUserBaseSchema.js";
 
 const MODULE = "middlewares :: validators :: emailOTP"
 
-export const validateEmailOTP = async (reqBody:any): Promise<ValidatorResponse> => {
+export const validateEmailOTP = async (reqBody:any): Promise<ValidatorResponse<IUserBase>> => {
     try {
-        const vRes: IUserBase = await authUserBaseSchema.validateAsync(reqBody)
+        const vRes = await authUserBaseSchema.validateAsync(reqBody)
+        const { email }: { email: IUserBase } = vRes
         logger(MODULE, `Validated email OTP req body`)
         return {
             isValid: true,
-            data: vRes
+            data: email
         }
     } catch (err) {
         logger(MODULE, `Couldn't validate email OTP req body: ${err}`, LogType.ERR)

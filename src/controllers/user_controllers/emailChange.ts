@@ -26,7 +26,7 @@ export async function emailChange(req: Request<AuthVerificationRequest>, res: Re
         })
     }
     
-    const vData = sRes.data as IUserVerification
+    const vData: IUserVerification = sRes.data
     const oldEmail = req.body.user.email
     logger(MODULE, `User ${oldEmail} changed their email to: ${vData.email}.`, LogType.SUCCESS)
     return res.status(200).json({

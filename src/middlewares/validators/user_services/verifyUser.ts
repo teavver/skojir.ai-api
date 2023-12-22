@@ -5,7 +5,7 @@ import { verificationSchema } from "../schemas/verificationSchema.js";
 
 const MODULE = "middlewares :: validators :: user_services :: verifyUser"
 
-export const validateVerifyUserRequest = async (reqBody:any): Promise<ValidatorResponse> => {
+export const validateVerifyUserRequest = async (reqBody:any): Promise<ValidatorResponse<IUserVerification>> => {
     try {
         const vRes: IUserVerification = await verificationSchema.validateAsync(reqBody)
         logger(MODULE, `Validated verifyUser req body`)

@@ -5,15 +5,14 @@ import IUserVerification from "../../../types/interfaces/IUserVerification.js";
 
 const MODULE = "middlewares :: validators :: emailChange"
 
-export const validateEmailChange = async (reqBody:any): Promise<ValidatorResponse> => {
+export const validateEmailChange = async (reqBody:any): Promise<ValidatorResponse<IUserVerification>> => {
     try {
         const vRes = await authVerificationSchema.validateAsync(reqBody)
-        const { user, ...data } = vRes
-        const userData: IUserVerification = data as IUserVerification
+        const { userVerification }: { userVerification: IUserVerification } = vRes
         logger(MODULE, `Validated email change req body`)
         return {
             isValid: true,
-            data: userData
+            data: userVerification
         }
     } catch (err) {
         logger(MODULE, `Couldn't validate email change req body: ${err}`, LogType.ERR)

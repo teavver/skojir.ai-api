@@ -5,7 +5,7 @@ import { userCredentialsSchema } from "../schemas/userCredentialsSchema.js";
 
 const MODULE = "middlewares :: validators :: user_services :: createUser"
 
-export const validateRegisterUserRequest = async (reqBody:any): Promise<ValidatorResponse> => {
+export const validateRegisterUserRequest = async (reqBody:any): Promise<ValidatorResponse<IUserCredentials>> => {
     try {
         const vRes: IUserCredentials = await userCredentialsSchema.validateAsync(reqBody)
         logger(MODULE, `Validated register req body`)

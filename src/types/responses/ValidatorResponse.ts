@@ -1,6 +1,6 @@
-interface SuccessfulValidation {
+interface SuccessfulValidation<T> {
     isValid: true
-    data: Object
+    data: T
 }
 
 interface FailedValidation {
@@ -9,4 +9,4 @@ interface FailedValidation {
     statusCode: number
 }
 
-export type ValidatorResponse = SuccessfulValidation | FailedValidation
+export type ValidatorResponse<T> = SuccessfulValidation<T> | FailedValidation

@@ -26,8 +26,7 @@ export async function emailOTP(req: Request<AuthRequestBase>, res: Response<Resp
         })
     }
 
-    const vData = sRes.data as IUserBase
-
+    const vData: IUserBase = sRes.data
     logger(MODULE, `User ${vData.email} requested an email change.`, LogType.SUCCESS)
     return res.status(200).json({
         state: "success",

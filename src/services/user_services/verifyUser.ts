@@ -21,7 +21,7 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
         }
     }
 
-    const vData = vRes.data as IUserVerification
+    const vData: IUserVerification = vRes.data
     const user = await User.findOne({ email: reqData.email }) as IUserUnverified
     if (!user) {
         return {

@@ -18,7 +18,7 @@ export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVer
         }
     }
 
-    const vData = vRes.data as IUserVerification
+    const vData: IUserVerification = vRes.data
     const user = await User.findOne({ email: vData.email })
     if (!user || !user.verificationCodeExpires) {
         logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)

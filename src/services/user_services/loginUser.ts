@@ -19,7 +19,7 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCrede
         }
     }
 
-    const vData = vRes.data as IUserCredentials
+    const vData: IUserCredentials = vRes.data
     const user = await User.findOne({ email: vData.email })
     if (!user) {
         logger(MODULE, `Failed to login user. Reason: No account matches user email`, LogType.WARN)

@@ -64,6 +64,10 @@ describe("Delete an account", function () {
         const invalidDelReqData = { email: testUser.email, password: "invalid@Pwd!123" }
         const dReq = () => axios.post(deleteURL, invalidDelReqData, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
+        console.log("############################################")
+        console.log(dRes?.status)
+        console.log(dRes?.statusText)
+        console.log("############################################")
         expect(dRes?.status).to.be.equal(401)
     })
     

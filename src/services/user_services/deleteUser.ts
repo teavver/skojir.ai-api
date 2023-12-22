@@ -19,7 +19,7 @@ export async function deleteUser(reqBody:any): Promise<ServiceResponse<IUserCred
         }
     }
 
-    const vData = vRes.data as IUserCredentials
+    const vData: IUserCredentials = vRes.data
     const user = await User.findOne({ email: vData.email })
     if (!user) {
         logger(MODULE, `Failed to delete account - user does not exist`, LogType.WARN)

@@ -21,7 +21,7 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
         }
     }
 
-    const vData = vRes.data as IUserBase
+    const vData: IUserBase = vRes.data
     const user = await User.findOne({ email: vData.email })
     if (!user) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)

@@ -1,11 +1,11 @@
-import Joi from "joi"
 import { PredictionRequest } from "../../types/requests/PredictionRequest.js"
 import { logger, LogType } from "../../utils/logger.js"
+import { predictionRequestSchema } from "./schemas/predictionRequestSchema.js"
 import { ValidatorResponse } from "../../types/responses/ValidatorResponse.js"
 
 const MODULE = "middlewares :: validators :: contextPrediction"
 
-export const validateContextPredictionRequest = async (reqBody:any): Promise<ValidatorResponse> => {
+export const validateContextPredictionRequest = async (reqBody:any): Promise<ValidatorResponse<PredictionRequest>> => {
     try {
         const vRes: PredictionRequest = await predictionRequestSchema.validateAsync(reqBody)
         logger(MODULE, `Validated prediction req body`)
@@ -22,14 +22,3 @@ export const validateContextPredictionRequest = async (reqBody:any): Promise<Val
         }
     }
 }
-
-const predictionRequestSchema = Joi.object<PredictionRequest>({
-    img: Joi.string()
-        .min(10)
-        .max(2500000) // ~2.5MB string
-        .required(),
-    threshold: Joi.number()
-        .min(0.10)
-        .max(0.50)
-        .required()
-})

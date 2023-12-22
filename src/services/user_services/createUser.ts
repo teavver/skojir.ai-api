@@ -21,7 +21,7 @@ export async function createUser(reqBody:any, verificationCode: string): Promise
         }
     }
     
-    const vData = vRes.data as IUserCredentials
+    const vData: IUserCredentials = vRes.data
     const user = await User.findOne({ email: vData.email })
     if (user) {
         logger(MODULE, `Failed to create new user. Reason: user already has an account`, LogType.WARN)

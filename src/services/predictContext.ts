@@ -21,7 +21,7 @@ export async function requestContextPrediction(reqBody:any): Promise<ServiceResp
     }
 
     // handle optional threshold value
-    const vData = vRes.data as PredictionRequest
+    const vData: PredictionRequest = vRes.data
     if (!vData.threshold) {
         vData.threshold = DEFAULT_THRESHOLD_VALUE
     }
