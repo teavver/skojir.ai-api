@@ -2,6 +2,10 @@
 
 Public api for [skojir.ai](https://skojir.ai)
 
+# CI/CD
+
+#### local: `act --env-file .env` in project root
+
 ---
 # .env
 
