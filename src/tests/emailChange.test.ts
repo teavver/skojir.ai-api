@@ -26,7 +26,7 @@ describe("Email (OTP + change)", function () {
         tokens = await fullUserSetup(MODULE, testUser)
     })
 
-    it("Request OTP from /email-otp endpoint", async () => {
+    it("Request an OTP code from the /email-otp endpoint", async () => {
         const reqData = { email: testUser.email }
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
         const req = () => axios.post(emailOTPURL, reqData, reqConf)

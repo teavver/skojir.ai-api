@@ -21,8 +21,8 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
         }
     }
 
-    const vData: IUserBase = vRes.data
-    const user = await User.findOne({ email: vData.email })
+    const userData = vRes.data
+    const user = await User.findOne({ email: userData.email })
     if (!user) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
         return {
@@ -53,7 +53,7 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
             }
         })
 
-        const emailRes = await sendVerificationCodeEmail(vData.email, emailOTP, emailChangeMsg)
+        const emailRes = await sendVerificationCodeEmail(userData.email, emailOTP, emailChangeMsg)
         if (emailRes.err) {
             return {
                 err: true,
@@ -76,7 +76,7 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
 
     return {
         err: false,
-        data: vData,
+        data: userData,
         statusCode: 200
     }
 }

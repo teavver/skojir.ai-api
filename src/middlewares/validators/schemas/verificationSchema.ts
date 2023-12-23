@@ -7,5 +7,6 @@ export const verificationSchema = Joi.object<IUserVerification>({
     verificationCode: Joi.string()
         .pattern(/^[0-9]{6}$/) // 6 digit code
         .required(),
-    resend: Joi.bool() // optional
+    resend: Joi.bool()
+    .optional()
 })

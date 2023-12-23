@@ -92,7 +92,7 @@ Requires accessToken, the account to be verified and the OTP code from `api/emai
 ```json
 {
     "email": "yourNewEmail",
-    "verificationCode": "6 digit OTP code"
+    "verificationCode": "6 digit OTP code",
 }
 ```
 

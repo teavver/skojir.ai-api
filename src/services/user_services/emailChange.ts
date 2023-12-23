@@ -7,9 +7,10 @@ import IUserVerification from "../../types/interfaces/IUserVerification.js";
 const MODULE = "services :: user_services :: emailChange"
 
 export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVerification>> {
- 
+
     const vRes = await validateEmailChange(reqBody)
     if (!vRes.isValid) {
+        console.log(vRes.error)
         logger(MODULE, `email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,

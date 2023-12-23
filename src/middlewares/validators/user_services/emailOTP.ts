@@ -7,12 +7,11 @@ const MODULE = "middlewares :: validators :: emailOTP"
 
 export const validateEmailOTP = async (reqBody:any): Promise<ValidatorResponse<IUserBase>> => {
     try {
-        const vRes = await authUserBaseSchema.validateAsync(reqBody)
-        const { email }: { email: IUserBase } = vRes
+        const vRes: IUserBase = await authUserBaseSchema.validateAsync(reqBody)
         logger(MODULE, `Validated email OTP req body`)
         return {
             isValid: true,
-            data: email
+            data: vRes
         }
     } catch (err) {
         logger(MODULE, `Couldn't validate email OTP req body: ${err}`, LogType.ERR)
