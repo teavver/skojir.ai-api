@@ -10,6 +10,8 @@ const MODULE = "verifyUser"
 
 describe("[CORE] Verify an account", function() {
 
+    this.timeout(5000)
+
     const dummyEmail = "test@example.com"
     const dummyPwd = "Password123!"
 

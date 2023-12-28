@@ -32,16 +32,16 @@ jobs:
 
     - name: Execute Tests
       env:
+        LOG: 1
+        ENV: DEV
+        PORT: 3000
         BACKEND_URL: ${{ secrets.BACKEND_URL }}
         DB_COLLECTION_DEV: ${{ secrets.DB_COLLECTION_DEV }}
         DB_COLLECTION_PROD: ${{ secrets.DB_COLLECTION_PROD }}
         DB_URL: ${{ secrets.DB_URL }}
-        ENV: ${{ secrets.ENV }}
         JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        LOG: ${{ secrets.LOG }}
         MAILJET_API_KEY: ${{ secrets.MAILJET_API_KEY }}
         MAILJET_SECRET_KEY: ${{ secrets.MAILJET_SECRET_KEY }}
         OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-        PORT: ${{ secrets.PORT }}
       run: yarn test-core
