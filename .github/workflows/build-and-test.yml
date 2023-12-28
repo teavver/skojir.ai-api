@@ -41,4 +41,4 @@ jobs:
         MAILJET_SECRET_KEY: ${{ secrets.MAILJET_SECRET_KEY }}
         OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
         PORT: ${{ secrets.PORT }}
-      run: yarn test
+      run: yarn test-core
