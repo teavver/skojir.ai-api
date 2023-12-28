@@ -1,13 +1,13 @@
-import { testUser, setupTests, teardownTests, gcfStatusURL, gcfSolveURL, registerURL, verifyURL, loginURL } from "./_setup.js"
+import { testUser, setupTests, teardownTests, gcfStatusURL, gcfSolveURL, registerURL, verifyURL, loginURL } from "../_setup.js"
 import axios, { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { testAxiosRequest } from "./_utils.js"
-import { UserAuthTokens } from "../types/AuthToken.js"
-import { fullUserSetup } from "./_utils.js"
+import { testAxiosRequest } from "../_utils.js"
+import { UserAuthTokens } from "../../types/AuthToken.js"
+import { fullUserSetup } from "../_utils.js"
 
 const MODULE = "solve"
 
-describe("Test backend service", function () {
+describe("[SERVICES] Test backend service", function () {
 
     this.timeout(7500)
 
@@ -52,6 +52,5 @@ describe("Test backend service", function () {
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
     })
-
 
 })

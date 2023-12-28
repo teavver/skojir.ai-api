@@ -1,13 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { User } from "../models/User.js"
-import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "./_setup.js"
-import { testAxiosRequest } from "./_utils.js"
-import { UserAuthTokens } from "../types/AuthToken.js"
+import { User } from "../../models/User.js"
+import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "../_setup.js"
+import { testAxiosRequest } from "../_utils.js"
+import { UserAuthTokens } from "../../types/AuthToken.js"
 
 const MODULE = "createUser"
 
-describe("Delete an account", function () {
+describe("[CORE] Delete an account", function () {
 
     this.timeout(5000)
 

@@ -1,14 +1,14 @@
 import axios from "axios"
 import { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { testUser, setupTests, teardownTests, emailOTPURL, emailChangeURL } from "./_setup.js"
-import { fullUserSetup, testAxiosRequest } from "./_utils.js"
-import { UserAuthTokens } from "../types/AuthToken.js"
-import { User } from "../models/User.js"
+import { testUser, setupTests, teardownTests, emailOTPURL, emailChangeURL } from "../_setup.js"
+import { fullUserSetup, testAxiosRequest } from "../_utils.js"
+import { UserAuthTokens } from "../../types/AuthToken.js"
+import { User } from "../../models/User.js"
 
 const MODULE = "emailOTP + emailChange"
 
-describe("Email (OTP + change)", function () {
+describe("[CORE] Email (OTP + change)", function () {
 
     this.timeout(5000)
 

@@ -1,14 +1,14 @@
 import axios from "axios"
 import { expect } from "chai"
-import { User } from "../models/User.js"
-import { testUser, setupTests, teardownTests, registerURL } from "./_setup.js"
-import { deriveKey } from "../utils/crypto/pbkdf2.js"
-import { testAxiosRequest } from "./_utils.js"
-import IUserCredentials from "../types/interfaces/IUserCredentials.js"
+import { User } from "../../models/User.js"
+import { testUser, setupTests, teardownTests, registerURL } from "../_setup.js"
+import { deriveKey } from "../../utils/crypto/pbkdf2.js"
+import { testAxiosRequest } from "../_utils.js"
+import IUserCredentials from "../../types/interfaces/IUserCredentials.js"
 
 const MODULE = "createUser"
 
-describe("Create an account", function () {
+describe("[CORE] Create an account", function () {
 
     before(async () => {
         await setupTests(MODULE)
