@@ -8,8 +8,8 @@
     "build": "tsc",
     "start": "nodemon ./dist/server.js",
     "main": "yarn build && yarn start",
-    "test-core": "cross-env ENV=DEV PORT=3000 mocha --grep '\\[CORE\\]' -r dotenv/config",
-    "test-services": "cross-env ENV=DEV PORT=3000 mocha --grep '\\[SERVICES\\]' -r dotenv/config"
+    "test-core": "cross-env ENV=DEV PORT=3000 mocha --grep '\\[CORE\\]' -r dotenv/config --exit",
+    "test-services": "cross-env ENV=DEV PORT=3000 mocha --grep '\\[SERVICES\\]' -r dotenv/config --exit"
   },
   "keywords": [],
   "author": "",
