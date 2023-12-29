@@ -54,6 +54,7 @@ export function setupRoutes(app: Express) {
     app.use("/", rootRoute)
     app.use("/status", statusRoute)
     app.use("/update", updateRoute)
+    // DUMMY CHANGE
 
     logger(MODULE, `Routes set up`)
 } 
