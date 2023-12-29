@@ -1,28 +1,29 @@
 import { User } from "../../models/User.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { validateVerifyUserRequest } from "../../middlewares/validators/user_services/verifyUser.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
 import IUserUnverified from "../../types/interfaces/IUserUnverified.js";
+import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
+import { validateRequest } from "../../utils/validateRequest.js";
 import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 
 const MODULE = "services :: user_services :: verifyUser"
 
-export async function verifyUser(reqData: IUserVerification): Promise<ServiceResponse<IUserVerification>> {
+export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVerification>> {
 
-    const vRes = await validateVerifyUserRequest(reqData)
+    const vRes = await validateRequest<IUserVerification>(MODULE, reqBody, verificationSchema)
     if (!vRes.isValid) {
         return {
             err: true,
             errMsg: vRes.error,
-            statusCode: 400,
+            statusCode: vRes.statusCode,
         }
     }
 
-    const vData: IUserVerification = vRes.data
-    const user = await User.findOne({ email: reqData.email }) as IUserUnverified
+    const reqData: IUserVerification = vRes.data
+    const user = await User.findOne({ email: vRes.data.email }) as IUserUnverified
     if (!user) {
         return {
             err: true,
@@ -66,7 +67,7 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
             logger(MODULE, `Re-sending verification code for: ${user.email}`)
             return {
                 err: false,
-                data: vData,
+                data: reqData,
                 statusCode: 200
             } 
 
@@ -120,7 +121,7 @@ export async function verifyUser(reqData: IUserVerification): Promise<ServiceRes
 
     return {
         err: false,
-        data: vData,
+        data: reqData,
         statusCode: 200
     } 
 }

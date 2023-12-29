@@ -2,26 +2,28 @@ import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import IUserBase from "../../types/interfaces/IUserBase.js";
-import { validateEmailOTP } from "../../middlewares/validators/user_services/emailOTP.js";
 import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
+import { validateRequest } from "../../utils/validateRequest.js";
+import { authUserBaseSchema } from "../../middlewares/validators/schemas/auth/authUserBaseSchema.js";
+import { AuthUserBaseSchemaResult } from "../../middlewares/validators/schemas/auth/authUserBaseSchema.js";
 
 const MODULE = "services :: user_services :: emailOTP"
 
 export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>> {
  
-    const vRes = await validateEmailOTP(reqBody)
+    const vRes = await validateRequest<AuthUserBaseSchemaResult>(MODULE, reqBody, authUserBaseSchema)
     if (!vRes.isValid) {
         logger(MODULE, `emailOTP req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
-            statusCode: 400
+            statusCode: vRes.statusCode
         }
     }
 
-    const userData = vRes.data
+    const userData: IUserBase = vRes.data
     const user = await User.findOne({ email: userData.email })
     if (!user) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
@@ -53,7 +55,7 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
             }
         })
 
-        const emailRes = await sendVerificationCodeEmail(userData.email, emailOTP, emailChangeMsg)
+        const emailRes = await sendVerificationCodeEmail(user.email, emailOTP, emailChangeMsg)
         if (emailRes.err) {
             return {
                 err: true,

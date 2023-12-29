@@ -1,26 +1,27 @@
 import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { validateEmailChange } from "../../middlewares/validators/user_services/emailChange.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
+import { validateRequest } from "../../utils/validateRequest.js";
+import { AuthEmailChangeRequestResult, authEmailChangeSchema } from "../../middlewares/validators/schemas/auth/authVerificationSchema.js";
 
 const MODULE = "services :: user_services :: emailChange"
 
 export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVerification>> {
 
-    const vRes = await validateEmailChange(reqBody)
+    const vRes = await validateRequest<AuthEmailChangeRequestResult>(MODULE, reqBody, authEmailChangeSchema)
     if (!vRes.isValid) {
         console.log(vRes.error)
         logger(MODULE, `email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
-            statusCode: 400
+            statusCode: vRes.statusCode
         }
     }
 
-    const vData: IUserVerification = vRes.data
-    const user = await User.findOne({ email: vData.email })
+    const reqData: IUserVerification = vRes.data
+    const user = await User.findOne({ email: reqData.email })
     if (!user || !user.verificationCodeExpires) {
         logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)
         return {
@@ -47,7 +48,7 @@ export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVer
         }
     }
     
-    if (vData.verificationCode !== user.verificationCode) {
+    if (reqData.verificationCode !== user.verificationCode) {
         return {
             err: true,
             errMsg: `Invalid OTP code.`,
@@ -59,9 +60,9 @@ export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVer
         // const prevEmail = user.email
         // Send email to old account & inform user about the change
 
-        await User.updateOne({ email: vData.email }, {
+        await User.updateOne({ email: reqData.email }, {
             $set: {
-                email: vData.email
+                email: reqData.email
             },
             $unset: {
                 verificationCode: "",
@@ -81,7 +82,7 @@ export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVer
 
     return {
         err: false,
-        data: vData,
+        data: reqData,
         statusCode: 200
     }
 }

@@ -1,7 +1,8 @@
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
-import { validateLoginUserRequest } from "../../middlewares/validators/user_services/loginUser.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
+import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
+import { validateRequest } from "../../utils/validateRequest.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 
@@ -9,18 +10,18 @@ const MODULE = "services :: user_services :: loginUser"
 
 export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCredentials>> {
 
-    const vRes = await validateLoginUserRequest(reqBody)
+    const vRes = await validateRequest<IUserCredentials>(MODULE, reqBody, userCredentialsSchema)
     if (!vRes.isValid) {
         logger(MODULE, `loginUser req rejected: Failed to validate input`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
-            statusCode: 400
+            statusCode: vRes.statusCode
         }
     }
 
-    const vData: IUserCredentials = vRes.data
-    const user = await User.findOne({ email: vData.email })
+    const reqData: IUserCredentials = vRes.data
+    const user = await User.findOne({ email: reqData.email })
     if (!user) {
         logger(MODULE, `Failed to login user. Reason: No account matches user email`, LogType.WARN)
         return {
@@ -45,7 +46,7 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCrede
         }
     }
 
-    const saltedPwd = vData.password + user.salt
+    const saltedPwd = reqData.password + user.salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: user.salt })
 
     if (hashedPwd !== user.password) {
@@ -62,7 +63,7 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCrede
 
     return {
         err: false,
-        data: vData,
+        data: reqData,
         statusCode: 200
     }
 

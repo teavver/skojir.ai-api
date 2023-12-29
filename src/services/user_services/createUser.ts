@@ -2,27 +2,28 @@ import { User } from "../../models/User.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { validateRegisterUserRequest } from "../../middlewares/validators/user_services/registerUser.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 import { generateSalt } from "../../utils/crypto/salt.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
+import { validateRequest } from "../../utils/validateRequest.js";
+import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
 
 const MODULE = "services :: user_services :: createUser"
 
 export async function createUser(reqBody:any, verificationCode: string): Promise<ServiceResponse<IUserCredentials>> {
 
-    const vRes = await validateRegisterUserRequest(reqBody)
+    const vRes = await validateRequest<IUserCredentials>(MODULE, reqBody, userCredentialsSchema)
     if (!vRes.isValid) {
         logger(MODULE, `createUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
-            statusCode: 400
+            statusCode: vRes.statusCode
         }
     }
     
-    const vData: IUserCredentials = vRes.data
-    const user = await User.findOne({ email: vData.email })
+    const reqData: IUserCredentials = vRes.data
+    const user = await User.findOne({ email: reqData.email })
     if (user) {
         logger(MODULE, `Failed to create new user. Reason: user already has an account`, LogType.WARN)
         return {
@@ -36,11 +37,11 @@ export async function createUser(reqBody:any, verificationCode: string): Promise
     }
 
     const salt = generateSalt()
-    const saltedPwd = vData.password + salt
+    const saltedPwd = reqData.password + salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
     const newUser = new User({
-        email: vData.email,
+        email: reqData.email,
         password: hashedPwd,
         salt: salt,
         verificationCode: verificationCode,
@@ -61,7 +62,7 @@ export async function createUser(reqBody:any, verificationCode: string): Promise
 
     return {
         err: false,
-        data: vData,
+        data: reqData,
         statusCode: 201
     }
 }

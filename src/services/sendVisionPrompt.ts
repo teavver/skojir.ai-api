@@ -1,9 +1,9 @@
 import { openAIClient } from "../main.js"
 import { logger, LogType } from "../utils/logger.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
-import { SolveRequest, SolverOutputFormat } from "../types/requests/client/SolveRequest.js"
+import { SolveRequest, SolverOutputFormat } from "../types/requests/SolveRequest.js"
 import { GPTSettings } from "../types/GPTSettings.js"
-import { validOutputFormats } from "../types/requests/client/SolveRequest.js"
+import { validOutputFormats } from "../types/requests/SolveRequest.js"
 
 const MODULE = "services :: sendVisionPrompt"
 

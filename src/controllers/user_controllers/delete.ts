@@ -2,7 +2,7 @@ import { User } from "../../models/User.js";
 import { Request, Response } from "express";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
-import { AuthCredentialsRequest } from "../../types/requests/AuthCredentialsRequest.js";
+import { AuthCredentialsRequest } from "../../types/requests/auth/AuthCredentialsRequest.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { deleteUser as deleteUserService } from "../../services/user_services/deleteUser.js";
 import IUserCredentials from "../../types/interfaces/IUserCredentials.js";

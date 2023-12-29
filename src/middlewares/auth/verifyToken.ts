@@ -4,7 +4,7 @@ import { AuthTokenPayload } from "../../types/AuthToken.js"
 import { User } from "../../models/User.js"
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 import { logger, LogType } from "../../utils/logger.js"
-import { AuthRequest } from "../../types/requests/AuthRequest.js"
+import { AuthRequest } from "../../types/requests/auth/AuthRequest.js"
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js"
 
 const MODULE = "middlewares :: auth :: verifyToken"

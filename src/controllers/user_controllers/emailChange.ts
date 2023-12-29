@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
-import { AuthVerificationRequest } from "../../types/requests/AuthVerificationRequest.js";
+import { AuthVerificationRequest } from "../../types/requests/auth/AuthVerificationRequest.js";
 import { emailChange as emailChangeService } from "../../services/user_services/emailChange.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
 

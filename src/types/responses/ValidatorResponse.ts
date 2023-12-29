@@ -6,7 +6,7 @@ interface SuccessfulValidation<T> {
 interface FailedValidation {
     isValid: false
     error: string
-    statusCode: number
+    statusCode: 400
 }
 
 export type ValidatorResponse<T> = SuccessfulValidation<T> | FailedValidation

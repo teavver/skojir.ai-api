@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
-import { AuthRequestBase } from "../../types/requests/AuthRequestBase.js";
+import { AuthRequestBase } from "../../types/requests/auth/AuthRequestBase.js";
 import { emailOTP as emailOTPService } from "../../services/user_services/emailOTP.js";
 
 const MODULE = "controllers :: user_controllers :: emailOTP"
