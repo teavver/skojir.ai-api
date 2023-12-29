@@ -1,31 +1,24 @@
-# skojir.ai-public-api
+# Public api for [skojir.ai](https://skojir.ai)
 
-Public api for [skojir.ai](https://skojir.ai)
-
-# CI/CD
-
-#### local: `act --env-file .env` in project root
-
----
 # .env
 
 ### Local config
-- `LOG` - 1= all logs, 0= no logs
-- `ENV` - app environment
-    - `DEV` - uses the test db collection, no middleware on endpoints
-    - `PROD` - for production only
+- `LOG` - 1= all, 0= off
+- `ENV`
+    - `DEV` - uses the test db collection, rate limiting off
+    - `PROD`
 - `PORT` - express
 
 ### External clients
 - `OPENAI_KEY`
-- `DB_URL` - URL to db cluster
+- `DB_URL`
 - `DB_COLLECTION_PROD`
-- `DB_COLLECTION_DEV` - unit tests collection
+- `DB_COLLECTION_DEV`
 - `MAILJET_API_KEY`
 - `MAILJET_SECRET_KEY`
 
 ### External services
-- `BACKEND_URL` - url to GCF
+- `BACKEND_URL`
 
 ### Auth
 - `JWT_SECRET`
