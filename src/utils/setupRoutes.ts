@@ -1,3 +1,4 @@
+import { logger } from "./logger.js";
 import express, { Express } from "express";
 import { conditionalMiddleware } from "./condMiddleware.js";
 import { rateLimit } from "express-rate-limit";
@@ -5,12 +6,12 @@ import solverRoute from "../routes/solver.js";
 import statusRoute from "../routes/status.js";
 import rootRoute from "../routes/root.js";
 import registerRoute from "../routes/user_routes/register.js";
-import emailOTPRoute from "../routes/user_routes/emailOTP.js"
-import emailChangeRoute from "../routes/user_routes/emailChange.js"
-import deleteRoute from "../routes/user_routes/delete.js"
+import emailOTPRoute from "../routes/user_routes/emailOTP.js";
+import emailChangeRoute from "../routes/user_routes/emailChange.js";
+import deleteRoute from "../routes/user_routes/delete.js";
 import verifyRoute from "../routes/auth/verify.js";
-import loginRoute from "../routes/auth/login.js"
-import { logger } from "./logger.js";
+import loginRoute from "../routes/auth/login.js";
+import updateRoute from "../routes/update.js";
 
 const MODULE = "utils :: setupRoutes"
 
@@ -52,6 +53,7 @@ export function setupRoutes(app: Express) {
     // general
     app.use("/", rootRoute)
     app.use("/status", statusRoute)
+    app.use("/update", updateRoute)
 
     logger(MODULE, `Routes set up`)
 } 
