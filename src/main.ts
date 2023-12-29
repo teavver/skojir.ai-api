@@ -16,7 +16,7 @@ let openAIClient: OpenAI
 let mailjetClient: Mailjet
 
 async function init() {
-    
+
     const envStatus = envSetup()
     if (!envStatus) process.exit(1)
 
