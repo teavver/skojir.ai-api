@@ -30,22 +30,18 @@ jobs:
     - name: Build Project
       run: yarn build
 
-    - name: Setup Environment Variables
-      if: github.action_ref != null
-      run: |
-        echo "Running on GitHub Actions. Setting up Secrets as Environment Variables."
-        echo "LOG=1" >> $GITHUB_ENV
-        echo "ENV=DEV" >> $GITHUB_ENV
-        echo "PORT=3000" >> $GITHUB_ENV
-        echo "BACKEND_URL=${{ secrets.BACKEND_URL }}" >> $GITHUB_ENV
-        echo "DB_COLLECTION_DEV=${{ secrets.DB_COLLECTION_DEV }}" >> $GITHUB_ENV
-        echo "DB_COLLECTION_PROD=${{ secrets.DB_COLLECTION_PROD }}" >> $GITHUB_ENV
-        echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
-        echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> $GITHUB_ENV
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
-        echo "MAILJET_API_KEY=${{ secrets.MAILJET_API_KEY }}" >> $GITHUB_ENV
-        echo "MAILJET_SECRET_KEY=${{ secrets.MAILJET_SECRET_KEY }}" >> $GITHUB_ENV
-        echo "OPENAI_KEY=${{ secrets.OPENAI_KEY }}" >> $GITHUB_ENV
-
     - name: Execute Tests
+      env:
+        LOG: 1
+        ENV: DEV
+        PORT: 3000
+        BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        DB_COLLECTION_DEV: ${{ secrets.DB_COLLECTION_DEV }}
+        DB_COLLECTION_PROD: ${{ secrets.DB_COLLECTION_PROD }}
+        DB_URL: ${{ secrets.DB_URL }}
+        JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        MAILJET_API_KEY: ${{ secrets.MAILJET_API_KEY }}
+        MAILJET_SECRET_KEY: ${{ secrets.MAILJET_SECRET_KEY }}
+        OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
       run: yarn test-core
