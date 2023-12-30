@@ -1,5 +1,13 @@
 # Public api for [skojir.ai](https://skojir.ai)
 
+# Running in self-update mode
+
+1. `sudo npm install pm2 -g`
+2. `sudo npm i pm2 -g`
+3. `pm2 startup systemd`
+4. `pm2 save`
+5. `pm2 start ecosystem.config.mjs`
+
 # .env
 
 ### Local config
