@@ -2,11 +2,11 @@
 
 # Running in self-update mode
 
-1. `sudo npm install pm2 -g`
-2. `sudo npm i pm2 -g`
-3. `pm2 startup systemd`
-4. `pm2 save`
-5. `pm2 start ecosystem.config.mjs`
+1. `npm i pm2 -g`
+2. `yarn build`
+1. `pm2 startup systemd`
+2. `pm2 start ecosystem.config.cjs`
+3. `pm2 save`
 
 # .env
 
