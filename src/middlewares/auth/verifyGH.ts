@@ -15,11 +15,11 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
     try {
 
         logger(MODULE, "Verifying GH Webhook request...")
-        
         const strBody = JSON.stringify(req.body, null, 2)
         const reqSign = req.headers['x-hub-signature-256'] as string
 
         if (!reqSign) {
+            logger(MODULE, `Failed to validate Update req - missing signature header`, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
                 message: "Missing signature"
@@ -33,6 +33,7 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
         const valid = timingSafeEqual(trusted, untrusted)
 
         if (!valid) {
+            logger(MODULE, `Failed to validate Update req - wrong signature`, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
                 message: "Failed to authenticate request"
@@ -40,14 +41,12 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
         }
 
         appendFileSync('self_update_logs.txt', `${strBody}\n`, 'utf8')
-        logger(MODULE, strBody, LogType.SERVER)
 
         if (req.body.action !== "completed" && req.body.workflow_run.conclusion !== "success") {
             next()
         }
 
     } catch (err) {
-
         const errMsg = (err as Error).message
         logger(MODULE, errMsg, LogType.ERR)
         return res.status(401).json({

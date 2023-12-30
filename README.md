@@ -1,12 +1,14 @@
-# Public api for [skojir.ai](https://skojir.ai)
+# Api for [skojir.ai](https://skojir.ai)
 
 # Running in self-update mode
 
 1. `npm i pm2 -g`
 2. `yarn build`
-1. `pm2 startup systemd`
-2. `pm2 start ecosystem.config.cjs`
-3. `pm2 save`
+3. `pm2 startup systemd`
+4. `pm2 start ecosystem.config.cjs`
+5. `pm2 save`
+6. `pm2 monit`
+7. `pm2 logs skojir-api --lines 200 --out`
 
 # .env
 
@@ -31,6 +33,9 @@
 ### Auth
 - `JWT_SECRET`
 - `JWT_REFRESH_SECRET`
+
+### Github
+- `GH_WEBHOOK_KEY`
 
 ---
 # App setup

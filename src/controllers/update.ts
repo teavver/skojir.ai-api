@@ -7,7 +7,7 @@ const MODULE = "controllers :: selfUpdate"
 
 export async function performUpdate(req: Request, res: Response<ResponseMessage>) {
 
-    logger(MODULE, 'Pulling newest updates from GitHub...')
+    logger(MODULE, 'Pulling newest updates from GitHub...', LogType.SERVER)
     exec('git pull origin main', (err, stdout, stderr) => {
         if (err) {
             logger(MODULE, `Failed to pull changes from gh. Err: ${err}`, LogType.ERR)
