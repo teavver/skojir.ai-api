@@ -12,7 +12,7 @@ const MODULE = "middlewares :: auth :: verifyToken"
 /**
  * Authenticate user's access token
  */
-export async function verifyToken(req: Request<AuthRequest>, res: Response<ResponseMessage>, next: NextFunction): Promise<void> {
+export async function verifyToken(req: Request<AuthRequest>, res: Response<ResponseMessage>, next: NextFunction) {
 
     logger(MODULE, "Verifying auth tokens...")
     const token = req.headers.authorization?.split(" ")[1]
@@ -20,11 +20,10 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
     if (!token) {
         const err = "No auth token was provided"
         logger(MODULE, err, LogType.ERR)
-        res.status(401).json({
+        return res.status(401).json({
             state: "unauthorized",
             message: err
         })
-        return
     }
 
     try {
@@ -37,11 +36,10 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
         if (!user) {
             const err = "User does not match token payload."
             logger(MODULE, err, LogType.ERR)
-            res.status(401).json({
+            return res.status(401).json({
                 state: "unauthorized",
                 message: "Invalid token"
             })
-            return
         }
 
         req.body.user = user as IUserVerified
@@ -54,29 +52,26 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
         if (error instanceof jwt.TokenExpiredError) {
             const err = "Token expired."
             logger(MODULE, err, LogType.ERR)
-            res.status(401).json({
+            return res.status(401).json({
                 state: "unauthorized",
                 message: err
             })
-            return
         }
 
         if (error instanceof jwt.JsonWebTokenError) {
             const err = "Invalid token. Check for mismatch of access and refresh tokens"
             logger(MODULE, err, LogType.ERR)
-            res.status(401).json({
+            return res.status(401).json({
                 state: "unauthorized",
                 message: err
             })
-            return
         }
 
         const err = "Failed to authenticate token"
         logger(MODULE, err, LogType.ERR)
-        res.status(401).json({
+        return res.status(401).json({
             state: "unauthorized",
             message: err
         })
-        return
     }
 }
