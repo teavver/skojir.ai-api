@@ -44,4 +44,5 @@ jobs:
         MAILJET_API_KEY: ${{ secrets.MAILJET_API_KEY }}
         MAILJET_SECRET_KEY: ${{ secrets.MAILJET_SECRET_KEY }}
         OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+        GH_WEBHOOK_KEY: ${{ secrets.GH_WEBHOOK_KEY }}
       run: yarn test-core
