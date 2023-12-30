@@ -26,7 +26,8 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
             })
         }
 
-        const signature = createHmac("sha256", process.env.GH_WEBHOOK_KEY).update(JSON.stringify(req.body)).digest("hex")
+        const key = process.env.GH_WEBHOOK_KEY as string
+        const signature = createHmac("sha256", key).update(JSON.stringify(req.body)).digest("hex")
         let trusted = Buffer.from(`sha256=${signature}`, 'ascii')
         let untrusted =  Buffer.from(reqSign, 'ascii')
         const valid = timingSafeEqual(trusted, untrusted)

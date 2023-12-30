@@ -28,7 +28,7 @@ export function envSetup(): boolean {
     ]
     
     for (const key of envKeys) {
-        if (!process.env[key]) {
+        if (!process.env[key] || process.env[key] === "") {
             console.error(`.Env key ${key} is missing.`)
             return false
         }
