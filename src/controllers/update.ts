@@ -1,18 +1,33 @@
+import { exec } from 'child_process';
 import { Request, Response } from "express";
 import { ResponseMessage } from "../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../utils/logger.js";
-import { appendFileSync } from 'fs';
 
-const MODULE = "controllers :: update"
+const MODULE = "controllers :: selfUpdate"
 
-export async function postUpdate(req: Request, res: Response<ResponseMessage>) {
+export async function performUpdate(req: Request, res: Response<ResponseMessage>) {
+
+    logger(MODULE, 'Pulling newest updates from GitHub...')
+    exec('git pull origin main', (err, stdout, stderr) => {
+        if (err) {
+            logger(MODULE, `Failed to pull changes from gh. Err: ${err}`, LogType.ERR)
+        }
+
+        logger(MODULE, `Logs: ${stdout}`, LogType.SERVER)
+        logger(MODULE, `Err: ${stderr}`, LogType.SERVER)
+    })
     
-    const bodyStr = JSON.stringify(req.body, null, 2)
-    appendFileSync('update_logs.txt', `${bodyStr}\n`, 'utf8')
+    exec('pm2 restart skojir-api', (err, stdout, stderr) => {
+        if (err) {
+            logger(MODULE, `Failed to restart app. Err: ${err}`, LogType.ERR)
+        }
+
+        logger(MODULE, `Logs: ${stdout}`, LogType.SERVER)
+        logger(MODULE, `Err: ${stderr}`, LogType.SERVER)
+    })
     
-    logger(MODULE, bodyStr, LogType.SERVER)
     return res.status(200).json({
         state: "success",
-        message: ""
-    });
+        message: "OK"
+    })
 }

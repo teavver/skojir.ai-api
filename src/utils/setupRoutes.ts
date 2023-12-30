@@ -53,6 +53,8 @@ export function setupRoutes(app: Express) {
     // general
     app.use("/", rootRoute)
     app.use("/status", statusRoute)
+
+    // github
     app.use("/update", updateRoute)
 
     logger(MODULE, `Routes set up`)
