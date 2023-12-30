@@ -24,6 +24,7 @@ export function envSetup(): boolean {
         'MAILJET_SECRET_KEY',
         'JWT_SECRET',
         'JWT_REFRESH_SECRET',
+        'GH_WEBHOOK_KEY',
     ]
     
     for (const key of envKeys) {

@@ -27,6 +27,9 @@ declare global {
         LOG: int
         ENV: string
         PORT: string
+
+        // github
+        GH_WEBHOOK_KEY: string
     }
   }
 }

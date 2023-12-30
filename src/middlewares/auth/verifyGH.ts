@@ -16,12 +16,20 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
 
         logger(MODULE, "Verifying GH Webhook request...")
         
-        const ghSignature = req.headers['x-hub-signature-256'] as string
         const strBody = JSON.stringify(req.body, null, 2)
+        const reqSign = req.headers['x-hub-signature-256'] as string
 
-        const hmac = createHmac('sha256', process.env.GH_WEBHOOK_KEY || '')
-        const digest = 'sha256=' + hmac.update(req.body).digest('hex')
-        const valid = timingSafeEqual(Buffer.from(digest), Buffer.from(ghSignature))
+        if (!reqSign) {
+            return res.status(401).json({
+                state: "unauthorized",
+                message: "Missing signature"
+            })
+        }
+
+        const signature = createHmac("sha256", process.env.GH_WEBHOOK_KEY).update(JSON.stringify(req.body)).digest("hex")
+        let trusted = Buffer.from(`sha256=${signature}`, 'ascii')
+        let untrusted =  Buffer.from(reqSign, 'ascii')
+        const valid = timingSafeEqual(trusted, untrusted)
 
         if (!valid) {
             return res.status(401).json({
