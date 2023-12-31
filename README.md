@@ -2,6 +2,9 @@
 
 # Running in self-update mode
 
+### The self-update mode allows GitHub to trigger seamless, automatic app update & restart logic
+### Updates only occur on main branch changes, and will be cancelled if GH workflow fails.
+
 1. `npm i pm2 -g`
 2. `yarn build`
 3. `pm2 startup systemd`
