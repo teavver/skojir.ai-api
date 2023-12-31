@@ -14,7 +14,6 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
     try {
 
         logger(MODULE, "Verifying GH Webhook request...")
-        const strBody = JSON.stringify(req.body, null, 2)
         const reqSign = req.headers['x-hub-signature-256'] as string
 
         if (!reqSign) {

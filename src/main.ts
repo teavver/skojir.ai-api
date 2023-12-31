@@ -1,13 +1,14 @@
+import cors from "cors"
+import { OpenAI } from "openai"
+import Mailjet from "node-mailjet"
+import { execSync } from "child_process"
+import express, { Express } from "express"
 import { logger, LogType } from "./utils/logger.js"
 import { createOpenAIClient } from "./clients/openAI.js"
 import { createDbClient } from "./clients/db.js"
-import express, { Express } from "express"
 import { envSetup } from "./utils/envSetup.js"
-import { OpenAI } from "openai"
-import cors from "cors"
 import { setupRoutes } from "./utils/setupRoutes.js"
 import { createMailjetClient } from "./clients/mailjet.js"
-import Mailjet from "node-mailjet"
 
 const MODULE = "main"
 
@@ -33,7 +34,9 @@ async function init() {
 
     setupRoutes(app)
 
-    logger(MODULE, "All set up!", LogType.SUCCESS)
+    const ver = execSync('git rev-parse HEAD').toString().slice(0, 7)
+    logger(MODULE, `Running version: ${ver}`)
+    logger(MODULE, "All set up.", LogType.SUCCESS)
 }
 
 export { app, init, openAIClient, mailjetClient }
