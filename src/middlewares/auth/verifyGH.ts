@@ -1,4 +1,3 @@
-import { appendFileSync } from "fs";
 import { createHmac, timingSafeEqual } from "crypto";
 import { Request, Response, NextFunction } from "express"
 import { logger, LogType } from "../../utils/logger.js"
@@ -40,11 +39,14 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
             })
         }
 
-        appendFileSync('self_update_logs.txt', `${strBody}\n`, 'utf8')
-
         if (req.body.action !== "completed" && req.body.workflow_run.conclusion !== "success") {
-            next()
+            return res.status(200).json({
+                state: "success",
+                message: "OK"
+            })
         }
+
+        next()
 
     } catch (err) {
         const errMsg = (err as Error).message
