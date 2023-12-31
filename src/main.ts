@@ -1,7 +1,6 @@
 import cors from "cors"
 import { OpenAI } from "openai"
 import Mailjet from "node-mailjet"
-import { execSync } from "child_process"
 import express, { Express } from "express"
 import { logger, LogType } from "./utils/logger.js"
 import { createOpenAIClient } from "./clients/openAI.js"
@@ -9,6 +8,7 @@ import { createDbClient } from "./clients/db.js"
 import { envSetup } from "./utils/envSetup.js"
 import { setupRoutes } from "./utils/setupRoutes.js"
 import { createMailjetClient } from "./clients/mailjet.js"
+import { asyncExec } from "./utils/asyncExec.js"
 
 const MODULE = "main"
 
@@ -18,8 +18,8 @@ let mailjetClient: Mailjet
 
 async function init() {
 
-    const envStatus = envSetup()
-    if (!envStatus) process.exit(1)
+    const validEnv = envSetup()
+    if (!validEnv){ process.exit(1) }
 
     openAIClient = createOpenAIClient()
     mailjetClient = createMailjetClient()
@@ -34,7 +34,7 @@ async function init() {
 
     setupRoutes(app)
 
-    const ver = execSync('git rev-parse HEAD').toString().slice(0, 7)
+    const ver = (await asyncExec("git rev-parse HEAD", "Failed to get commitId", false)).slice(0, 7)
     logger(MODULE, `Running version: ${ver}`)
     logger(MODULE, "All set up.", LogType.SUCCESS)
 }

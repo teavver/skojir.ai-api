@@ -6,12 +6,14 @@ const exec = promisify(execCallback)
 
 const MODULE = "utils :: asyncExec"
 
-export async function asyncExec(command: string, errMsg: string) {
+export async function asyncExec(command: string, errMsg: string, log: boolean = true): Promise<string> {
     try {
         const { stdout, stderr } = await exec(command)
-        logger(MODULE, `Stdout: ${stdout}`, LogType.SERVER)
-        logger(MODULE, `Stderr: ${stderr}`, LogType.SERVER)
+        log && logger(MODULE, `Stdout: ${stdout}`, LogType.SERVER)
+        log && logger(MODULE, `Stderr: ${stderr}`, LogType.SERVER)
+        return stdout
     } catch (err) {
         logger(MODULE, `${errMsg}. Err: ${err}`, LogType.ERR)
+        return ""
     }
 } 
