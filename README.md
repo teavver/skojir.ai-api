@@ -45,7 +45,9 @@
 
 1. `yarn install` in root dir
 2. create `.env` file and config all keys
-3. test locally with `yarn test`
+3. test locally with
+    1. `yarn test-core` for core functionality and
+    2. `yarn test-services` for external services
 4. run with `yarn main`
 
 ---
