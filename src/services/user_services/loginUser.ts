@@ -5,10 +5,12 @@ import { userCredentialsSchema } from "../../middlewares/validators/schemas/user
 import { validateRequest } from "../../utils/validateRequest.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { isUserVerified } from "../../utils/isUserVerified.js";
 
 const MODULE = "services :: user_services :: loginUser"
 
-export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCredentials>> {
+export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserVerified>> {
 
     const vRes = await validateRequest<IUserCredentials>(MODULE, reqBody, userCredentialsSchema)
     if (!vRes.isValid) {
@@ -34,7 +36,8 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCrede
         }
     }
 
-    if (!user.isEmailVerified) {
+    const userVerified = isUserVerified(user)
+    if (!userVerified) {
         logger(MODULE, `Failed to login user. Reason: Account not verified`, LogType.WARN)
         return {
             err: true,
@@ -61,9 +64,10 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserCrede
         }
     }
 
+
     return {
         err: false,
-        data: reqData,
+        data: user,
         statusCode: 200
     }
 

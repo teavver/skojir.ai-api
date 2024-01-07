@@ -29,7 +29,7 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Lo
     }
     
     // generate access & refresh tokens for user
-    const vData: IUserVerified = sRes.data as IUserVerified
+    const vData: IUserVerified = sRes.data
     const userAccessToken = generateAuthToken(vData, "accessToken")
     const userRefreshToken = generateAuthToken(vData, "refreshToken")
     
