@@ -3,12 +3,11 @@ import { Request, Response } from "express";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
-import { AuthRequestBase } from "../../types/requests/auth/AuthRequestBase.js";
 import { emailOTP as emailOTPService } from "../../services/user_services/emailOTP.js";
 
 const MODULE = "controllers :: user_controllers :: emailOTP"
 
-export async function emailOTP(req: Request<AuthRequestBase>, res: Response<ResponseMessage>) {
+export async function emailOTP(req: Request, res: Response<ResponseMessage>) {
 
     const validBody = validateRequestBody(req.body)
     if (!validBody) {

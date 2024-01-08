@@ -9,13 +9,13 @@
         "outDir": "dist",
         "pretty": true,
         "strict": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
     },
     "include": [
         "src/**/*",
-        "src/utils/interfaces/**/*",
     ],
     "exclude": [
         "./node_modules"
-    ]
+    ],
+    "files": ["./src/types/express/index.d.ts"]
 }

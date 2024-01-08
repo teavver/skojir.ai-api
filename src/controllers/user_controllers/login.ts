@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
+import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { logger, LogType } from "../../utils/logger.js";
@@ -10,7 +10,7 @@ import { LoginResponse } from "../../types/responses/LoginResponse.js";
 
 const MODULE = "controllers :: user_controllers :: login"
 
-export async function loginUser(req: Request<IUserCredentials>, res: Response<LoginResponse>) {
+export async function loginUser(req: Request, res: Response<LoginResponse>) {
 
     const validBody = validateRequestBody(req.body)
     if (!validBody) {

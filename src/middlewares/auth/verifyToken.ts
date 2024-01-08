@@ -1,24 +1,24 @@
 import jwt from "jsonwebtoken"
-import { Request, Response, NextFunction } from "express"
+import { Response, NextFunction, Request } from "express"
 import { AuthTokenPayload } from "../../types/AuthToken.js"
 import { User } from "../../models/User.js"
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 import { logger, LogType } from "../../utils/logger.js"
-import { AuthRequest } from "../../types/requests/auth/AuthRequest.js"
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js"
+import { isUserVerified } from "../../utils/isUserVerified.js"
 
 const MODULE = "middlewares :: auth :: verifyToken"
 
 /**
  * Authenticate user's access token
  */
-export async function verifyToken(req: Request<AuthRequest>, res: Response<ResponseMessage>, next: NextFunction) {
+export async function verifyToken(req: Request, res: Response<ResponseMessage>, next: NextFunction) {
 
     logger(MODULE, "Verifying auth tokens...")
     const token = req.headers.authorization?.split(" ")[1]
 
     if (!token) {
-        const err = "No auth token was provided"
+        const err = "No auth token was provided."
         logger(MODULE, err, LogType.ERR)
         return res.status(401).json({
             state: "unauthorized",
@@ -32,17 +32,28 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
             clockTolerance: 300 // Allow slight timing skews
         }) as AuthTokenPayload
 
-        const user = await User.findOne({ email: authPayload.email })
+        const user = await User.findOne({ email: authPayload.email }).populate({
+            path: 'membershipDetails',
+            match: { _id: { $exists: true } }
+        }) as IUserVerified | null
+
         if (!user) {
             const err = "User does not match token payload."
             logger(MODULE, err, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
-                message: "Invalid token"
+                message: "Invalid token."
             })
         }
 
-        req.body.user = user as IUserVerified
+        if (!isUserVerified(user)) {
+            return res.status(401).json({
+                state: "unauthorized",
+                message: "Account is not verified."
+            })
+        }
+
+        req.user = user
         logger(MODULE, "Auth tokens verified.")
 
         next()
@@ -59,7 +70,7 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
         }
 
         if (error instanceof jwt.JsonWebTokenError) {
-            const err = "Invalid token. Check for mismatch of access and refresh tokens"
+            const err = "Invalid token. Check for mismatch of access and refresh tokens."
             logger(MODULE, err, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
@@ -67,7 +78,7 @@ export async function verifyToken(req: Request<AuthRequest>, res: Response<Respo
             })
         }
 
-        const err = "Failed to authenticate token"
+        const err = "Failed to authenticate token."
         logger(MODULE, err, LogType.ERR)
         return res.status(401).json({
             state: "unauthorized",

@@ -1,6 +1,7 @@
+import IMembership from "../types/interfaces/IMembership"
 import mongoose, { Schema } from "mongoose"
 
-const membershipSchema = new Schema({
+const membershipSchema = new Schema<IMembership>({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',

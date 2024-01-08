@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "build-clean": "rm -rf dist && tsc",
     "start": "nodemon ./dist/server.js",
-    "main": "yarn build && yarn start",
+    "main": "yarn build-clean && yarn start",
     "ci": "act --env-file ./.env",
     "test-core": "cross-env ENV=DEV PORT=3000 mocha --grep '\\[CORE\\]' -r dotenv/config --exit",
     "test-services": "cross-env ENV=DEV PORT=3000 mocha --grep '\\[SERVICES\\]' -r dotenv/config --exit"

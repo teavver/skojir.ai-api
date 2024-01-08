@@ -2,13 +2,12 @@ import { Request, Response } from "express";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
-import { AuthVerificationRequest } from "../../types/requests/auth/AuthVerificationRequest.js";
 import { emailChange as emailChangeService } from "../../services/user_services/emailChange.js";
 import IUserVerification from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "controllers :: user_controllers :: emailChange"
 
-export async function emailChange(req: Request<AuthVerificationRequest>, res: Response<ResponseMessage>) {
+export async function emailChange(req: Request, res: Response<ResponseMessage>) {
 
     const validBody = validateRequestBody(req.body)
     if (!validBody) {
@@ -25,9 +24,9 @@ export async function emailChange(req: Request<AuthVerificationRequest>, res: Re
             message: sRes.errMsg
         })
     }
-    
+
     const vData: IUserVerification = sRes.data
-    const oldEmail = req.body.user.email
+    const oldEmail = req.user!.email
     logger(MODULE, `User ${oldEmail} changed their email to: ${vData.email}.`, LogType.SUCCESS)
     return res.status(200).json({
         state: "success",

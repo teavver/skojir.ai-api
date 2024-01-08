@@ -9,7 +9,7 @@ import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 
 const MODULE = "controllers :: user_controllers :: register"
 
-export async function registerUser(req: Request<IUserCredentials>, res: Response<ResponseMessage>) {
+export async function registerUser(req: Request, res: Response<ResponseMessage>) {
 
     const validBody = validateRequestBody(req.body)
     if (!validBody) {
@@ -29,7 +29,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
     }
 
     // send verification email to new user
-    const vData = sRes.data as IUserCredentials
+    const vData: IUserCredentials = sRes.data
     const emailRes = await sendVerificationCodeEmail(vData.email, verCode)
     if (emailRes.err) {
         return res.status(emailRes.statusCode).json({

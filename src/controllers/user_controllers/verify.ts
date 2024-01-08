@@ -7,7 +7,7 @@ import IUserVerification from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "controllers :: user_controllers :: verify"
 
-export async function verifyUser(req: Request<IUserVerification>, res: Response<ResponseMessage>) {
+export async function verifyUser(req: Request, res: Response<ResponseMessage>) {
 
     const validBody = validateRequestBody(req.body)
     if (!validBody) {
@@ -25,8 +25,7 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
         })
     }
 
-    const vData = vRes.data as IUserVerification
-
+    const vData: IUserVerification = vRes.data
     logger(MODULE, `User ${vData.email} verified their account`, LogType.SUCCESS)
     return res.status(vRes.statusCode).json({
         state: "success",

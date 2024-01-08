@@ -1,4 +1,5 @@
 export default interface IMembership {
-    userId: string // ObjectId of User
+    userId: string | undefined
+    isActive: boolean
     endDate: Date
 }
