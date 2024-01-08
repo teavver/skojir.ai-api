@@ -3,7 +3,7 @@ import { Server } from "net"
 import { logger, LogType } from "../utils/logger.js"
 import { User } from "../models/User.js"
 import { main } from "../server.js"
-import IUserCredentials from "../types/interfaces/IUserCredentials.js"
+import { IUserCredentials } from "../types/interfaces/IUserCredentials.js"
 
 const MODULE = "tests :: setup"
 let server: Server | null

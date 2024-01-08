@@ -12,7 +12,7 @@ const MODULE = "middlewares :: auth :: verifyToken"
 /**
  * Authenticate user's access token
  */
-export async function verifyToken(req: Request, res: Response<ResponseMessage>, next: NextFunction) {
+export async function verifyToken<T>(req: Request<T>, res: Response<ResponseMessage>, next: NextFunction) {
 
     logger(MODULE, "Verifying auth tokens...")
     const token = req.headers.authorization?.split(" ")[1]

@@ -1,5 +1,5 @@
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
 import { validateRequest } from "../../utils/validateRequest.js";

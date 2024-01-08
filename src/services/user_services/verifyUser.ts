@@ -1,8 +1,8 @@
 import { User } from "../../models/User.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import IUserVerification from "../../types/interfaces/IUserVerification.js";
-import IUserUnverified from "../../types/interfaces/IUserUnverified.js";
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { validateRequest } from "../../utils/validateRequest.js";

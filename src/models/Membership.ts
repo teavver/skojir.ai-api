@@ -1,4 +1,4 @@
-import IMembership from "../types/interfaces/IMembership"
+import { IMembership } from "../types/interfaces/IMembership"
 import mongoose, { Schema } from "mongoose"
 
 const membershipSchema = new Schema<IMembership>({

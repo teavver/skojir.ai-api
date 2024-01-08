@@ -4,6 +4,7 @@ import { User } from "../../models/User.js"
 import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "../_setup.js"
 import { testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
+import { IUserPassword } from "../../types/interfaces/IUserPassword.js"
 
 const MODULE = "createUser"
 
@@ -61,7 +62,7 @@ describe("[CORE] Delete an account", function () {
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` }
         }
-        const invalidDelReqData = { email: testUser.email, password: "invalid@Pwd!123" }
+        const invalidDelReqData: IUserPassword = { password: "invalid@Pwd!123" }
         const dReq = () => axios.post(deleteURL, invalidDelReqData, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(401)
@@ -72,7 +73,8 @@ describe("[CORE] Delete an account", function () {
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` }
         }
-        const dReq = () => axios.post(deleteURL, testUser, reqConf)
+        const validPwdData: IUserPassword = { password: testUser.password }
+        const dReq = () => axios.post(deleteURL, validPwdData, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(200)
     })

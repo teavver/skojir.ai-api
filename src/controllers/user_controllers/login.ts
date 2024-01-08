@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
-import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { logger, LogType } from "../../utils/logger.js";

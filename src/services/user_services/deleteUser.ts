@@ -1,16 +1,21 @@
-import { User } from "../../models/User.js";
-import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
+import { Request } from "express";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
-import { authUserCredentialsSchema, AuthUserCredentialsSchemaResult } from "../../middlewares/validators/schemas/auth/authUserCredentialsSchema.js";
+import { IUserPassword } from "../../types/interfaces/IUserPassword.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { passwordSchema } from "../../middlewares/validators/schemas/passwordSchema.js";
+import { IUserBase } from "../../types/interfaces/IUserBase.js";
 
 const MODULE = "services :: user_services :: deleteUser"
 
-export async function deleteUser(reqBody:any): Promise<ServiceResponse<IUserCredentials>> {
- 
-    const vRes = await validateRequest<AuthUserCredentialsSchemaResult>(MODULE, reqBody, authUserCredentialsSchema)
+export async function deleteUser(req:Request<IUserPassword>): Promise<ServiceResponse<IUserBase>> {
+
+    const userData: IUserVerified = req.user!
+    const userInputPwd: IUserPassword = req.body.password
+    const vRes = await validateRequest<IUserCredentials>(MODULE, userInputPwd, passwordSchema)
     if (!vRes.isValid) {
         logger(MODULE, `deleteUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -20,9 +25,7 @@ export async function deleteUser(reqBody:any): Promise<ServiceResponse<IUserCred
         }
     }
 
-    const reqData: IUserCredentials = vRes.data
-    const user = await User.findOne({ email: reqData.email })
-    if (!user) {
+    if (!userData.email) {
         logger(MODULE, `Failed to delete account - user does not exist`, LogType.WARN)
         return {
             err: true,
@@ -31,9 +34,9 @@ export async function deleteUser(reqBody:any): Promise<ServiceResponse<IUserCred
         }
     }
 
-    const userPwdSalted = reqData.password + user.salt
-    const hashedPwd = deriveKey({ password: userPwdSalted, salt: user.salt })
-    if (hashedPwd !== user.password) {
+    const userPwdSalted = userInputPwd + userData.salt
+    const hashedPwd = deriveKey({ password: userPwdSalted, salt: userData.salt })
+    if (hashedPwd !== userData.password) {
         logger(MODULE, `Failed to delete account - incorrect password input`, LogType.WARN)
         return {
             err: true,
@@ -44,7 +47,7 @@ export async function deleteUser(reqBody:any): Promise<ServiceResponse<IUserCred
 
     return {
         err: false,
-        data: reqData,
+        data: { email: userData.email },
         statusCode: 200
     }
 

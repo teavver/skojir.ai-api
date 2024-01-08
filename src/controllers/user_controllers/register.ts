@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../../utils/logger.js";
-import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { createUser } from "../../services/user_services/createUser.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { sendVerificationCodeEmail } from "../../services/user_services/sendVerificationCodeEmail.js";

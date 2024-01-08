@@ -1,6 +1,6 @@
-import IUserBase from "./IUserBase.js";
+import { IUserBase } from "./IUserBase.js";
 
-export default interface IUserVerification extends IUserBase {
+export interface IUserVerification extends IUserBase {
     verificationCode: string
     resend?: boolean
 }

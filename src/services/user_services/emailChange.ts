@@ -1,15 +1,22 @@
 import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import IUserVerification from "../../types/interfaces/IUserVerification.js";
 import { validateRequest } from "../../utils/validateRequest.js";
-import { AuthEmailChangeRequestResult, authEmailChangeSchema } from "../../middlewares/validators/schemas/auth/authVerificationSchema.js";
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { Request } from "express";
+import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 
 const MODULE = "services :: user_services :: emailChange"
 
-export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVerification>> {
+export async function emailChange(req:Request): Promise<ServiceResponse<IUserVerification>> {
 
-    const vRes = await validateRequest<AuthEmailChangeRequestResult>(MODULE, reqBody, authEmailChangeSchema)
+    const reqData: IUserVerification = {
+        email: req.user!.email,
+        verificationCode: req.body.verificationCode,
+        resend: req.body.resend
+    }
+
+    const vRes = await validateRequest<IUserVerification>(MODULE, reqData, verificationSchema)
     if (!vRes.isValid) {
         console.log(vRes.error)
         logger(MODULE, `email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
@@ -20,7 +27,6 @@ export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVer
         }
     }
 
-    const reqData: IUserVerification = vRes.data
     const user = await User.findOne({ email: reqData.email })
     if (!user || !user.verificationCodeExpires) {
         logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)
@@ -55,7 +61,7 @@ export async function emailChange(reqBody:any): Promise<ServiceResponse<IUserVer
             statusCode: 401
         }
     }
-    
+
     try {
         // const prevEmail = user.email
         // Send email to old account & inform user about the change

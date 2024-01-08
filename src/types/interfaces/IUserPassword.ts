@@ -1,3 +1,3 @@
-export default interface IUserPassword {
+export interface IUserPassword {
     password: string
 }

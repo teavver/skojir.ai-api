@@ -1,5 +1,5 @@
 import { User } from "../../models/User.js";
-import IUserCredentials from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";

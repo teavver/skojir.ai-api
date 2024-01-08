@@ -3,7 +3,7 @@ import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { emailChange as emailChangeService } from "../../services/user_services/emailChange.js";
-import IUserVerification from "../../types/interfaces/IUserVerification.js";
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "controllers :: user_controllers :: emailChange"
 

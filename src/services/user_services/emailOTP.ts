@@ -1,31 +1,19 @@
 import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import IUserBase from "../../types/interfaces/IUserBase.js";
+import { IUserBase } from "../../types/interfaces/IUserBase.js";
 import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
-import { validateRequest } from "../../utils/validateRequest.js";
-import { authUserBaseSchema } from "../../middlewares/validators/schemas/auth/authUserBaseSchema.js";
-import { AuthUserBaseSchemaResult } from "../../middlewares/validators/schemas/auth/authUserBaseSchema.js";
+import { Request } from "express";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "services :: user_services :: emailOTP"
 
-export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>> {
- 
-    const vRes = await validateRequest<AuthUserBaseSchemaResult>(MODULE, reqBody, authUserBaseSchema)
-    if (!vRes.isValid) {
-        logger(MODULE, `emailOTP req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
-        return {
-            err: true,
-            errMsg: vRes.error,
-            statusCode: vRes.statusCode
-        }
-    }
+export async function emailOTP(req:Request): Promise<ServiceResponse<IUserBase>> {
 
-    const userData: IUserBase = vRes.data
-    const user = await User.findOne({ email: userData.email })
-    if (!user) {
+    const userData: IUserVerified = req.user!
+    if (!userData.email) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
         return {
             err: true,
@@ -34,12 +22,12 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
         }
     }
 
-    if (!user.isEmailVerified) {
+    if (!userData.isEmailVerified) {
         logger(MODULE, `Failed to send email change OTP - account is not verified`, LogType.WARN)
         return {
             err: true,
             errMsg: `Your account must be verified to perform this action.`,
-            statusCode: 404
+            statusCode: 401
         }
     }
 
@@ -48,14 +36,14 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
     const emailChangeMsg = "Use this code to change your account's email address. This code will expire in 10 minutes."
 
     try {
-        await User.updateOne({ email: user.email }, {
+        await User.updateOne({ email: userData.email }, {
             $set: {
                 verificationCode: emailOTP,
                 verificationCodeExpires: emailOTPExpiry
             }
         })
 
-        const emailRes = await sendVerificationCodeEmail(user.email, emailOTP, emailChangeMsg)
+        const emailRes = await sendVerificationCodeEmail(userData.email, emailOTP, emailChangeMsg)
         if (emailRes.err) {
             return {
                 err: true,
@@ -64,7 +52,7 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
             }
         }
 
-        logger(MODULE, `Email OTP code sent to ${user.email}, code: ${emailOTP}`)
+        logger(MODULE, `Email OTP code sent to ${userData.email}, code: ${emailOTP}`)
 
     } catch (err) {
         const errMsg = (err as Error).message
@@ -78,7 +66,7 @@ export async function emailOTP(reqBody:any): Promise<ServiceResponse<IUserBase>>
 
     return {
         err: false,
-        data: userData,
+        data: { email: userData.email },
         statusCode: 200
     }
 }

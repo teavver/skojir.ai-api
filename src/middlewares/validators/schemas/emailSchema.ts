@@ -1,5 +1,5 @@
 import Joi from "joi";
-import IUserBase from "../../../types/interfaces/IUserBase.js";
+import { IUserBase } from "../../../types/interfaces/IUserBase.js";
 
 export const emailSchema = Joi.string<IUserBase>()
     .email({ tlds: { allow: true } })

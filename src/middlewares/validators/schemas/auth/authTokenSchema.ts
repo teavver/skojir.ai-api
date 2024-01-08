@@ -1,4 +1,4 @@
-import { AuthTokenType } from "../../../../types/AuthToken";
+import { SUPPORTED_TOKENS } from "../../../../types/AuthToken";
 import Joi from "joi";
 
-export const authTokenSchema = Joi.string().valid("accessToken", "refreshToken" as AuthTokenType)
+export const authTokenSchema = Joi.string().valid(SUPPORTED_TOKENS)

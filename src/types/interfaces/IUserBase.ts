@@ -1,3 +1,3 @@
-export default interface IUserBase {
+export interface IUserBase {
     email: string
 }

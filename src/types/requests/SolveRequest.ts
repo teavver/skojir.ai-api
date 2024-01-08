@@ -1,4 +1,4 @@
-import IUserBase from "../interfaces/IUserBase.js";
+import { IUserBase } from "../interfaces/IUserBase.js";
 import { PredictionRequest } from "./PredictionRequest.js";
 
 export const validOutputFormats = ["minimal", "standard"] as const

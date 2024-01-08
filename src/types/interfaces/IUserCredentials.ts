@@ -1,4 +1,4 @@
-import IUserBase from "./IUserBase.js";
-import IUserPassword from "./IUserPassword.js";
+import { IUserBase } from "./IUserBase.js";
+import { IUserPassword } from "./IUserPassword.js";
 
-export default interface IUserCredentials extends IUserBase, IUserPassword {}
+export interface IUserCredentials extends IUserBase, IUserPassword {}

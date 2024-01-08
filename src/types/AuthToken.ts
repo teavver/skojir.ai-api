@@ -1,9 +1,7 @@
-import IUserBase from "./interfaces/IUserBase"
+import { IUserBase } from "./interfaces/IUserBase"
 
-export type AccessToken = "accessToken"
-export type RefreshToken = "refreshToken"
-
-export type AuthTokenType = AccessToken | RefreshToken
+export const SUPPORTED_TOKENS = ["accessToken", "refreshToken"]
+export type AuthTokenType = typeof SUPPORTED_TOKENS[number]
 
 export interface UserAuthTokens {
     accessToken: string
