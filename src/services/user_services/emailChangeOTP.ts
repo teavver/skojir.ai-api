@@ -1,12 +1,12 @@
 import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { IUserBase } from "../../types/express/interfaces/IUserBase.js";
+import { IUserBase } from "../../types/interfaces/IUserBase.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
-import { sendEmailToUser } from "../../utils/sendEmailToUser.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 import { Request } from "express";
-import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "services :: user_services :: emailChangeOTP"
 
@@ -51,7 +51,7 @@ export async function emailChangeOTP(req:Request): Promise<ServiceResponse<IUser
             }
         })
 
-        const emailRes = await sendEmailToUser(
+        const emailRes = await sendEmail(
             userData.email,
             `Account email change`,
             `Use this code to change the email address connected to your account: ${emailOTP}.\n

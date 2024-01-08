@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
 import { testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
-import { fullUserSetup } from "../_utils.js"
+import { accountSetup } from "../_utils.js"
 
 const MODULE = "solve"
 
@@ -23,7 +23,9 @@ describe("[SERVICES] Test backend service", function () {
     })
 
     it("Setup a user (register, verify, login)", async () => {
-        tokens = await fullUserSetup(MODULE, testUser)
+        const tokenData = await accountSetup(MODULE, testUser)
+        expect(tokenData).to.not.be.null
+        if (tokenData) { tokens = tokenData }
     })
 
     it("Check status of backend service", async () => {
@@ -32,7 +34,7 @@ describe("[SERVICES] Test backend service", function () {
         expect(res?.status).to.equal(200)
     })
 
-    it("Try to use /solve without the Bearer token", async () => {
+    it("Should reject /solve req without the Bearer token", async () => {
         const data = {
             email: testUser.email, threshold: 0.25, img: imgData
         }

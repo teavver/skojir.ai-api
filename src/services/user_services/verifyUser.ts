@@ -1,12 +1,12 @@
 import { User } from "../../models/User.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { IUserVerification } from "../../types/express/interfaces/IUserVerification.js";
-import { IUserUnverified } from "../../types/express/interfaces/IUserUnverified.js";
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { validateRequest } from "../../utils/validateRequest.js";
-import { sendEmailToUser } from "../../utils/sendEmailToUser.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 import { Request } from "express";
 
@@ -61,7 +61,7 @@ export async function verifyUser(req:Request<IUserVerification>): Promise<Servic
                 }
             })
             
-            const emailRes = await sendEmailToUser(
+            const emailRes = await sendEmail(
                 user.email,
                 `Account verification code: ${newCode}`,
                 `Use this code to verify your skojir account. \n${newCode}`

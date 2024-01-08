@@ -1,12 +1,12 @@
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 import { Request } from "express";
 import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
-import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 import { isUserVerified } from "../../utils/isUserVerified.js";
 
 const MODULE = "services :: user_services :: loginUser"

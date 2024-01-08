@@ -3,7 +3,7 @@ import { Server } from "net"
 import { logger, LogType } from "../utils/logger.js"
 import { User } from "../models/User.js"
 import { main } from "../server.js"
-import { IUserCredentials } from "../types/express/interfaces/IUserCredentials.js"
+import { IUserCredentials } from "../types/interfaces/IUserCredentials.js"
 
 const MODULE = "tests :: setup"
 let server: Server | null
@@ -26,6 +26,10 @@ export const testUser: IUserCredentials = {
     password: "Password123!"
 }
 
+export const testUser2: IUserCredentials = {
+    email: "test23@example.com",
+    password: "Password123@"
+}
 
 export async function setupTests(module: string) {
     logger(MODULE, `Setting up test file: ${module} ...`)

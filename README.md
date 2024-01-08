@@ -73,7 +73,8 @@ Email must have a valid [TLD](https://data.iana.org/TLD/tlds-alpha-by-domain.txt
 
 Password must be 8 chars min, min 1 upper + lower, min 1 special char
 
-On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in. Verification code expires after 10 minutes and requires re-generating it using the `"resend": true` property in the [`/auth/verify`](#post-apiauthverify---verify-account-with-code-or-resend-code) request body.
+On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in.\
+Verification code expires after 10 minutes and requires re-generating it using the `"resend": true` property in the [`/auth/verify`](#post-apiauthverify---verify-account-with-code-or-resend-code) request body.
 
 ```json
 {
@@ -98,7 +99,9 @@ Threshold must be between 0.1 and 0.5, defaults to 0.25
 Every OTP code is valid for 10 minutes after its sent. If it's expired, you can use this endpoint again to override the old one with a new one.
 
 ### 🔒 (POST) `api/email-change` - Change email for an account
-Requires accessToken, the account to be verified and the OTP code from `api/email-otp`. Will send an email to the old address on success
+Requires accessToken, the account to be verified and the OTP code from `api/email-otp`.\
+Will throw if the new email is already taken by another user. \
+Will send a notification email to both addresses on success.
 
 ```json
 {

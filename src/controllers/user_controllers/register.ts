@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { createUser } from "../../services/user_services/createUser.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
-import { sendEmailToUser } from "../../utils/sendEmailToUser.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 
 const MODULE = "controllers :: user_controllers :: register"
@@ -30,7 +30,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
 
     // send verification email to new user
     const vData: IUserCredentials = sRes.data
-    const emailRes = await sendEmailToUser(
+    const emailRes = await sendEmail(
         vData.email,
         `Welcome to skojir!`,
         `Use this code to activate your account: ${verCode}`,

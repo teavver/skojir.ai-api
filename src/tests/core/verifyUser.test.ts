@@ -2,8 +2,8 @@ import axios from "axios"
 import { expect } from "chai"
 import { User } from "../../models/User.js"
 import { registerURL, verifyURL, setupTests, teardownTests } from "../_setup.js"
-import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js"
-import { testAxiosRequest } from "../_utils.js"
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js"
+import { accountSetup, testAxiosRequest } from "../_utils.js"
 
 const MODULE = "verifyUser"
 
@@ -38,14 +38,11 @@ describe("[CORE] Verify an account", function() {
         await teardownTests(MODULE)
     })
 
-    it("Create an account for dummy user", async () => {
-        
-        const req = () => axios.post(registerURL, userData)
-        const res = await testAxiosRequest(MODULE, req)
-        expect(res?.status).to.equal(200)
+    it("Create an account for dummyUser", async () => {
+        await accountSetup(MODULE, userData, true, false, false)
     })
 
-    it("Try to verify with invalid code", async () => {
+    it("Should reject verify req with invalid code", async () => {
 
         const invalidVerifyData = {
             email: dummyEmail,
@@ -73,7 +70,7 @@ describe("[CORE] Verify an account", function() {
 
     })
 
-    it("Account should be verified", async () => {
+    it("dummyUser Account should be verified", async () => {
         const user = await User.findOne({ email: dummyEmail })
         expect(user?.isEmailVerified).to.be.true
     })
@@ -88,7 +85,7 @@ describe("[CORE] Verify an account", function() {
         oldCode = user?.verificationCode!
     })
     
-    it("Re-send the verification code", async() => {
+    it("Request a verification code resend", async() => {
         const data = {
             email: dummyEmail2,
             verificationCode: "000000", // value does not matter if 'resend'
@@ -117,7 +114,7 @@ describe("[CORE] Verify an account", function() {
         expect(res?.status).to.be.equal(200)
     })
 
-    it("Check if dummyUser2 record got updated", async () => {
+    it("dummyUser2 record should be updated", async () => {
         const user = await User.findOne({ email: dummyEmail2 })
         expect(user?.isEmailVerified).to.be.true
     })

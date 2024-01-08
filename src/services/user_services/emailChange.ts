@@ -2,7 +2,7 @@ import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequest } from "../../utils/validateRequest.js";
-import { IUserVerification } from "../../types/express/interfaces/IUserVerification.js";
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
 import { Request } from "express";
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 
@@ -25,19 +25,8 @@ export async function emailChange(req:Request<IUserVerification>): Promise<Servi
             statusCode: vRes.statusCode
         }
     }
-    
-    // Find the user requesting the change
-    const user = await User.findOne({ email: req.user!.email })
-    if (!user || !user.verificationCodeExpires) {
-        logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)
-        return {
-            err: true,
-            errMsg: `Sorry, we couldn't find your account.`,
-            statusCode: 404
-        }
-    }
 
-    if (!user.isEmailVerified) {
+    if (!req.user?.isEmailVerified) {
         logger(MODULE, `Failed to change email - user account is unverified`, LogType.WARN)
         return {
             err: true,
@@ -58,7 +47,7 @@ export async function emailChange(req:Request<IUserVerification>): Promise<Servi
         }
     }
     
-    if (new Date() >= user.verificationCodeExpires) {
+    if (!req.user.verificationCodeExpires || new Date() >= req.user.verificationCodeExpires) {
         return {
             err: true,
             errMsg: `Your email change OTP code expired.`,
@@ -66,7 +55,7 @@ export async function emailChange(req:Request<IUserVerification>): Promise<Servi
         }
     }
     
-    if (reqData.verificationCode !== user.verificationCode) {
+    if (reqData.verificationCode !== req.user.verificationCode) {
         return {
             err: true,
             errMsg: `Invalid OTP code.`,

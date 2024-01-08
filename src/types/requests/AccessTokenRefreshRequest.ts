@@ -1,4 +1,4 @@
-import { IUserVerified } from "../express/interfaces/IUserVerified.js"
+import { IUserVerified } from "../interfaces/IUserVerified.js"
 
 export interface AccessTokenRefreshRequest {
     refreshToken: string

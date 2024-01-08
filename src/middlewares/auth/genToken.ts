@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import { AuthTokenPayload, AuthTokenType } from "../../types/AuthToken.js"
 import { logger } from "../../utils/logger.js"
-import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js"
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 
 const MODULE = "middlewares :: auth :: genToken"
 

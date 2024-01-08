@@ -3,7 +3,7 @@ import { logger, LogType } from "../../utils/logger.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { verifyUser as verifyService } from "../../services/user_services/verifyUser.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
-import { IUserVerification } from "../../types/express/interfaces/IUserVerification.js";
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
 
 const MODULE = "controllers :: user_controllers :: verify"
 

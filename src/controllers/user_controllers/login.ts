@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
-import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
-import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 import { LoginResponse } from "../../types/responses/LoginResponse.js";
 
 const MODULE = "controllers :: user_controllers :: login"

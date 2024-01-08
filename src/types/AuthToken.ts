@@ -1,4 +1,4 @@
-import { IUserBase } from "./express/interfaces/IUserBase"
+import { IUserBase } from "./interfaces/IUserBase"
 
 export const SUPPORTED_TOKENS = ["accessToken", "refreshToken"]
 export type AuthTokenType = typeof SUPPORTED_TOKENS[number]

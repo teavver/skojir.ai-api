@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import { Request } from "express"
 import { User } from "../../models/User.js"
 import { generateAuthToken } from "./genToken.js"
-import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js"
+import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 
 const MODULE = "middlewares :: auth :: refreshToken"

@@ -1,8 +1,8 @@
 import axios from "axios"
 import { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { testUser, setupTests, teardownTests, emailChangeURL, emailChangeOTPURL } from "../_setup.js"
-import { fullUserSetup, testAxiosRequest } from "../_utils.js"
+import { testUser, setupTests, teardownTests, emailChangeURL, emailChangeOTPURL, testUser2 } from "../_setup.js"
+import { accountSetup, testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { User } from "../../models/User.js"
 
@@ -22,8 +22,11 @@ describe("[CORE] Email (OTP + change)", function () {
         await teardownTests(MODULE)
     })
 
-    it("Setup a user (register, verify, login)", async () => {
-        tokens = await fullUserSetup(MODULE, testUser)
+    it("Setup accounts for testUsers (register, verify, login)", async () => {
+        const tokenData = await accountSetup(MODULE, testUser)
+        await accountSetup(MODULE, testUser2)
+        expect(tokenData).to.not.be.null
+        if (tokenData) { tokens = tokenData }
     })
 
     it("Request an OTP code from the /email-change-otp endpoint", async () => {
@@ -33,7 +36,7 @@ describe("[CORE] Email (OTP + change)", function () {
         expect(res?.status).to.equal(200)
     })
 
-    it("Try to change email with invalid OTP code", async () => {
+    it("Should reject request to change email with invalid OTP code", async () => {
         const newEmail = "test2@example.com"
         const reqData = {
             email: newEmail,
@@ -45,7 +48,20 @@ describe("[CORE] Email (OTP + change)", function () {
         expect(res?.status).to.equal(401)
     })
 
-    it("Finish changing email with valid OTP", async () => {
+    it("Should reject request to change email to an already existing account", async () => {
+        const user = await User.findOne({ email: testUser.email })
+        const newEmail = testUser2.email
+        const reqData = {
+            email: newEmail,
+            verificationCode: user!.verificationCode
+        }
+        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const req = () => axios.post(emailChangeURL, reqData, reqConf)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(409)
+    })
+
+    it("Change the email with valid OTP", async () => {
         const newEmail = "test2@example.com"
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
         const user = await User.findOne({ email: testUser.email })

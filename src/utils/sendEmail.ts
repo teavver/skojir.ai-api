@@ -3,9 +3,9 @@ import { mailjetClient } from "../main.js";
 import { ServiceResponse } from "../types/responses/ServiceResponse.js";
 import { MailjetRequest } from "../types/requests/MailjetRequest.js";
 
-const MODULE = "utils :: sendEmailToUser"
+const MODULE = "utils :: sendEmail"
 
-export async function sendEmailToUser(userEmail: string, subject: string, text: string): Promise<ServiceResponse<string>> {
+export async function sendEmail(userEmail: string, subject: string, text: string): Promise<ServiceResponse<string>> {
 
     const reqData: MailjetRequest = {
         from: "skojirai@gmail.com",

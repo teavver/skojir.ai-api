@@ -4,8 +4,8 @@ import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { deleteUser as deleteUserService } from "../../services/user_services/deleteUser.js";
-import { IUserPassword } from "../../types/express/interfaces/IUserPassword.js";
-import { IUserBase } from "../../types/express/interfaces/IUserBase.js";
+import { IUserPassword } from "../../types/interfaces/IUserPassword.js";
+import { IUserBase } from "../../types/interfaces/IUserBase.js";
 
 const MODULE = "controllers :: user_controllers :: delete"
 
