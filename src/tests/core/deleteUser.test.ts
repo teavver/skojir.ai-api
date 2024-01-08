@@ -4,7 +4,7 @@ import { User } from "../../models/User.js"
 import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "../_setup.js"
 import { testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
-import { IUserPassword } from "../../types/interfaces/IUserPassword.js"
+import { IUserPassword } from "../../types/express/interfaces/IUserPassword.js"
 
 const MODULE = "createUser"
 

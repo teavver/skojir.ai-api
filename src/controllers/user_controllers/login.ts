@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { loginUser as loginUserService } from "../../services/user_services/loginUser.js";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { generateAuthToken } from "../../middlewares/auth/genToken.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
 import { LoginResponse } from "../../types/responses/LoginResponse.js";
 
 const MODULE = "controllers :: user_controllers :: login"
 
-export async function loginUser(req: Request, res: Response<LoginResponse>) {
+export async function loginUser(req: Request<IUserCredentials>, res: Response<LoginResponse>) {
 
-    const validBody = validateRequestBody(req.body)
+    const validBody = validateRequestBody(req.body, ["email", "password"])
     if (!validBody) {
         return res.status(400).json({
             state: "error",
@@ -20,7 +20,7 @@ export async function loginUser(req: Request, res: Response<LoginResponse>) {
         })
     }
 
-    const sRes = await loginUserService(req.body)
+    const sRes = await loginUserService(req)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "unauthorized",

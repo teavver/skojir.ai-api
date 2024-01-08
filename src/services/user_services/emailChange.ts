@@ -2,18 +2,17 @@ import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequest } from "../../utils/validateRequest.js";
-import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { IUserVerification } from "../../types/express/interfaces/IUserVerification.js";
 import { Request } from "express";
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 
 const MODULE = "services :: user_services :: emailChange"
 
-export async function emailChange(req:Request): Promise<ServiceResponse<IUserVerification>> {
+export async function emailChange(req:Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
 
     const reqData: IUserVerification = {
-        email: req.user!.email,
+        email: req.body.email,
         verificationCode: req.body.verificationCode,
-        resend: req.body.resend
     }
 
     const vRes = await validateRequest<IUserVerification>(MODULE, reqData, verificationSchema)
@@ -26,8 +25,9 @@ export async function emailChange(req:Request): Promise<ServiceResponse<IUserVer
             statusCode: vRes.statusCode
         }
     }
-
-    const user = await User.findOne({ email: reqData.email })
+    
+    // Find the user requesting the change
+    const user = await User.findOne({ email: req.user!.email })
     if (!user || !user.verificationCodeExpires) {
         logger(MODULE, `Failed to change email - user does not exist`, LogType.WARN)
         return {
@@ -46,6 +46,18 @@ export async function emailChange(req:Request): Promise<ServiceResponse<IUserVer
         }
     }
 
+    // Check if user is trying to change their email to an already existing account
+    const targetEmailUser = await User.findOne({ email: reqData.email })
+    if (targetEmailUser) {
+        const msg = `There's already an account with that email account.`
+        logger(MODULE, msg, LogType.WARN)
+        return {
+            err: true,
+            errMsg: msg,
+            statusCode: 409
+        }
+    }
+    
     if (new Date() >= user.verificationCodeExpires) {
         return {
             err: true,
@@ -61,11 +73,12 @@ export async function emailChange(req:Request): Promise<ServiceResponse<IUserVer
             statusCode: 401
         }
     }
-
+    
     try {
+        
         // const prevEmail = user.email
-        // Send email to old account & inform user about the change
-
+        // TODO: Send email to old account & inform user about the change
+        
         await User.updateOne({ email: reqData.email }, {
             $set: {
                 email: reqData.email

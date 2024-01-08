@@ -1,19 +1,26 @@
 import { User } from "../../models/User.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
-import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
+import { IUserVerification } from "../../types/express/interfaces/IUserVerification.js";
+import { IUserUnverified } from "../../types/express/interfaces/IUserUnverified.js";
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
 import { validateRequest } from "../../utils/validateRequest.js";
-import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
+import { sendEmailToUser } from "../../utils/sendEmailToUser.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
+import { Request } from "express";
 
 const MODULE = "services :: user_services :: verifyUser"
 
-export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVerification>> {
+export async function verifyUser(req:Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
 
-    const vRes = await validateRequest<IUserVerification>(MODULE, reqBody, verificationSchema)
+    const verificationData: IUserVerification = {
+        email: req.body.email,
+        verificationCode: req.body.verificationCode,
+        resend: req.body.resend
+    }
+
+    const vRes = await validateRequest<IUserVerification>(MODULE, verificationData, verificationSchema)
     if (!vRes.isValid) {
         return {
             err: true,
@@ -22,7 +29,6 @@ export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVeri
         }
     }
 
-    const reqData: IUserVerification = vRes.data
     const user = await User.findOne({ email: vRes.data.email }) as IUserUnverified
     if (!user) {
         return {
@@ -41,7 +47,7 @@ export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVeri
     }
 
     // re-send case
-    if (reqData.resend) {
+    if (verificationData.resend) {
 
         const newCode = generateVerificationCode()
         const newExpDate = generateExpiryDate()
@@ -55,7 +61,12 @@ export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVeri
                 }
             })
             
-            const emailRes = await sendVerificationCodeEmail(user.email, newCode)
+            const emailRes = await sendEmailToUser(
+                user.email,
+                `Account verification code: ${newCode}`,
+                `Use this code to verify your skojir account. \n${newCode}`
+            )
+
             if (emailRes.err) {
                 return {
                     err: true,
@@ -67,7 +78,7 @@ export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVeri
             logger(MODULE, `Re-sending verification code for: ${user.email}`)
             return {
                 err: false,
-                data: reqData,
+                data: verificationData,
                 statusCode: 200
             } 
 
@@ -82,7 +93,7 @@ export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVeri
         }
     }
 
-    if (user.verificationCode !== reqData.verificationCode) {
+    if (user.verificationCode !== verificationData.verificationCode) {
         return {
             err: true,
             errMsg: 'Invalid verification code.',
@@ -121,7 +132,7 @@ export async function verifyUser(reqBody:any): Promise<ServiceResponse<IUserVeri
 
     return {
         err: false,
-        data: reqData,
+        data: verificationData,
         statusCode: 200
     } 
 }

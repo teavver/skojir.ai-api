@@ -1,7 +1,7 @@
 import axios from "axios"
 import { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { testUser, setupTests, teardownTests, emailOTPURL, emailChangeURL } from "../_setup.js"
+import { testUser, setupTests, teardownTests, emailChangeURL, emailChangeOTPURL } from "../_setup.js"
 import { fullUserSetup, testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { User } from "../../models/User.js"
@@ -26,34 +26,36 @@ describe("[CORE] Email (OTP + change)", function () {
         tokens = await fullUserSetup(MODULE, testUser)
     })
 
-    it("Request an OTP code from the /email-otp endpoint", async () => {
+    it("Request an OTP code from the /email-change-otp endpoint", async () => {
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
-        const req = () => axios.get(emailOTPURL, reqConf)
+        const req = () => axios.get(emailChangeOTPURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
     })
 
-    // it("Try to change email with invalid OTP code", async () => {
-    //     const reqData = {
-    //         email: testUser.email,
-    //         verificationCode: "100200"
-    //     }
-    //     const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
-    //     const req = () => axios.post(emailChangeURL, reqData, reqConf)
-    //     const res = await testAxiosRequest(MODULE, req)
-    //     expect(res?.status).to.equal(401)
-    // })
+    it("Try to change email with invalid OTP code", async () => {
+        const newEmail = "test2@example.com"
+        const reqData = {
+            email: newEmail,
+            verificationCode: "100200"
+        }
+        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const req = () => axios.post(emailChangeURL, reqData, reqConf)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(401)
+    })
 
-    // it("Finish changing email with valid OTP", async () => {
-    //     const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
-    //     const user = await User.findOne({ email: testUser.email })
-    //     const reqData = {
-    //         email: testUser.email,
-    //         verificationCode: user?.verificationCode
-    //     }
-    //     const req = () => axios.post(emailChangeURL, reqData, reqConf)
-    //     const res = await testAxiosRequest(MODULE, req)
-    //     expect(res?.status).to.equal(200)
-    // })
+    it("Finish changing email with valid OTP", async () => {
+        const newEmail = "test2@example.com"
+        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const user = await User.findOne({ email: testUser.email })
+        const reqData = {
+            email: newEmail,
+            verificationCode: user!.verificationCode
+        }
+        const req = () => axios.post(emailChangeURL, reqData, reqConf)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(200)
+    })
 
 })

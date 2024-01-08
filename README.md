@@ -93,13 +93,9 @@ Threshold must be between 0.1 and 0.5, defaults to 0.25
 }
 ```
 
-### 🔒 (POST) `api/email-otp` - Get OTP code to change email
-A request body with email is required to identify the user based on accessToken
-```json
-{
-    "email": "email"
-}
-```
+### 🔒 (GET) `api/email-change-otp` - Get OTP code to change email
+
+Every OTP code is valid for 10 minutes after its sent. If it's expired, you can use this endpoint again to override the old one with a new one.
 
 ### 🔒 (POST) `api/email-change` - Change email for an account
 Requires accessToken, the account to be verified and the OTP code from `api/email-otp`. Will send an email to the old address on success
@@ -115,7 +111,6 @@ Requires accessToken, the account to be verified and the OTP code from `api/emai
 User account will be deleted **immediately** on success (!)
 ```json
 {
-    "email": "email",
     "password": "pwd"
 }
 ```

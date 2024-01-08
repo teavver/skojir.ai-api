@@ -7,7 +7,7 @@ import { PredictionRequest } from "../types/requests/PredictionRequest.js"
 import { sendVisionPrompt } from "../services/sendVisionPrompt.js"
 import { validateRequestBody } from "../utils/verifyRequestBody.js"
 
-const MODULE = "controllers :: solver"
+const MODULE = "controllers :: solve"
 
 export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
 
@@ -28,7 +28,6 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         })
     }
 
-    // first upload the screenshot to GCF to compute + crop the context region
     logger(MODULE, "Sending context req to GCF")
     const contextPredictionReq: PredictionRequest = {
         img: img,
@@ -45,7 +44,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         })
     }
 
-    const b64Prefix = "data:image/jpg;base64," // OpenAI needs the prefix for some reason
+    const b64Prefix = "data:image/jpg;base64," // OpenAI requires b64 prefix
     const fullExtractedImg = b64Prefix + contextRes.data
 
     const gptRes = await sendVisionPrompt({

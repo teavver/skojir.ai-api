@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { emailSchema } from "./emailSchema.js";
-import { IUserVerification } from "../../../types/interfaces/IUserVerification.js";
+import { IUserVerification } from "../../../types/express/interfaces/IUserVerification.js";
 
 export const verificationSchema = Joi.object<IUserVerification>({
     email: emailSchema,

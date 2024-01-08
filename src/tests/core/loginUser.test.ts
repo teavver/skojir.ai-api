@@ -2,7 +2,7 @@ import axios from "axios"
 import { expect } from "chai"
 import { User } from "../../models/User.js"
 import { testUser, setupTests, teardownTests, registerURL, verifyURL, loginURL } from "../_setup.js"
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js"
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js"
 import { testAxiosRequest } from "../_utils.js"
 
 const MODULE = "loginUser"

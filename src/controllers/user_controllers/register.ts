@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
 import { createUser } from "../../services/user_services/createUser.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
-import { sendVerificationCodeEmail } from "../../services/user_services/sendVerificationCodeEmail.js";
+import { sendEmailToUser } from "../../utils/sendEmailToUser.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 
 const MODULE = "controllers :: user_controllers :: register"
 
-export async function registerUser(req: Request, res: Response<ResponseMessage>) {
+export async function registerUser(req: Request<IUserCredentials>, res: Response<ResponseMessage>) {
 
-    const validBody = validateRequestBody(req.body)
+    const validBody = validateRequestBody(req.body, ["email", "password"])
     if (!validBody) {
         return res.status(400).json({
             state: "error",
@@ -20,7 +20,7 @@ export async function registerUser(req: Request, res: Response<ResponseMessage>)
     }
 
     const verCode = generateVerificationCode()
-    const sRes = await createUser(req.body, verCode)
+    const sRes = await createUser(req, verCode)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "conflict",
@@ -30,7 +30,11 @@ export async function registerUser(req: Request, res: Response<ResponseMessage>)
 
     // send verification email to new user
     const vData: IUserCredentials = sRes.data
-    const emailRes = await sendVerificationCodeEmail(vData.email, verCode)
+    const emailRes = await sendEmailToUser(
+        vData.email,
+        `Welcome to skojir!`,
+        `Use this code to activate your account: ${verCode}`,
+    )
     if (emailRes.err) {
         return res.status(emailRes.statusCode).json({
             state: "error",

@@ -1,18 +1,18 @@
-import { logger, LogType } from "../../utils/logger.js";
-import { mailjetClient } from "../../main.js";
-import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { MailjetRequest } from "../../types/requests/MailjetRequest.js";
+import { logger, LogType } from "./logger.js";
+import { mailjetClient } from "../main.js";
+import { ServiceResponse } from "../types/responses/ServiceResponse.js";
+import { MailjetRequest } from "../types/requests/MailjetRequest.js";
 
-const MODULE = "services :: user_services :: sendVerificationCodeEmail"
+const MODULE = "utils :: sendEmailToUser"
 
-export async function sendVerificationCodeEmail(userEmail: string, code: string, message: string = "Use this code to verify your account"): Promise<ServiceResponse<string>> {
+export async function sendEmailToUser(userEmail: string, subject: string, text: string): Promise<ServiceResponse<string>> {
 
     const reqData: MailjetRequest = {
         from: "skojirai@gmail.com",
         name: "skojir.ai",
-        subject: `Code: ${code}`,
-        textPart: message,
-        HTMLPart: `<h1>${code}<h1>`,
+        subject: subject,
+        textPart: text,
+        HTMLPart: ``,
     }
 
     try {
@@ -33,7 +33,7 @@ export async function sendVerificationCodeEmail(userEmail: string, code: string,
                 }]
             })
         
-        logger(MODULE, `Verification e-mail sent to: ${userEmail}`)
+        logger(MODULE, `Email (subject ${subject}) sent to: ${userEmail}`)
         return {
             err: false,
             data: request.body as string,
@@ -41,7 +41,7 @@ export async function sendVerificationCodeEmail(userEmail: string, code: string,
         }
     } catch (err) {
         const errMsg = (err as Error).message
-        logger(MODULE, `Failed to send verification e-mail to: ${userEmail}. Err: ${errMsg}`, LogType.WARN)
+        logger(MODULE, `Failed to send an Email to: ${userEmail}. Err: ${errMsg}`, LogType.WARN)
         return {
             err: true,
             errMsg: errMsg,

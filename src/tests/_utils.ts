@@ -3,7 +3,7 @@ import axios, { AxiosResponse, AxiosRequestConfig } from "axios"
 import { registerURL, verifyURL, loginURL } from "./_setup.js"
 import { logger, LogType } from "../utils/logger.js"
 import { UserAuthTokens } from "../types/AuthToken.js"
-import { IUserCredentials } from "../types/interfaces/IUserCredentials.js"
+import { IUserCredentials } from "../types/express/interfaces/IUserCredentials.js"
 import { User } from "../models/User.js"
 
 /**

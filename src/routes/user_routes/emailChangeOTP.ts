@@ -1,7 +1,7 @@
 import express from "express"
-import { emailOTP } from "../../controllers/user_controllers/emailOTP.js"
+import { emailChangeOTP } from "../../controllers/user_controllers/emailChangeOTP.js"
 import { verifyToken } from "../../middlewares/auth/verifyToken.js"
 
 const router = express.Router()
-router.get("/", verifyToken, emailOTP)
+router.get("/", verifyToken, emailChangeOTP)
 export default router

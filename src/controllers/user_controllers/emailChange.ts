@@ -3,21 +3,21 @@ import { logger, LogType } from "../../utils/logger.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { emailChange as emailChangeService } from "../../services/user_services/emailChange.js";
-import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { IUserVerification } from "../../types/express/interfaces/IUserVerification.js";
 
 const MODULE = "controllers :: user_controllers :: emailChange"
 
-export async function emailChange(req: Request, res: Response<ResponseMessage>) {
+export async function emailChange(req: Request<IUserVerification>, res: Response<ResponseMessage>) {
 
-    const validBody = validateRequestBody(req.body)
+    const validBody = validateRequestBody(req.body, ["verificationCode"])
     if (!validBody) {
         return res.status(400).json({
             state: "error",
             message: "Invalid request body."
-         })
+        })
     }
-
-    const sRes = await emailChangeService(req.body)
+    
+    const sRes = await emailChangeService(req)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "error",

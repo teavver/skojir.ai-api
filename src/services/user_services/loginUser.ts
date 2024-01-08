@@ -1,18 +1,24 @@
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
+import { Request } from "express";
 import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
 import { isUserVerified } from "../../utils/isUserVerified.js";
 
 const MODULE = "services :: user_services :: loginUser"
 
-export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserVerified>> {
+export async function loginUser(req:Request<IUserCredentials>): Promise<ServiceResponse<IUserVerified>> {
 
-    const vRes = await validateRequest<IUserCredentials>(MODULE, reqBody, userCredentialsSchema)
+    const userCredentials: IUserCredentials = {
+        email: req.body.email,
+        password: req.body.password
+    }
+
+    const vRes = await validateRequest<IUserCredentials>(MODULE, userCredentials, userCredentialsSchema)
     if (!vRes.isValid) {
         logger(MODULE, `loginUser req rejected: Failed to validate input`, LogType.WARN)
         return {
@@ -22,8 +28,7 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserVerif
         }
     }
 
-    const reqData: IUserCredentials = vRes.data
-    const user = await User.findOne({ email: reqData.email })
+    const user = await User.findOne({ email: userCredentials.email })
     if (!user) {
         logger(MODULE, `Failed to login user. Reason: No account matches user email`, LogType.WARN)
         return {
@@ -49,7 +54,7 @@ export async function loginUser(reqBody:any): Promise<ServiceResponse<IUserVerif
         }
     }
 
-    const saltedPwd = reqData.password + user.salt
+    const saltedPwd = userCredentials.password + user.salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: user.salt })
 
     if (hashedPwd !== user.password) {

@@ -1,4 +1,4 @@
-import { IUserVerified } from "../interfaces/IUserVerified";
+import { IUserVerified } from "./interfaces/IUserVerified";
 
 export {}
 

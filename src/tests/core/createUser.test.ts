@@ -4,7 +4,7 @@ import { User } from "../../models/User.js"
 import { testUser, setupTests, teardownTests, registerURL } from "../_setup.js"
 import { deriveKey } from "../../utils/crypto/pbkdf2.js"
 import { testAxiosRequest } from "../_utils.js"
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js"
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js"
 
 const MODULE = "createUser"
 

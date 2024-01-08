@@ -1,5 +1,6 @@
+import { Request } from "express";
 import { User } from "../../models/User.js";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
@@ -10,9 +11,14 @@ import { userCredentialsSchema } from "../../middlewares/validators/schemas/user
 
 const MODULE = "services :: user_services :: createUser"
 
-export async function createUser(reqBody:any, verificationCode: string): Promise<ServiceResponse<IUserCredentials>> {
+export async function createUser(req:Request<IUserCredentials>, verificationCode: string): Promise<ServiceResponse<IUserCredentials>> {
 
-    const vRes = await validateRequest<IUserCredentials>(MODULE, reqBody, userCredentialsSchema)
+    const userCredentials: IUserCredentials = {
+        email: req.body.email,
+        password: req.body.password
+    }
+
+    const vRes = await validateRequest<IUserCredentials>(MODULE, userCredentials, userCredentialsSchema)
     if (!vRes.isValid) {
         logger(MODULE, `createUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
@@ -22,8 +28,7 @@ export async function createUser(reqBody:any, verificationCode: string): Promise
         }
     }
     
-    const reqData: IUserCredentials = vRes.data
-    const user = await User.findOne({ email: reqData.email })
+    const user = await User.findOne({ email: userCredentials.email })
     if (user) {
         logger(MODULE, `Failed to create new user. Reason: user already has an account`, LogType.WARN)
         return {
@@ -37,11 +42,11 @@ export async function createUser(reqBody:any, verificationCode: string): Promise
     }
 
     const salt = generateSalt()
-    const saltedPwd = reqData.password + salt
+    const saltedPwd = userCredentials.password + salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
     const newUser = new User({
-        email: reqData.email,
+        email: userCredentials.email,
         password: hashedPwd,
         salt: salt,
         verificationCode: verificationCode,
@@ -62,7 +67,7 @@ export async function createUser(reqBody:any, verificationCode: string): Promise
 
     return {
         err: false,
-        data: reqData,
+        data: userCredentials,
         statusCode: 201
     }
 }

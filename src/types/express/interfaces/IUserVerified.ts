@@ -7,4 +7,8 @@ export interface IUserVerified extends IUserCredentials {
     membershipDetails?: IMembership
     accessToken?: string
     refreshToken?: string
+
+    // ↓ Only while changing account's email
+    verificationCode?: string
+    verificationCodeExpires?: Date
 }

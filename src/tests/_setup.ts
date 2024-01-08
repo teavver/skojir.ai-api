@@ -3,7 +3,7 @@ import { Server } from "net"
 import { logger, LogType } from "../utils/logger.js"
 import { User } from "../models/User.js"
 import { main } from "../server.js"
-import { IUserCredentials } from "../types/interfaces/IUserCredentials.js"
+import { IUserCredentials } from "../types/express/interfaces/IUserCredentials.js"
 
 const MODULE = "tests :: setup"
 let server: Server | null
@@ -17,8 +17,8 @@ export const registerURL = testBaseURL + "/register"
 export const verifyURL = testBaseURL + "/auth/verify"
 export const loginURL = testBaseURL + "/auth/login"
 export const deleteURL = testBaseURL + "/delete"
-export const emailOTPURL = testBaseURL + "/email-otp"
 export const emailChangeURL = testBaseURL + "/email-change"
+export const emailChangeOTPURL = testBaseURL + "/email-change-otp"
 
 // Test user
 export const testUser: IUserCredentials = {

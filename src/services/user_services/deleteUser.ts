@@ -1,13 +1,13 @@
 import { Request } from "express";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
+import { IUserCredentials } from "../../types/express/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
-import { IUserPassword } from "../../types/interfaces/IUserPassword.js";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { IUserPassword } from "../../types/express/interfaces/IUserPassword.js";
+import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
 import { passwordSchema } from "../../middlewares/validators/schemas/passwordSchema.js";
-import { IUserBase } from "../../types/interfaces/IUserBase.js";
+import { IUserBase } from "../../types/express/interfaces/IUserBase.js";
 
 const MODULE = "services :: user_services :: deleteUser"
 

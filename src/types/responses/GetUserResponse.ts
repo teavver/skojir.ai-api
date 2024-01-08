@@ -1,5 +1,5 @@
-import { IUserBase } from "../interfaces/IUserBase";
-import { IMembership } from "../interfaces/IMembership";
+import { IUserBase } from "../express/interfaces/IUserBase";
+import { IMembership } from "../express/interfaces/IMembership";
 
 export interface GetUserResponse extends IUserBase {
     membership?: IMembership

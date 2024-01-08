@@ -1,16 +1,16 @@
 import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { IUserBase } from "../../types/interfaces/IUserBase.js";
-import { sendVerificationCodeEmail } from "./sendVerificationCodeEmail.js";
+import { IUserBase } from "../../types/express/interfaces/IUserBase.js";
 import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
+import { sendEmailToUser } from "../../utils/sendEmailToUser.js";
 import { generateExpiryDate } from "../../utils/genExpiryDate.js";
 import { Request } from "express";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { IUserVerified } from "../../types/express/interfaces/IUserVerified.js";
 
-const MODULE = "services :: user_services :: emailOTP"
+const MODULE = "services :: user_services :: emailChangeOTP"
 
-export async function emailOTP(req:Request): Promise<ServiceResponse<IUserBase>> {
+export async function emailChangeOTP(req:Request): Promise<ServiceResponse<IUserBase>> {
 
     const userData: IUserVerified = req.user!
     if (!userData.email) {
@@ -31,6 +31,14 @@ export async function emailOTP(req:Request): Promise<ServiceResponse<IUserBase>>
         }
     }
 
+    if (userData.verificationCodeExpires && new Date() >= userData.verificationCodeExpires) {
+        return {
+            err: true,
+            errMsg: 'There is a valid OTP code already. Please wait before requesting another one.',
+            statusCode: 400
+        }
+    }
+
     const emailOTP = generateVerificationCode()
     const emailOTPExpiry = generateExpiryDate()
     const emailChangeMsg = "Use this code to change your account's email address. This code will expire in 10 minutes."
@@ -43,7 +51,13 @@ export async function emailOTP(req:Request): Promise<ServiceResponse<IUserBase>>
             }
         })
 
-        const emailRes = await sendVerificationCodeEmail(userData.email, emailOTP, emailChangeMsg)
+        const emailRes = await sendEmailToUser(
+            userData.email,
+            `Account email change`,
+            `Use this code to change the email address connected to your account: ${emailOTP}.\n
+            It will expire in 10 minutes.\n
+            If `
+        )
         if (emailRes.err) {
             return {
                 err: true,
