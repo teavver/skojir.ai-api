@@ -27,14 +27,23 @@ describe("[CORE] Get account data", function () {
         if (tokenData) { tokens = tokenData }
     })
 
+    it("Should reject get account info w/o JWT", async () => {
+        const req = () => axios.get(accountInfoURL)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(401)
+    })
+
     it("Get account info", async () => {
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
         const req = () => axios.get(accountInfoURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         // console.log('========================================')
-        // console.log(res?.data)
+        // console.log(res?.status)
+        // console.log(res?.data.message)
+        // console.log(res?.data.user)
         // console.log('========================================')
         expect(res?.status).to.equal(200)
+        expect(res?.data.user.email).to.equal(testUser.email)
     })
     
 })

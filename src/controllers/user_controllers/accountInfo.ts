@@ -16,7 +16,7 @@ export async function accountInfo(req: Request, res: Response<ResponseMessageExt
     }
 
     logger(MODULE, `getUser: ${sRes.data.email}`, LogType.SUCCESS)
-    return res.status(200).json({
+    return res.status(sRes.statusCode).json({
         state: "success",
         message: "OK",
         user: sRes.data
