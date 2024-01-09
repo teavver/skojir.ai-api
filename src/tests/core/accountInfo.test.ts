@@ -31,9 +31,9 @@ describe("[CORE] Get account data", function () {
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
         const req = () => axios.get(accountInfoURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
-        console.log('========================================')
-        console.log(res?.data)
-        console.log('========================================')
+        // console.log('========================================')
+        // console.log(res?.data)
+        // console.log('========================================')
         expect(res?.status).to.equal(200)
     })
     
