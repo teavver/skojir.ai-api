@@ -37,16 +37,17 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
                 message: "Failed to authenticate request"
             })
         }
-
+        
         logger(MODULE, `GH Webhook request verified.`)
-        if (req.body.action !== "completed" && req.body.workflow_run.conclusion !== "success") {
-            return res.status(200).json({
-                state: "success",
-                message: "OK"
-            })
+
+        if (req.body.status === "completed" && req.body.workflow_run.conclusion === "success") {
+            return next()
         }
 
-        next()
+        return res.status(200).json({
+            state: "success",
+            message: "OK"
+        })
 
     } catch (err) {
         const errMsg = (err as Error).message
