@@ -18,7 +18,7 @@ export async function validateRequest<T>(
         logger(module, `Validation failed. Error: ${err}`, LogType.ERR)
         return {
             isValid: false,
-            error: (err as Error).message,
+            error: `Invalid data`,
             statusCode: 400
         }
     }
