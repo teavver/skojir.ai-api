@@ -39,9 +39,8 @@ export async function verifyGH(req: Request, res: Response<ResponseMessage>, nex
         }
         
         logger(MODULE, `GH Webhook request verified.`)
-
         if (req.body.status === "completed" && req.body.workflow_run.conclusion === "success") {
-            return next()
+            process.nextTick(() => next())
         }
 
         return res.status(200).json({
