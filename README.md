@@ -83,6 +83,28 @@ Verification code expires after 10 minutes and requires re-generating it using t
 }
 ```
 
+### 🔒 (GET) `api/account-info` - Get information about own account
+
+Will always return `email` and, if purchased, `membership` details.\
+Example response (no membership):
+```json
+    "data": {
+        "email": "your_accounts_email@gmail.com"
+    }
+```
+
+Response for User with active (or expired) membership:
+```json
+    "data": {
+        "email": "your_accounts_email@gmail.com",
+        "membership": {
+            "userId": null, // ALWAYS NULL
+            "isActive": true,
+            "endDate": "Membership status expiry date"
+        }
+    }
+```
+
 ### 🔒 (POST) `api/solve` - Solver route for users with membership
 Threshold must be between 0.1 and 0.5, defaults to 0.25
 ```json

@@ -19,6 +19,7 @@ export const loginURL = testBaseURL + "/auth/login"
 export const deleteURL = testBaseURL + "/delete"
 export const emailChangeURL = testBaseURL + "/email-change"
 export const emailChangeOTPURL = testBaseURL + "/email-change-otp"
+export const accountInfoURL = testBaseURL + "/account-info"
 
 // Test user
 export const testUser: IUserCredentials = {
@@ -36,7 +37,7 @@ export async function setupTests(module: string) {
     if (!server) {
         server = main()
     }
-    await User.deleteMany({}) // clear the Users after
+    await User.deleteMany({})
     logger(MODULE, "Test file setup OK", LogType.SUCCESS)
 }
 
@@ -45,6 +46,6 @@ export async function teardownTests(module: string) {
         server.close()
         server = null
     }
-    await User.deleteMany({}) // clear the Users after
+    await User.deleteMany({})
     logger(MODULE, `Test ${module} teardown OK`, LogType.SUCCESS)
 }

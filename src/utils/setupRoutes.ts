@@ -1,4 +1,4 @@
-import { logger } from "./logger.js";
+import { LogType, logger } from "./logger.js";
 import express, { Express } from "express";
 import { conditionalMiddleware } from "./condMiddleware.js";
 import { rateLimit } from "express-rate-limit";
@@ -8,6 +8,7 @@ import rootRoute from "../routes/root.js";
 import registerRoute from "../routes/user_routes/register.js";
 import emailChangeOTPRoute from "../routes/user_routes/emailChangeOTP.js";
 import emailChangeRoute from "../routes/user_routes/emailChange.js";
+import accountInfoRoute from "../routes/user_routes/accountInfo.js"
 import deleteRoute from "../routes/user_routes/delete.js";
 import verifyRoute from "../routes/auth/verify.js";
 import loginRoute from "../routes/auth/login.js";
@@ -46,6 +47,7 @@ export function setupRoutes(app: Express) {
     app.use("/delete", conditionalMiddleware(userRoutesLimiter), deleteRoute)
     app.use("/email-change-otp", conditionalMiddleware(userRoutesLimiter), emailChangeOTPRoute)
     app.use("/email-change", conditionalMiddleware(userRoutesLimiter), emailChangeRoute)
+    app.use("/account-info", conditionalMiddleware(userRoutesLimiter), accountInfoRoute)
 
     // secured routes
     app.use("/solve", conditionalMiddleware(solveRouteLimiter), solverRoute)
@@ -57,5 +59,5 @@ export function setupRoutes(app: Express) {
     // github
     app.use("/update", updateRoute)
 
-    logger(MODULE, `Routes set up`)
+    logger(MODULE, `Routes set up`, LogType.SERVER)
 } 
