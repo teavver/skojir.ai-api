@@ -79,7 +79,7 @@ export async function verifyToken<T>(req: Request<T>, res: Response<ResponseMess
         }
 
         const err = "Failed to authenticate token."
-        logger(MODULE, err, LogType.ERR)
+        logger(MODULE, `${err} : ${error}`, LogType.WARN)
         return res.status(401).json({
             state: "unauthorized",
             message: err

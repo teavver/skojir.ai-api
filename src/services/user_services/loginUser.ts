@@ -23,7 +23,7 @@ export async function loginUser(req:Request<IUserCredentials>): Promise<ServiceR
         logger(MODULE, `loginUser req rejected: Failed to validate input`, LogType.WARN)
         return {
             err: true,
-            errMsg: vRes.error,
+            errMsg: `Incorrect password.`,
             statusCode: vRes.statusCode
         }
     }
