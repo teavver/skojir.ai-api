@@ -11,12 +11,12 @@ let server: Server | null
 // Endpoints for tests
 export const gcfBaseURL = process.env.BACKEND_URL || "http://localhost:8080"
 export const gcfStatusURL = gcfBaseURL + "/status"
-export const gcfSolveURL = gcfBaseURL + "/predict"
 export const testBaseURL = "http://localhost:3000"
 export const registerURL = testBaseURL + "/register"
 export const verifyURL = testBaseURL + "/auth/verify"
 export const loginURL = testBaseURL + "/auth/login"
 export const deleteURL = testBaseURL + "/delete"
+export const solveURL = testBaseURL + "/solve"
 export const emailChangeURL = testBaseURL + "/email-change"
 export const emailChangeOTPURL = testBaseURL + "/email-change-otp"
 export const accountInfoURL = testBaseURL + "/account-info"

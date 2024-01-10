@@ -11,7 +11,7 @@ const MODULE = "controllers :: solve"
 
 export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
 
-    const validBody = validateRequestBody(req.body)
+    const validBody = validateRequestBody(req.body, ["img", "outputFormat"])
     if (!validBody) {
         return res.status(400).json({
             state: "error",
@@ -19,8 +19,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         })
     }
 
-    const { email, img, outputFormat, threshold }: SolveRequest = req.body
-
+    const { img, outputFormat, threshold } = req.body
     if (!validOutputFormats.includes(outputFormat)) {
         return res.status(400).json({
             state: "error",
@@ -29,31 +28,27 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
     }
 
     logger(MODULE, "Sending context req to GCF")
-    const contextPredictionReq: PredictionRequest = {
-        img: img,
-        threshold: threshold
+    const contextPredictionData: PredictionRequest = {
+        img: img, threshold: threshold
     }
-
-    const contextRes = await requestContextPrediction(contextPredictionReq)
-    
+    const contextRes = await requestContextPrediction(req, contextPredictionData)
     if (contextRes.err) {
         logger(MODULE, contextRes.errMsg, LogType.ERR)
         return res.status(contextRes.statusCode).json({
             state: "error",
-            message: contextRes.errMsg
+            message: contextRes.errMsg,
         })
     }
 
     const b64Prefix = "data:image/jpg;base64," // OpenAI requires b64 prefix
     const fullExtractedImg = b64Prefix + contextRes.data
-
-    const gptRes = await sendVisionPrompt({
-        email: email,
+    const reqData: SolveRequest = {
         outputFormat: outputFormat,
         img: fullExtractedImg,
         threshold,
-    })
+    }
 
+    const gptRes = await sendVisionPrompt(reqData)
     if (gptRes.err) {
         logger(MODULE, gptRes.errMsg, LogType.ERR)
         return res.status(gptRes.statusCode).json({

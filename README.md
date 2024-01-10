@@ -109,7 +109,6 @@ Response for User with active (or expired) membership:
 Threshold must be between 0.1 and 0.5, defaults to 0.25
 ```json
 {
-    "email": "email",
     "img": "base64 encoded image",
     "threshold?": 0.25,
     "outputFormat": "minimal or standard"

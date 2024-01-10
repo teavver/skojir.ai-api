@@ -3,7 +3,7 @@
 
 export interface VisionRequest {
     system: string
-    header: string
-    footer: string
+    header?: string
+    footer?: string
     max_tokens: number
 }
