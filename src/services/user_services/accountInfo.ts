@@ -8,7 +8,7 @@ const MODULE = "services :: user_services :: accountInfo"
 export async function accountInfo(req:Request): Promise<ServiceResponse<AccountInfoResponse>> {
 
     logger(MODULE, `Get User: ${req.user!.email}`, LogType.SUCCESS)
-    let userData: AccountInfoResponse = {
+    const userData: AccountInfoResponse = {
         email: req.user!.email,
     }
 

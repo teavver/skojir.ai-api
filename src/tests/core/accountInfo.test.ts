@@ -3,7 +3,6 @@ import axios, { AxiosRequestConfig } from "axios"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
 import { testUser, setupTests, teardownTests, accountInfoURL } from "../_setup.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
-import { AccountInfoResponse } from "../../types/responses/AccountInfoResponse.js"
 
 const MODULE = "accountInfo"
 
@@ -37,11 +36,6 @@ describe("[CORE] Get account data", function () {
         const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
         const req = () => axios.get(accountInfoURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
-        // console.log('========================================')
-        // console.log(res?.status)
-        // console.log(res?.data.message)
-        // console.log(res?.data.user)
-        // console.log('========================================')
         expect(res?.status).to.equal(200)
         expect(res?.data.user.email).to.equal(testUser.email)
     })

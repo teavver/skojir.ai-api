@@ -4,11 +4,11 @@ import { Schema } from "joi";
 
 export async function validateRequest<T>(
     module: string,
-    reqBody: any,
+    reqData: T,
     schema: Schema,
 ): Promise<ValidatorResponse<T>> {
     try {
-        const vRes = await schema.validateAsync(reqBody)
+        const vRes = await schema.validateAsync(reqData)
         logger(module, `Request data validated.`)
         return {
             isValid: true,

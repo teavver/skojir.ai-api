@@ -4,7 +4,6 @@ import { expect } from "chai"
 import { testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { accountSetup } from "../_utils.js"
-import { openAIClient } from "../../main.js"
 
 const MODULE = "solve"
 

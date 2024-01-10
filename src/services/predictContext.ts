@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosResponse } from "axios"
+import axios, { AxiosResponse } from "axios"
 import { PredictionRequest } from "../types/requests/PredictionRequest.js"
 import { validateRequest } from "../utils/validateRequest.js"
 import { predictionRequestSchema } from "../middlewares/validators/schemas/predictionRequestSchema.js"

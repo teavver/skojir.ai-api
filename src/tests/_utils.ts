@@ -14,9 +14,9 @@ export async function testAxiosRequest(module: string, axiosReq: (config?: Axios
     try {
         const res: AxiosResponse = await axiosReq(config)
         return res
-    } catch (err: any) {
+    } catch (err) {
         if (axios.isAxiosError(err)) {
-            const res: AxiosResponse | undefined = err.response;
+            const res: AxiosResponse | undefined = err.response
             return res
         }
         logger(module, `Err: ${err}`, LogType.ERR, true)

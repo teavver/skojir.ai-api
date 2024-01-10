@@ -82,7 +82,7 @@ describe("[CORE] Verify an account", function() {
 
         const user = await User.findOne({ email: dummyEmail2 })
         expect(user?.verificationCode).to.not.be.undefined
-        oldCode = user?.verificationCode!
+        if (user?.verificationCode) oldCode = user?.verificationCode
     })
     
     it("Request a verification code resend", async() => {
@@ -97,7 +97,7 @@ describe("[CORE] Verify an account", function() {
         
         const user = await User.findOne({ email: dummyEmail2 })
         expect(user?.verificationCode).to.not.be.undefined
-        newCode = user?.verificationCode!
+        if (user?.verificationCode) newCode = user?.verificationCode
     })
 
     it("Verify dummyUser2 with the new code", async () => {

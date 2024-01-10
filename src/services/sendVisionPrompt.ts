@@ -46,7 +46,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         }
     }
 
-    const { system, header, footer, max_tokens } = gptSettings[req.outputFormat as SolverOutputFormat]
+    const { system, max_tokens } = gptSettings[req.outputFormat as SolverOutputFormat]
     logger(MODULE, "Sending the request to openAI...")
 
     try {

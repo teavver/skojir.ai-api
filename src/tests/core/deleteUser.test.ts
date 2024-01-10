@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { User } from "../../models/User.js"
-import { testUser, setupTests, teardownTests, registerURL, deleteURL, verifyURL, loginURL } from "../_setup.js"
+import { testUser, setupTests, teardownTests, registerURL, deleteURL } from "../_setup.js"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { IUserPassword } from "../../types/interfaces/IUserPassword.js"
@@ -28,11 +27,10 @@ describe("[CORE] Delete an account", function () {
         expect(regRes?.status).to.equal(200)
     })
 
-    it("Should reject request to delete unverified account", async () => {
+    it("Should reject request to delete unverified account (no JWT)", async () => {
         const delReq = () => axios.post(deleteURL, testUser)
         const delRes = await testAxiosRequest(MODULE, delReq)
         expect(delRes?.status).to.be.equal(401)
-        // will throw unauthorized because we don't even have a JWT yet
     })
 
     it("Finish setting up the account (verify, login, store auth tokens)", async () => {

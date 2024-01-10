@@ -41,7 +41,7 @@ export async function emailChangeOTP(req:Request): Promise<ServiceResponse<IUser
 
     const emailOTP = generateVerificationCode()
     const emailOTPExpiry = generateExpiryDate()
-    const emailChangeMsg = "Use this code to change your account's email address. This code will expire in 10 minutes."
+    const emailChangeMsg = `Use this code to change the email address connected to your account: ${emailOTP}. It will expire in 10 minutes.`
 
     try {
         await User.updateOne({ email: userData.email }, {
@@ -54,9 +54,7 @@ export async function emailChangeOTP(req:Request): Promise<ServiceResponse<IUser
         const emailRes = await sendEmail(
             userData.email,
             `Account email change`,
-            `Use this code to change the email address connected to your account: ${emailOTP}.\n
-            It will expire in 10 minutes.\n
-            If `
+            emailChangeMsg
         )
         if (emailRes.err) {
             return {

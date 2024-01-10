@@ -1,13 +1,13 @@
-import jwt from "jsonwebtoken"
-import { Request } from "express"
-import { User } from "../../models/User.js"
-import { generateAuthToken } from "./genToken.js"
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
-import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+// import jwt from "jsonwebtoken"
+// import { Request } from "express"
+// import { User } from "../../models/User.js"
+// import { generateAuthToken } from "./genToken.js"
+// import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
+// import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 
-const MODULE = "middlewares :: auth :: refreshToken"
+// const MODULE = "middlewares :: auth :: refreshToken"
 
-export async function refreshToken(req: Request) {
+// export async function refreshToken(req: Request) {
     
     // const refreshToken = req.body.refreshToken
     // if (!refreshToken) {
@@ -51,4 +51,4 @@ export async function refreshToken(req: Request) {
     //     }
     // }
 
-}
+// }

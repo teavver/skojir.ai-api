@@ -1,5 +1,4 @@
 import { Request } from "express";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { validateRequest } from "../../utils/validateRequest.js";
@@ -15,7 +14,7 @@ export async function deleteUser(req:Request<IUserPassword>): Promise<ServiceRes
 
     const userData: IUserVerified = req.user!
     const userInputPwd: IUserPassword = req.body.password
-    const vRes = await validateRequest<IUserCredentials>(MODULE, userInputPwd, passwordSchema)
+    const vRes = await validateRequest<IUserPassword>(MODULE, userInputPwd, passwordSchema)
     if (!vRes.isValid) {
         logger(MODULE, `deleteUser req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
