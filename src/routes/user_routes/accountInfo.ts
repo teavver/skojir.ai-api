@@ -3,5 +3,5 @@ import { accountInfo } from "../../controllers/user_controllers/accountInfo.js";
 import { verifyToken } from "../../middlewares/auth/verifyToken.js";
 
 const router = express.Router()
-router.get("/", verifyToken, accountInfo)
+router.get("/", verifyToken("accessToken"), accountInfo)
 export default router
