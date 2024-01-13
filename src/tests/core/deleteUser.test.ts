@@ -11,7 +11,7 @@ describe("[CORE] Delete an account", function () {
 
     this.timeout(5000)
 
-    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "" }
+    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "", membershipToken: "" }
 
     before(async () => {
         await setupTests(MODULE)

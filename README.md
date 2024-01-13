@@ -54,8 +54,8 @@
 # Endpoints
 
 ## Legend
-- 🔒 -> Requires JWT
-- 🔑 -> Returns new JWT
+- 🔒 -> Protected endpoint (Requires JWT authentication)
+- 🔑 -> Returns JWT
 
 ## General
 
@@ -164,6 +164,7 @@ Grants two JWTs on success:
 - accessToken (expires in 1h)
 - refreshToken (expires in 1y)
 
+Response:
 ```json
 {
     "email": "email",

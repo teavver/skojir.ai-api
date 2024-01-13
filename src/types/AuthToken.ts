@@ -1,13 +1,17 @@
 import { IUserBase } from "./interfaces/IUserBase"
 
-export const SUPPORTED_TOKENS = ["accessToken", "refreshToken"] as const
+export const SUPPORTED_TOKENS = ["accessToken", "refreshToken", "membershipToken"] as const
 export type AuthTokenType = typeof SUPPORTED_TOKENS[number]
 
-export interface UserAuthTokens {
-    accessToken: string
-    refreshToken: string
+export type UserAuthTokens = {
+    [key in AuthTokenType]: string
 }
 
 export interface AuthTokenPayload extends IUserBase {
     tokenType: AuthTokenType
+}
+
+export interface RequestTokenData {
+    type: AuthTokenType
+    value: string
 }

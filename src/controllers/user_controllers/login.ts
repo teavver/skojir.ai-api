@@ -32,21 +32,21 @@ export async function loginUser(req: Request<IUserCredentials>, res: Response<Lo
     const vData: IUserVerified = sRes.data
     const userAccessToken = generateAuthToken(vData, "accessToken")
     const userRefreshToken = generateAuthToken(vData, "refreshToken")
-    
+
     await User.updateOne({ email: vData.email }, {
         $set: {
-            accessToken: userAccessToken,
             refreshToken: userRefreshToken
         },
     })
     
     logger(MODULE, `User ${vData.email} logged in`, LogType.SUCCESS)
+    res.cookie('refreshToken', userRefreshToken, { httpOnly: true, secure: true });
     return res.status(sRes.statusCode).json({
         state: "success",
         message: `User successfully logged in.`,
         tokens: {
             accessToken: userAccessToken,
-            refreshToken: userRefreshToken
+            membershipToken: ""
         }
     })
     

@@ -22,20 +22,17 @@ const userSchema = new Schema({
         required: true
     },
     verificationCode: {
-        type: String,
+        type: String
     },
     verificationCodeExpires: {
-        type: Date,
+        type: Date
     },
     membershipDetails: {
         type: Schema.Types.ObjectId,
         ref: 'Membership',
     },
-    accessToken: {
-        type: String,
-    },
     refreshToken: {
-        type: String,
+        type: String
     }
 })
 

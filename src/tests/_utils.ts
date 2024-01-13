@@ -57,7 +57,8 @@ export async function accountSetup(module: string, userData: IUserCredentials, r
 
         return {
             accessToken: accessToken,
-            refreshToken: refreshToken
+            refreshToken: refreshToken,
+            membershipToken: ""
         }
     }
 }

@@ -11,7 +11,7 @@ import { AuthTokenType } from "../../types/AuthToken.js"
 const MODULE = "middlewares :: auth :: verifyToken"
 
 /**
- * Authenticate Bearer token in a request
+ * Middleware for user authentication through JWT
  * 
  * @param expectedTokenType - Required token type. Defaults to `accessToken`
  */
@@ -20,7 +20,13 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
     return async <T>(req: Request<T>, res: Response<ResponseMessage>, next: NextFunction) => {
         
         logger(MODULE, "Verifying auth tokens...")
-        const token = req.headers.authorization?.split(" ")[1]
+        let token: string | undefined = undefined
+        
+        if (expectedTokenType === "refreshToken") {
+            token = req.cookies.refreshToken
+        } else {
+            token = req.headers.authorization?.split(" ")[1]
+        }
 
         if (!token) {
             const err = "No auth token was provided."
@@ -61,11 +67,11 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
             if (authPayload.tokenType !== expectedTokenType) {
                 return res.status(401).json({
                     state: "unauthorized",
-                    message: "Invalid Bearer token type."
+                    message: "Invalid token type."
                 })
             }
-
             req.user = user
+            req.tokenData = { type: expectedTokenType, value: token }
             logger(MODULE, "Auth tokens verified.")
 
             next()
@@ -91,7 +97,7 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
             }
 
             const err = "Failed to authenticate token."
-            logger(MODULE, `${err} : ${error}`, LogType.WARN)
+            logger(MODULE, `${err} : ${error}`, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
                 message: err
