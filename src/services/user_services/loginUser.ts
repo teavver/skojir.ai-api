@@ -1,17 +1,21 @@
+import { User } from "../../models/User.js";
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 import { Request } from "express";
 import { userCredentialsExtSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { logger, LogType } from "../../utils/logger.js";
-import { User } from "../../models/User.js";
-import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 import { IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js";
 import { isUserVerified } from "../../utils/isUserVerified.js";
+import { generateAuthToken } from "../../middlewares/auth/genToken.js";
+import { isNewDeviceId } from "../../utils/isNewDeviceId.js";
+import { IDeviceID } from "../../types/interfaces/IDeviceID.js";
+import { UserAuthTokens } from "../../types/AuthToken.js";
+import { UserRefreshToken } from "../../types/interfaces/IUserVerified.js";
 
 const MODULE = "services :: user_services :: loginUser"
 
-export async function loginUser(req:Request<IUserCredentialsExt>): Promise<ServiceResponse<IUserVerified>> {
+export async function loginUser(req:Request<IUserCredentialsExt>): Promise<ServiceResponse<UserAuthTokens>> {
 
     const userCredentialsExt: IUserCredentialsExt = {
         email: req.body.email,
@@ -70,10 +74,45 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
         }
     }
 
+    const userAccessToken: UserAuthTokens["accessToken"] = generateAuthToken(user, "accessToken")
+    const userRefreshToken: UserAuthTokens["refreshToken"] = generateAuthToken(user, "refreshToken")
+    let userMembershipToken: UserAuthTokens["membershipToken"] = ""
+
+    if (user.membershipDetails && user.membershipDetails.isActive === true) {
+        userMembershipToken = generateAuthToken(user, "membershipToken")
+    }
+
+    const userTokens: UserAuthTokens = {
+        refreshToken: userRefreshToken,
+        accessToken: userAccessToken,
+        membershipToken: userMembershipToken
+    }
+
+    const reqDeviceId: IDeviceID = req.body.deviceId
+    const isNewDevice = isNewDeviceId(user, reqDeviceId)
+
+    if (isNewDevice) {
+        const newToken: UserRefreshToken = {
+            deviceId: reqDeviceId,
+            token: userRefreshToken
+        }
+        await User.updateOne(
+            { email: user.email }, 
+            { $push: { refreshTokens: newToken } }
+        )
+    } else {
+        await User.updateOne(
+            { email: user.email, 'refreshTokens.deviceId': reqDeviceId },
+            { $set: { 'refreshTokens.$.token': userRefreshToken } }
+        )
+    }
+
+    const deviceMsg = isNewDevice ? "(new device)" : "(existing device)"
+    logger(MODULE, `User ${user.email} logged in. ${deviceMsg}`, LogType.SUCCESS)
 
     return {
         err: false,
-        data: user,
+        data: userTokens,
         statusCode: 200
     }
 

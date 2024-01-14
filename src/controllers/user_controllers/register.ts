@@ -3,9 +3,8 @@ import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { createUser } from "../../services/user_services/createUser.js";
-import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
-import { sendEmail } from "../../utils/sendEmail.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
+import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 
 const MODULE = "controllers :: user_controllers :: register"
 
@@ -19,8 +18,7 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
         })
     }
 
-    const verCode = generateVerificationCode()
-    const sRes = await createUser(req, verCode)
+    const sRes: ServiceResponse<IUserCredentials> = await createUser(req)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "conflict",
@@ -28,22 +26,8 @@ export async function registerUser(req: Request<IUserCredentials>, res: Response
         })
     }
 
-    // send verification email to new user
-    const vData: IUserCredentials = sRes.data
-    const emailRes = await sendEmail(
-        vData.email,
-        `Welcome to skojir!`,
-        `Use this code to activate your account: ${verCode}`,
-    )
-    if (emailRes.err) {
-        return res.status(emailRes.statusCode).json({
-            state: "error",
-            message: emailRes.errMsg
-        })
-    }
-
-    logger(MODULE, `User: ${vData.email} created an account`, LogType.SUCCESS)
-    return res.status(emailRes.statusCode).json({
+    logger(MODULE, `User: ${sRes.data.email} created an account`, LogType.SUCCESS)
+    return res.status(sRes.statusCode).json({
         state: "success",
         message: `Your account has been created. Please check your e-mail for a verification code.`
     })

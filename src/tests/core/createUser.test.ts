@@ -23,7 +23,7 @@ describe("[CORE] Create an account", function () {
     it("Create the dummy User account", async () => {
         const req = () => axios.post(registerURL, testUser)
         const res = await testAxiosRequest(MODULE, req)
-        expect(res?.status).to.equal(200)
+        expect(res?.status).to.equal(201)
 
         const newUser = await User.findOne({ email: testUser.email })
         expect(newUser).to.exist

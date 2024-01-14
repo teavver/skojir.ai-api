@@ -4,6 +4,7 @@ import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { emailChange as emailChangeService } from "../../services/user_services/emailChange.js";
 import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 
 const MODULE = "controllers :: user_controllers :: emailChange"
 
@@ -17,7 +18,7 @@ export async function emailChange(req: Request<IUserVerification>, res: Response
         })
     }
     
-    const sRes = await emailChangeService(req)
+    const sRes: ServiceResponse<IUserVerification> = await emailChangeService(req)
     if (sRes.err) {
         return res.status(sRes.statusCode).json({
             state: "error",

@@ -78,7 +78,7 @@ describe("[CORE] Verify an account", function() {
     it("Create another account for dummyUser2", async () => {
         const req = () => axios.post(registerURL, userData2)
         const res = await testAxiosRequest(MODULE, req)
-        expect(res?.status).to.equal(200)
+        expect(res?.status).to.equal(201)
 
         const user = await User.findOne({ email: dummyEmail2 })
         expect(user?.verificationCode).to.not.be.undefined

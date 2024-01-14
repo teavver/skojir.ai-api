@@ -6,6 +6,7 @@ import { requestContextPrediction } from "../services/predictContext.js"
 import { PredictionRequest } from "../types/requests/PredictionRequest.js"
 import { sendVisionPrompt } from "../services/sendVisionPrompt.js"
 import { validateRequestBody } from "../utils/verifyRequestBody.js"
+import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 
 const MODULE = "controllers :: solve"
 
@@ -31,7 +32,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
     const contextPredictionData: PredictionRequest = {
         img: img, threshold: threshold
     }
-    const contextRes = await requestContextPrediction(req, contextPredictionData)
+    const contextRes: ServiceResponse<PredictionRequest> = await requestContextPrediction(req, contextPredictionData)
     if (contextRes.err) {
         logger(MODULE, contextRes.errMsg, LogType.ERR)
         return res.status(contextRes.statusCode).json({
@@ -48,7 +49,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         threshold,
     }
 
-    const gptRes = await sendVisionPrompt(reqData)
+    const gptRes: ServiceResponse<string> = await sendVisionPrompt(reqData)
     if (gptRes.err) {
         logger(MODULE, gptRes.errMsg, LogType.ERR)
         return res.status(gptRes.statusCode).json({

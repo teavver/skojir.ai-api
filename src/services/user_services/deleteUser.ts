@@ -7,6 +7,7 @@ import { IUserPassword } from "../../types/interfaces/IUserPassword.js";
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
 import { passwordSchema } from "../../middlewares/validators/schemas/passwordSchema.js";
 import { IUserBase } from "../../types/interfaces/IUserBase.js";
+import { User } from "../../models/User.js";
 
 const MODULE = "services :: user_services :: deleteUser"
 
@@ -43,6 +44,8 @@ export async function deleteUser(req:Request<IUserPassword>): Promise<ServiceRes
             statusCode: 401
         }
     }
+
+    await User.deleteOne({ email: userData.email })
 
     return {
         err: false,

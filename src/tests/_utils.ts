@@ -35,7 +35,7 @@ export async function accountSetup(module: string, userData: IUserCredentials, r
     if (register) {
         const regReq = () => axios.post(registerURL, userData)
         const regRes = await testAxiosRequest(module, regReq)
-        expect(regRes?.status).to.equal(200)
+        expect(regRes?.status).to.equal(201)
     }
 
     if (verify) {

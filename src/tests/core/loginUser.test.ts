@@ -76,7 +76,7 @@ describe("[CORE] Login to an account", function () {
         expect(res?.status).to.be.equal(200)
 
         const userData = await User.findOne({ email: testUser.email })
-        console.log(userData?.refreshTokens)
+        // console.log(userData?.refreshTokens)
 
         expect(userData?.refreshTokens.length).to.be.greaterThan(1)
         

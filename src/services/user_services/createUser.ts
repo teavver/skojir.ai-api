@@ -8,10 +8,12 @@ import { generateSalt } from "../../utils/crypto/salt.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
+import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 
 const MODULE = "services :: user_services :: createUser"
 
-export async function createUser(req:Request<IUserCredentials>, verificationCode: string): Promise<ServiceResponse<IUserCredentials>> {
+export async function createUser(req:Request<IUserCredentials>): Promise<ServiceResponse<IUserCredentials>> {
 
     const userCredentials: IUserCredentials = {
         email: req.body.email,
@@ -42,6 +44,7 @@ export async function createUser(req:Request<IUserCredentials>, verificationCode
     }
 
     const salt = generateSalt()
+    const verCode = generateVerificationCode()
     const saltedPwd = userCredentials.password + salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
     
@@ -49,12 +52,27 @@ export async function createUser(req:Request<IUserCredentials>, verificationCode
         email: userCredentials.email,
         password: hashedPwd,
         salt: salt,
-        verificationCode: verificationCode,
+        verificationCode: verCode,
         verificationCodeExpires: generateExpiryDate() // 10 minutes by default
     })
 
     try {
+
+        const emailRes = await sendEmail(
+            userCredentials.email,
+            `Welcome to skojir!`,
+            `Use this code to activate your account: ${verCode}`,
+        )
+        if (emailRes.err) {
+            return {
+                err: true,
+                errMsg: "Internal error",
+                statusCode: 500
+            }
+        }
+        
         await newUser.save()
+
     } catch (err) {
         const dbErr = (err as Error).message
         logger(MODULE, dbErr, LogType.WARN)

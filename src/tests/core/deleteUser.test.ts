@@ -24,7 +24,7 @@ describe("[CORE] Delete an account", function () {
     it("Setup - register an account", async () => {
         const regReq = () => axios.post(registerURL, testUser)
         const regRes = await testAxiosRequest(MODULE, regReq)
-        expect(regRes?.status).to.equal(200)
+        expect(regRes?.status).to.equal(201)
     })
 
     it("Should reject request to delete unverified account (no JWT)", async () => {

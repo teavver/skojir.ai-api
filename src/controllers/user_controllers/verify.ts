@@ -4,6 +4,7 @@ import { ResponseMessage } from "../../types/responses/ResponseMessage.js";
 import { verifyUser as verifyService } from "../../services/user_services/verifyUser.js";
 import { validateRequestBody } from "../../utils/verifyRequestBody.js";
 import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
+import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
 
 const MODULE = "controllers :: user_controllers :: verify"
 
@@ -17,7 +18,7 @@ export async function verifyUser(req: Request<IUserVerification>, res: Response<
         })
     }
     
-    const vRes = await verifyService(req)
+    const vRes: ServiceResponse<IUserVerification> = await verifyService(req)
     if (vRes.err) {
         return res.status(vRes.statusCode).json({
             state: "unauthorized",
