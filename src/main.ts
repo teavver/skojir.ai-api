@@ -1,4 +1,5 @@
 import cors from "cors"
+import cookieParser from "cookie-parser"
 import { OpenAI } from "openai"
 import Mailjet from "node-mailjet"
 import express, { Express } from "express"
@@ -31,6 +32,7 @@ async function init() {
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization']
     }))
+    app.use(cookieParser())
 
     setupRoutes(app)
 

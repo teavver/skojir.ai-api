@@ -50,14 +50,18 @@ export async function accountSetup(module: string, userData: IUserCredentials, r
         const loginRes = await testAxiosRequest(module, loginReq)
         expect(loginRes?.status).to.equal(200)
 
-        const accessToken = loginRes?.data.tokens.accessToken
-        const refreshToken = loginRes?.data.tokens.accessToken
+        const cookies = loginRes?.headers['set-cookie']
+        expect(cookies).to.be.an('array')
+
+        let refreshTokenFound = cookies?.some(cookie => cookie.startsWith('refreshToken=') && cookie.includes('HttpOnly'))
+        expect(refreshTokenFound).to.be.true
+        
+        const accessToken = loginRes?.data.accessToken
         expect(accessToken).to.not.be.null
-        expect(refreshToken).to.not.be.null
 
         return {
             accessToken: accessToken,
-            refreshToken: refreshToken,
+            refreshToken: "", // returned as httpOnly cookie
             membershipToken: ""
         }
     }

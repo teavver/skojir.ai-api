@@ -3,7 +3,7 @@ import { UserAuthTokens } from "../AuthToken.js";
 
 export interface SuccessLoginResponse extends ResponseMessage {
     state: 'success'
-    tokens: UserAuthTokens
+    accessToken: UserAuthTokens["accessToken"]
 }
 
 export interface ErrorLoginResponse extends ResponseMessage {
