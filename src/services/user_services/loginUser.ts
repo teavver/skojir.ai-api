@@ -1,24 +1,25 @@
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js";
 import { deriveKey } from "../../utils/crypto/pbkdf2.js";
 import { Request } from "express";
-import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
+import { userCredentialsExtSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
 import { validateRequest } from "../../utils/validateRequest.js";
 import { logger, LogType } from "../../utils/logger.js";
 import { User } from "../../models/User.js";
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js";
+import { IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js";
 import { isUserVerified } from "../../utils/isUserVerified.js";
 
 const MODULE = "services :: user_services :: loginUser"
 
-export async function loginUser(req:Request<IUserCredentials>): Promise<ServiceResponse<IUserVerified>> {
+export async function loginUser(req:Request<IUserCredentialsExt>): Promise<ServiceResponse<IUserVerified>> {
 
-    const userCredentials: IUserCredentials = {
+    const userCredentialsExt: IUserCredentialsExt = {
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        deviceId: req.body.deviceId
     }
 
-    const vRes = await validateRequest<IUserCredentials>(MODULE, userCredentials, userCredentialsSchema)
+    const vRes = await validateRequest<IUserCredentialsExt>(MODULE, userCredentialsExt, userCredentialsExtSchema)
     if (!vRes.isValid) {
         logger(MODULE, `loginUser req rejected: Failed to validate input`, LogType.WARN)
         return {
@@ -28,7 +29,7 @@ export async function loginUser(req:Request<IUserCredentials>): Promise<ServiceR
         }
     }
 
-    const user = await User.findOne({ email: userCredentials.email })
+    const user = await User.findOne({ email: userCredentialsExt.email })
     if (!user) {
         logger(MODULE, `Failed to login user. Reason: No account matches user email`, LogType.WARN)
         return {
@@ -54,7 +55,7 @@ export async function loginUser(req:Request<IUserCredentials>): Promise<ServiceR
         }
     }
 
-    const saltedPwd = userCredentials.password + user.salt
+    const saltedPwd = userCredentialsExt.password + user.salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: user.salt })
 
     if (hashedPwd !== user.password) {

@@ -3,8 +3,9 @@ import axios, { AxiosResponse, AxiosRequestConfig } from "axios"
 import { registerURL, verifyURL, loginURL } from "./_setup.js"
 import { logger, LogType } from "../utils/logger.js"
 import { UserAuthTokens } from "../types/AuthToken.js"
-import { IUserCredentials } from "../types/interfaces/IUserCredentials.js"
+import { IUserCredentials, IUserCredentialsExt } from "../types/interfaces/IUserCredentials.js"
 import { User } from "../models/User.js"
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * Wrapper for HTTP requests using axios
@@ -46,7 +47,14 @@ export async function accountSetup(module: string, userData: IUserCredentials, r
     }
 
     if (login) {
-        const loginReq = () => axios.post(loginURL, userData)
+
+        const loginData: IUserCredentialsExt = {
+            email: userData.email,
+            password: userData.password,
+            deviceId: uuidv4()
+        }
+
+        const loginReq = () => axios.post(loginURL, loginData)
         const loginRes = await testAxiosRequest(module, loginReq)
         expect(loginRes?.status).to.equal(200)
 

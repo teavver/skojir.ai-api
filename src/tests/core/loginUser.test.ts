@@ -1,8 +1,9 @@
 import axios from "axios"
 import { expect } from "chai"
 import { testUser, setupTests, teardownTests, loginURL } from "../_setup.js"
-import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js"
+import { IUserCredentials, IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
+import { v4 as uuidv4 } from 'uuid'
 
 const MODULE = "loginUser"
 
@@ -50,7 +51,13 @@ describe("[CORE] Login to an account", function () {
     })
 
     it("Log in with valid credentials", async () => {
-        const req = () => axios.post(loginURL, testUser)
+        const uuid = uuidv4()
+        const loginData: IUserCredentialsExt = {
+            email: testUser.email,
+            password: testUser.password,
+            deviceId: uuid
+        }
+        const req = () => axios.post(loginURL, loginData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
         

@@ -78,8 +78,8 @@ Verification code expires after 10 minutes and requires re-generating it using t
 
 ```json
 {
-    "email": "youraccount@mail.com",
-    "password": "yourPassword!"
+    "email": "email@gmail.com",
+    "password": "yourPassword!",
 }
 ```
 
@@ -89,14 +89,14 @@ Will always return `email` and, if purchased, `membership` details.\
 Example response (no membership):
 ```json
     "data": {
-        "email": "your_accounts_email@gmail.com"
+        "email": "email@gmail.com"
     }
 ```
 
 Response for User with active (or expired) membership:
 ```json
     "data": {
-        "email": "your_accounts_email@gmail.com",
+        "email": "email@gmail.com",
         "membership": {
             "userId": null, // ALWAYS NULL
             "isActive": true,
@@ -160,15 +160,20 @@ The same endpoint can also be used to **re-send the verification code** - genera
 ```
 
 ### 🔑 (POST) `api/auth/login` - Login to verfied account
-Grants two JWTs on success:
-- accessToken (expires in 1h)
-- refreshToken (expires in 1y)
 
-Response:
+Grants `refreshToken`, `accessToken` and `membershipToken` (if the user has an active membership) JWTs on success.\
+The `refreshToken` is always returned as httpOnly cookie.\
+User sessions are stored per device. The user is allowed to sign out of all devices at any time.
+
+Token type and expiration time:
+- `refreshToken` = **14 days**
+- `accessToken` = **12 hours**
+- `membershipToken` = **12 hours**
+
 ```json
 {
     "email": "email",
-    "password": "pwd"
+    "password": "pwd",
+    "deviceId": "16-byte device UUID"
 }
 ```
-

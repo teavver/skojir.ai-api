@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose"
+import { refreshTokenSchema } from "./RefreshToken.js"
 
 const collectionName = (process.env.ENV === "DEV") ? process.env.DB_COLLECTION_DEV : process.env.DB_COLLECTION_PROD
 
@@ -31,9 +32,7 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Membership',
     },
-    refreshToken: {
-        type: String
-    }
+    refreshTokens: [refreshTokenSchema]
 })
 
 export const User = mongoose.model('User', userSchema, collectionName)
