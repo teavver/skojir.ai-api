@@ -4,6 +4,7 @@ import { testUser, setupTests, teardownTests, loginURL } from "../_setup.js"
 import { IUserCredentials, IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
 import { v4 as uuidv4 } from 'uuid'
+import { User } from "../../models/User.js"
 
 const MODULE = "loginUser"
 
@@ -63,6 +64,22 @@ describe("[CORE] Login to an account", function () {
         
     })
 
+    it("Log in on another device", async () => {
+        const uuid = uuidv4()
+        const loginData: IUserCredentialsExt = {
+            email: testUser.email,
+            password: testUser.password,
+            deviceId: uuid
+        }
+        const req = () => axios.post(loginURL, loginData)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.be.equal(200)
 
+        const userData = await User.findOne({ email: testUser.email })
+        console.log(userData?.refreshTokens)
+
+        expect(userData?.refreshTokens.length).to.be.greaterThan(1)
+        
+    })
 
 })
