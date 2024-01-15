@@ -15,3 +15,8 @@ export interface RequestTokenData {
     type: AuthTokenType
     value: string
 }
+
+export interface UserTokens {
+    accessToken: UserAuthTokens["accessToken"]
+    membershipToken?: UserAuthTokens["membershipToken"]
+}

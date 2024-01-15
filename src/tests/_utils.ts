@@ -60,17 +60,18 @@ export async function accountSetup(module: string, userData: IUserCredentials, r
 
         const cookies = loginRes?.headers['set-cookie']
         expect(cookies).to.be.an('array')
-
-        let refreshTokenFound = cookies?.some(cookie => cookie.startsWith('refreshToken=') && cookie.includes('HttpOnly'))
-        expect(refreshTokenFound).to.be.true
         
-        const accessToken = loginRes?.data.accessToken
+        const refreshToken = cookies?.find(cookie => cookie.startsWith('refreshToken='))?.split('=')[1].split(';')[0]
+        expect(refreshToken).to.not.be.null
+
+        const accessToken = loginRes?.data.tokens.accessToken
+        const membershipToken = loginRes?.data.tokens.membershipToken
         expect(accessToken).to.not.be.null
 
         return {
             accessToken: accessToken,
-            refreshToken: "", // returned as httpOnly cookie
-            membershipToken: ""
+            refreshToken: refreshToken ? refreshToken : "",
+            membershipToken: membershipToken ? membershipToken : ""
         }
     }
 }

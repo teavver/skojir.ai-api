@@ -38,8 +38,8 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
         }
 
         try {
-
-            const authPayload = jwt.verify(token, process.env.JWT_SECRET as string, {
+            const secret: string = (expectedTokenType === "accessToken") ? process.env.JWT_SECRET as string : process.env.JWT_REFRESH_SECRET as string
+            const authPayload = jwt.verify(token, secret, {
                 clockTolerance: 300 // Allow slight timing skews
             }) as AuthTokenPayload
 

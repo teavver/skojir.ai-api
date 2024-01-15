@@ -10,6 +10,7 @@ import emailChangeOTPRoute from "../routes/user_routes/emailChangeOTP.js";
 import emailChangeRoute from "../routes/user_routes/emailChange.js";
 import accountInfoRoute from "../routes/user_routes/accountInfo.js"
 import deleteRoute from "../routes/user_routes/delete.js";
+import refreshRoute from "../routes/auth/refreshTokens.js";
 import verifyRoute from "../routes/auth/verify.js";
 import loginRoute from "../routes/auth/login.js";
 import updateRoute from "../routes/update.js";
@@ -20,19 +21,19 @@ export function setupRoutes(app: Express) {
 
     const authRoutesLimiter = rateLimit({
         windowMs: 60 * 60 * 1000, // 1 hour
-        max: 5, // 5 per hour
+        max: 5, // 5 / hour
         message: "Too many requests."
     })
 
     const userRoutesLimiter = rateLimit({
         windowMs: 60 * 60 * 1000, // 1 hour
-        max: 20, // 20 per windowMs
+        max: 20, // 20 / hour
         message: "Too many requests."
     })
 
     const solveRouteLimiter = rateLimit({
         windowMs: 15 * 60 * 1000, // 15 min
-        max: 50, // 50 per windowMs
+        max: 15, // 60 / hour
         message: "Too many requests."
     })
 
@@ -40,6 +41,7 @@ export function setupRoutes(app: Express) {
     const authRouter = express.Router()
     authRouter.use("/login", conditionalMiddleware(authRoutesLimiter), loginRoute)
     authRouter.use("/verify", conditionalMiddleware(authRoutesLimiter), verifyRoute)
+    authRouter.use("/refresh", conditionalMiddleware(authRoutesLimiter), refreshRoute)
     app.use("/auth", authRouter)
 
     // user routes
