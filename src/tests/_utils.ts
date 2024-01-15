@@ -64,7 +64,7 @@ export async function accountSetup(module: string, userData: IUserCredentials, r
         let refreshTokenFound = cookies?.some(cookie => cookie.startsWith('refreshToken=') && cookie.includes('HttpOnly'))
         expect(refreshTokenFound).to.be.true
         
-        const accessToken = loginRes?.data.accessToken
+        const accessToken = loginRes?.data.tokens.accessToken
         expect(accessToken).to.not.be.null
 
         return {

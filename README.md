@@ -141,6 +141,11 @@ User account will be deleted **immediately** on success (!)
 
 ## Auth endpoints
 
+### 🔒 (POST) `api/auth/refresh` - Refresh auth JWTs using `refreshToken`
+
+Requires a valid `refreshToken` in the request cookies.\
+If the User sends an invalid or expired `refreshToken`, the api will automatically reject the request and revoke the session.
+
 ### (POST) `api/auth/verify` - Verify account with code or resend code
 Used to verify registered users to finish up creating the account. Requires the 6-digit code from registration email:
 ```json

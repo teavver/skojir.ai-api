@@ -1,10 +1,9 @@
+import { UserTokens } from "../AuthToken.js";
 import { ResponseMessage, ResponseState } from "./ResponseMessage.js";
-import { UserAuthTokens } from "../AuthToken.js";
 
 export interface SuccessLoginResponse extends ResponseMessage {
     state: 'success'
-    accessToken: UserAuthTokens["accessToken"]
-    membershipToken?: UserAuthTokens["membershipToken"]
+    tokens: UserTokens
 }
 
 export interface ErrorLoginResponse extends ResponseMessage {
