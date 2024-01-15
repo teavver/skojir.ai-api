@@ -1,9 +1,9 @@
 import { Request } from "express"
-import { ServiceResponse } from "../types/responses/ServiceResponse"
-import { logger } from "../utils/logger"
-import { generateAuthToken } from "../middlewares/auth/genToken"
-import { IUserVerified } from "../types/interfaces/IUserVerified"
-import { UserAuthTokens } from "../types/AuthToken"
+import { ServiceResponse } from "../types/responses/ServiceResponse.js"
+import { logger } from "../utils/logger.js"
+import { generateAuthToken } from "../middlewares/auth/genToken.js"
+import { IUserVerified } from "../types/interfaces/IUserVerified.js"
+import { UserAuthTokens } from "../types/AuthToken.js"
 
 const MODULE = "services :: refreshAuthTokens"
 
