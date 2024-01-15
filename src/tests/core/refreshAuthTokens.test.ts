@@ -7,7 +7,7 @@ import { UserAuthTokens } from "../../types/AuthToken.js"
 
 const MODULE = "refreshAuthTokens"
 
-describe.only("[CORE] Refresh auth tokens", function () {
+describe("[CORE] Refresh auth tokens", function () {
 
     this.timeout(5000)
 
