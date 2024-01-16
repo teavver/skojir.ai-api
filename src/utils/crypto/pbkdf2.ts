@@ -1,5 +1,5 @@
-import sjcl from 'sjcl'
-import { PBKDF2Params } from '../../types/PBKDF2Params.js'
+import sjcl from "sjcl"
+import { PBKDF2Params } from "../../types/PBKDF2Params.js"
 
 /**
  * Derive a key using PBKDF2

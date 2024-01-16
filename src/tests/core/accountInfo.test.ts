@@ -7,15 +7,18 @@ import { UserAuthTokens } from "../../types/AuthToken.js"
 const MODULE = "accountInfo"
 
 describe("[CORE] Get account data", function () {
-
     this.timeout(5000)
-    
-    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "", membershipToken: "" }
+
+    let tokens: UserAuthTokens = {
+        accessToken: "",
+        refreshToken: "",
+        membershipToken: "",
+    }
 
     before(async () => {
         await setupTests(MODULE)
     })
-    
+
     after(async () => {
         await teardownTests(MODULE)
     })
@@ -23,7 +26,9 @@ describe("[CORE] Get account data", function () {
     it("Setup (create and verify account)", async () => {
         const tokenData = await accountSetup(MODULE, testUser)
         expect(tokenData).to.not.be.null
-        if (tokenData) { tokens = tokenData }
+        if (tokenData) {
+            tokens = tokenData
+        }
     })
 
     it("Should reject get account info w/o JWT", async () => {
@@ -33,11 +38,12 @@ describe("[CORE] Get account data", function () {
     })
 
     it("Get account info", async () => {
-        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const reqConf: AxiosRequestConfig = {
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
+        }
         const req = () => axios.get(accountInfoURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
         expect(res?.data.user.email).to.equal(testUser.email)
     })
-    
 })

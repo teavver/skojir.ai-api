@@ -10,16 +10,18 @@ import { SolveRequest } from "../types/requests/SolveRequest.js"
 const MODULE = "services :: predictContext"
 const DEFAULT_THRESHOLD_VALUE = 0.25
 
-export async function requestContextPrediction(req: Request<SolveRequest>, predReqData: PredictionRequest): Promise<ServiceResponse<PredictionRequest>> {
-
+export async function requestContextPrediction(
+    req: Request<SolveRequest>,
+    predReqData: PredictionRequest,
+): Promise<ServiceResponse<PredictionRequest>> {
     const vRes = await validateRequest<PredictionRequest>(MODULE, predReqData, predictionRequestSchema)
-    if (!vRes.isValid){
+    if (!vRes.isValid) {
         const err = `Failed to validate request: ${vRes.error}`
         logger(MODULE, err, LogType.ERR)
         return {
             err: true,
             errMsg: err,
-            statusCode: 400
+            statusCode: 400,
         }
     }
 
@@ -33,14 +35,14 @@ export async function requestContextPrediction(req: Request<SolveRequest>, predR
         const token = req.headers.authorization?.split(" ")[1]
         const res = await axios.post(url, predReqData, {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
         })
         return {
             err: false,
             data: res.data,
-            statusCode: 200
+            statusCode: 200,
         }
     } catch (err) {
         let res: AxiosResponse | undefined = undefined
@@ -48,8 +50,7 @@ export async function requestContextPrediction(req: Request<SolveRequest>, predR
         return {
             err: true,
             errMsg: res ? res.data : "Internal service error",
-            statusCode: res ? res.status : 500
+            statusCode: res ? res.status : 500,
         }
     }
-
 }

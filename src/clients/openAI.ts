@@ -7,6 +7,6 @@ export function createOpenAIClient() {
     const apiKey = process.env.OPENAI_KEY
     logger(MODULE, "OpenAI Client initialized", LogType.SUCCESS)
     return new OpenAI({
-        apiKey
+        apiKey,
     })
 }

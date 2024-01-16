@@ -9,10 +9,13 @@ import { User } from "../../models/User.js"
 const MODULE = "emailOTP + emailChange"
 
 describe("[CORE] Email (OTP + change)", function () {
-
     this.timeout(5000)
 
-    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "", membershipToken: "" }
+    let tokens: UserAuthTokens = {
+        accessToken: "",
+        refreshToken: "",
+        membershipToken: "",
+    }
 
     before(async () => {
         await setupTests(MODULE)
@@ -26,11 +29,15 @@ describe("[CORE] Email (OTP + change)", function () {
         const tokenData = await accountSetup(MODULE, testUser)
         await accountSetup(MODULE, testUser2)
         expect(tokenData).to.not.be.null
-        if (tokenData) { tokens = tokenData }
+        if (tokenData) {
+            tokens = tokenData
+        }
     })
 
     it("Request an OTP code from the /email-change-otp endpoint", async () => {
-        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const reqConf: AxiosRequestConfig = {
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
+        }
         const req = () => axios.get(emailChangeOTPURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
@@ -40,9 +47,11 @@ describe("[CORE] Email (OTP + change)", function () {
         const newEmail = "test2@example.com"
         const reqData = {
             email: newEmail,
-            verificationCode: "100200"
+            verificationCode: "100200",
         }
-        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const reqConf: AxiosRequestConfig = {
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
+        }
         const req = () => axios.post(emailChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(401)
@@ -53,9 +62,11 @@ describe("[CORE] Email (OTP + change)", function () {
         const newEmail = testUser2.email
         const reqData = {
             email: newEmail,
-            verificationCode: user!.verificationCode
+            verificationCode: user!.verificationCode,
         }
-        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const reqConf: AxiosRequestConfig = {
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
+        }
         const req = () => axios.post(emailChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(409)
@@ -63,15 +74,16 @@ describe("[CORE] Email (OTP + change)", function () {
 
     it("Change the email with valid OTP", async () => {
         const newEmail = "test2@example.com"
-        const reqConf: AxiosRequestConfig = { headers: { Authorization: `Bearer ${tokens.accessToken}` }}
+        const reqConf: AxiosRequestConfig = {
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
+        }
         const user = await User.findOne({ email: testUser.email })
         const reqData = {
             email: newEmail,
-            verificationCode: user!.verificationCode
+            verificationCode: user!.verificationCode,
         }
         const req = () => axios.post(emailChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
     })
-
 })

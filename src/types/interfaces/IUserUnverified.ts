@@ -1,4 +1,4 @@
-import { IUserCredentials } from "./IUserCredentials.js";
+import { IUserCredentials } from "./IUserCredentials.js"
 
 export interface IUserUnverified extends IUserCredentials {
     salt: string

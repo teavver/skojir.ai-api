@@ -1,7 +1,7 @@
-import { IUserCredentials } from "./IUserCredentials.js";
-import { IMembership } from "./IMembership.js";
-import { IDeviceID } from "./IDeviceID.js";
-import { UserAuthTokens } from "../AuthToken.js";
+import { IUserCredentials } from "./IUserCredentials.js"
+import { IMembership } from "./IMembership.js"
+import { IDeviceID } from "./IDeviceID.js"
+import { UserAuthTokens } from "../AuthToken.js"
 
 export interface IUserVerified extends IUserCredentials {
     salt: string
@@ -16,6 +16,6 @@ export interface IUserVerified extends IUserCredentials {
 }
 
 export interface UserRefreshToken {
-    deviceId: IDeviceID,
+    deviceId: IDeviceID
     token: UserAuthTokens["refreshToken"]
 }

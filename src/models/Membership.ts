@@ -4,16 +4,16 @@ import mongoose, { Schema } from "mongoose"
 const membershipSchema = new Schema<IMembership>({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: "User",
+        required: true,
     },
     isActive: {
         type: Boolean,
-        default: false
+        default: false,
     },
     endDate: {
-        type: Date
-    }
+        type: Date,
+    },
 })
 
-export const Membership = mongoose.model('Membership', membershipSchema)
+export const Membership = mongoose.model("Membership", membershipSchema)

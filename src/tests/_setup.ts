@@ -1,4 +1,3 @@
-
 import { Server } from "net"
 import { logger, LogType } from "../utils/logger.js"
 import { User } from "../models/User.js"
@@ -25,12 +24,12 @@ export const refreshTokensURL = testBaseURL + "/auth/refresh"
 // Test user
 export const testUser: IUserCredentials = {
     email: "test@example.com",
-    password: "Password123!"
+    password: "Password123!",
 }
 
 export const testUser2: IUserCredentials = {
     email: "test23@example.com",
-    password: "Password123@"
+    password: "Password123@",
 }
 
 export async function setupTests(module: string) {

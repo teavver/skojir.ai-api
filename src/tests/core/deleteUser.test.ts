@@ -8,10 +8,13 @@ import { IUserPassword } from "../../types/interfaces/IUserPassword.js"
 const MODULE = "createUser"
 
 describe("[CORE] Delete an account", function () {
-
     this.timeout(5000)
 
-    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "", membershipToken: "" }
+    let tokens: UserAuthTokens = {
+        accessToken: "",
+        refreshToken: "",
+        membershipToken: "",
+    }
 
     before(async () => {
         await setupTests(MODULE)
@@ -36,27 +39,28 @@ describe("[CORE] Delete an account", function () {
     it("Finish setting up the account (verify, login, store auth tokens)", async () => {
         const tokenData = await accountSetup(MODULE, testUser, false)
         expect(tokenData).to.not.be.null
-        if (tokenData) { tokens = tokenData }
+        if (tokenData) {
+            tokens = tokenData
+        }
     })
 
     it("Should reject request to delete account with invalid credentials", async () => {
         const reqConf: AxiosRequestConfig = {
-            headers: { Authorization: `Bearer ${tokens.accessToken}` }
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
         }
         const invalidDelReqData: IUserPassword = { password: "invalid@Pwd!123" }
         const dReq = () => axios.post(deleteURL, invalidDelReqData, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(401)
     })
-    
+
     it("Delete the account with valid credentials", async () => {
         const reqConf: AxiosRequestConfig = {
-            headers: { Authorization: `Bearer ${tokens.accessToken}` }
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
         }
         const validPwdData: IUserPassword = { password: testUser.password }
         const dReq = () => axios.post(deleteURL, validPwdData, reqConf)
         const dRes = await testAxiosRequest(MODULE, dReq)
         expect(dRes?.status).to.be.equal(200)
     })
-
 })

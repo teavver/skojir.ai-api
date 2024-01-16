@@ -1,26 +1,25 @@
-import { User } from "../../models/User.js";
-import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { deriveKey } from "../../utils/crypto/pbkdf2.js";
-import { Request } from "express";
-import { userCredentialsExtSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js";
-import { validateRequest } from "../../utils/validateRequest.js";
-import { logger, LogType } from "../../utils/logger.js";
-import { IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js";
-import { isUserVerified } from "../../utils/isUserVerified.js";
-import { generateAuthToken } from "../../middlewares/auth/genToken.js";
-import { isNewDeviceId } from "../../utils/isNewDeviceId.js";
-import { IDeviceID } from "../../types/interfaces/IDeviceID.js";
-import { UserAuthTokens } from "../../types/AuthToken.js";
-import { UserRefreshToken } from "../../types/interfaces/IUserVerified.js";
+import { User } from "../../models/User.js"
+import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { deriveKey } from "../../utils/crypto/pbkdf2.js"
+import { Request } from "express"
+import { userCredentialsExtSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js"
+import { validateRequest } from "../../utils/validateRequest.js"
+import { logger, LogType } from "../../utils/logger.js"
+import { IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js"
+import { isUserVerified } from "../../utils/isUserVerified.js"
+import { generateAuthToken } from "../../middlewares/auth/genToken.js"
+import { isNewDeviceId } from "../../utils/isNewDeviceId.js"
+import { IDeviceID } from "../../types/interfaces/IDeviceID.js"
+import { UserAuthTokens } from "../../types/AuthToken.js"
+import { UserRefreshToken } from "../../types/interfaces/IUserVerified.js"
 
 const MODULE = "services :: user_services :: loginUser"
 
-export async function loginUser(req:Request<IUserCredentialsExt>): Promise<ServiceResponse<UserAuthTokens>> {
-
+export async function loginUser(req: Request<IUserCredentialsExt>): Promise<ServiceResponse<UserAuthTokens>> {
     const userCredentialsExt: IUserCredentialsExt = {
         email: req.body.email,
         password: req.body.password,
-        deviceId: req.body.deviceId
+        deviceId: req.body.deviceId,
     }
 
     const vRes = await validateRequest<IUserCredentialsExt>(MODULE, userCredentialsExt, userCredentialsExtSchema)
@@ -29,7 +28,7 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
         return {
             err: true,
             errMsg: `Incorrect password.`,
-            statusCode: vRes.statusCode
+            statusCode: vRes.statusCode,
         }
     }
 
@@ -42,7 +41,7 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
                 Please double check your email address.
                 If you haven't created an account yet, sign up using the "Create Account" button.
                 `,
-            statusCode: 404
+            statusCode: 404,
         }
     }
 
@@ -55,7 +54,7 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
                 You need to verify your account first.
                 Check your email inbox for the verification code or click here to create a new one.
                 `,
-            statusCode: 409
+            statusCode: 409,
         }
     }
 
@@ -70,7 +69,7 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
                 Incorrect password.
                 If you've forgotten your password, you can reset it using the "Forgot Password" button.
                 `,
-            statusCode: 400
+            statusCode: 400,
         }
     }
 
@@ -85,7 +84,7 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
     const userTokens: UserAuthTokens = {
         refreshToken: userRefreshToken,
         accessToken: userAccessToken,
-        membershipToken: userMembershipToken
+        membershipToken: userMembershipToken,
     }
 
     const reqDeviceId: IDeviceID = req.body.deviceId
@@ -94,16 +93,13 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
     if (isNewDevice) {
         const newToken: UserRefreshToken = {
             deviceId: reqDeviceId,
-            token: userRefreshToken
+            token: userRefreshToken,
         }
-        await User.updateOne(
-            { email: user.email }, 
-            { $push: { refreshTokens: newToken } }
-        )
+        await User.updateOne({ email: user.email }, { $push: { refreshTokens: newToken } })
     } else {
         await User.updateOne(
-            { email: user.email, 'refreshTokens.deviceId': reqDeviceId },
-            { $set: { 'refreshTokens.$.token': userRefreshToken } }
+            { email: user.email, "refreshTokens.deviceId": reqDeviceId },
+            { $set: { "refreshTokens.$.token": userRefreshToken } },
         )
     }
 
@@ -113,7 +109,6 @@ export async function loginUser(req:Request<IUserCredentialsExt>): Promise<Servi
     return {
         err: false,
         data: userTokens,
-        statusCode: 200
+        statusCode: 200,
     }
-
 }

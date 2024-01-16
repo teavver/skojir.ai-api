@@ -1,5 +1,5 @@
-import { IUserVerified } from "../interfaces/IUserVerified";
-import { RequestTokenData } from "../AuthToken";
+import { IUserVerified } from "../interfaces/IUserVerified"
+import { RequestTokenData } from "../AuthToken"
 
 export {}
 

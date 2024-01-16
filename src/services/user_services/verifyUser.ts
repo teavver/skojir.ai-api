@@ -1,23 +1,22 @@
-import { User } from "../../models/User.js";
-import { logger, LogType } from "../../utils/logger.js";
-import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { IUserVerification } from "../../types/interfaces/IUserVerification.js";
-import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js";
-import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js";
-import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js";
-import { validateRequest } from "../../utils/validateRequest.js";
-import { sendEmail } from "../../utils/sendEmail.js";
-import { generateExpiryDate } from "../../utils/genExpiryDate.js";
-import { Request } from "express";
+import { User } from "../../models/User.js"
+import { logger, LogType } from "../../utils/logger.js"
+import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { IUserVerification } from "../../types/interfaces/IUserVerification.js"
+import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js"
+import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js"
+import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js"
+import { validateRequest } from "../../utils/validateRequest.js"
+import { sendEmail } from "../../utils/sendEmail.js"
+import { generateExpiryDate } from "../../utils/genExpiryDate.js"
+import { Request } from "express"
 
 const MODULE = "services :: user_services :: verifyUser"
 
-export async function verifyUser(req:Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
-
+export async function verifyUser(req: Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
     const verificationData: IUserVerification = {
         email: req.body.email,
         verificationCode: req.body.verificationCode,
-        resend: req.body.resend
+        resend: req.body.resend,
     }
 
     const vRes = await validateRequest<IUserVerification>(MODULE, verificationData, verificationSchema)
@@ -29,7 +28,9 @@ export async function verifyUser(req:Request<IUserVerification>): Promise<Servic
         }
     }
 
-    const user = await User.findOne({ email: vRes.data.email }) as IUserUnverified
+    const user = (await User.findOne({
+        email: vRes.data.email,
+    })) as IUserUnverified
     if (!user) {
         return {
             err: true,
@@ -42,36 +43,37 @@ export async function verifyUser(req:Request<IUserVerification>): Promise<Servic
         return {
             err: true,
             errMsg: `Account is already verified.`,
-            statusCode: 409
+            statusCode: 409,
         }
     }
 
     // re-send case
     if (verificationData.resend) {
-
         const newCode = generateVerificationCode()
         const newExpDate = generateExpiryDate()
-        
-        try {
 
-            await User.updateOne({ email: user.email }, {
-                $set: {
-                    verificationCode: newCode,
-                    verificationCodeExpires: newExpDate
-                }
-            })
-            
+        try {
+            await User.updateOne(
+                { email: user.email },
+                {
+                    $set: {
+                        verificationCode: newCode,
+                        verificationCodeExpires: newExpDate,
+                    },
+                },
+            )
+
             const emailRes = await sendEmail(
                 user.email,
                 `Account verification code: ${newCode}`,
-                `Use this code to verify your skojir account. \n${newCode}`
+                `Use this code to verify your skojir account. \n${newCode}`,
             )
 
             if (emailRes.err) {
                 return {
                     err: true,
                     errMsg: emailRes.errMsg,
-                    statusCode: emailRes.statusCode
+                    statusCode: emailRes.statusCode,
                 }
             }
 
@@ -79,16 +81,15 @@ export async function verifyUser(req:Request<IUserVerification>): Promise<Servic
             return {
                 err: false,
                 data: verificationData,
-                statusCode: 200
-            } 
-
+                statusCode: 200,
+            }
         } catch (err) {
             const errMsg = (err as Error).message
             logger(MODULE, `Resend verification code case failed. Err: ${errMsg}`, LogType.WARN)
             return {
                 err: true,
                 errMsg: errMsg,
-                statusCode: 500
+                statusCode: 500,
             }
         }
     }
@@ -96,30 +97,32 @@ export async function verifyUser(req:Request<IUserVerification>): Promise<Servic
     if (user.verificationCode !== verificationData.verificationCode) {
         return {
             err: true,
-            errMsg: 'Invalid verification code.',
-            statusCode: 400
+            errMsg: "Invalid verification code.",
+            statusCode: 400,
         }
     }
 
     if (new Date() >= user.verificationCodeExpires) {
         return {
             err: true,
-            errMsg: 'Verification code expired.',
-            statusCode: 400
+            errMsg: "Verification code expired.",
+            statusCode: 400,
         }
     }
 
     try {
-        await User.updateOne({ email: user.email }, {
-            $set: {
-                isEmailVerified: true,
+        await User.updateOne(
+            { email: user.email },
+            {
+                $set: {
+                    isEmailVerified: true,
+                },
+                $unset: {
+                    verificationCode: "",
+                    verificationCodeExpires: "",
+                },
             },
-            $unset: {
-                verificationCode: "",
-                verificationCodeExpires: "",
-            }
-        })
-
+        )
     } catch (err) {
         const dbErr = (err as Error).message
         logger(MODULE, dbErr, LogType.WARN)
@@ -133,6 +136,6 @@ export async function verifyUser(req:Request<IUserVerification>): Promise<Servic
     return {
         err: false,
         data: verificationData,
-        statusCode: 200
-    } 
+        statusCode: 200,
+    }
 }

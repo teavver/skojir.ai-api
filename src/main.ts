@@ -18,20 +18,23 @@ let openAIClient: OpenAI
 let mailjetClient: Mailjet
 
 async function init() {
-
     const validEnv = envSetup()
-    if (!validEnv){ process.exit(1) }
+    if (!validEnv) {
+        process.exit(1)
+    }
 
     openAIClient = createOpenAIClient()
     mailjetClient = createMailjetClient()
     await createDbClient()
 
     app.use(express.json({ limit: "2.5mb" }))
-    app.use(cors({
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization']
-    }))
+    app.use(
+        cors({
+            origin: "*",
+            methods: ["GET", "POST", "PUT", "DELETE"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+        }),
+    )
     app.use(cookieParser())
 
     setupRoutes(app)
@@ -42,4 +45,3 @@ async function init() {
 }
 
 export { app, init, openAIClient, mailjetClient }
-

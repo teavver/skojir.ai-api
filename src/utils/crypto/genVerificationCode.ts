@@ -1,5 +1,5 @@
-import { logger } from "../logger.js";
-import { randomBytes } from "crypto";
+import { logger } from "../logger.js"
+import { randomBytes } from "crypto"
 
 const MODULE = "utils :: generateVerificationCode"
 
@@ -8,7 +8,7 @@ const MODULE = "utils :: generateVerificationCode"
  */
 export function generateVerificationCode(): string {
     const codeLength = 6
-    let code: string = ''
+    let code: string = ""
 
     while (code.length < codeLength) {
         const randomValue = randomBytes(1)[0]

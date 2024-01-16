@@ -1,4 +1,3 @@
-
 // OpenAI gpt request, without the image data
 
 export interface VisionRequest {

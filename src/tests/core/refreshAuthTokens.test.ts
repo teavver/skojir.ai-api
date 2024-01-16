@@ -8,10 +8,13 @@ import { UserAuthTokens } from "../../types/AuthToken.js"
 const MODULE = "refreshAuthTokens"
 
 describe("[CORE] Refresh auth tokens", function () {
-
     this.timeout(5000)
 
-    let tokens: UserAuthTokens = { accessToken: "", refreshToken: "", membershipToken: "" }
+    let tokens: UserAuthTokens = {
+        accessToken: "",
+        refreshToken: "",
+        membershipToken: "",
+    }
     let clock
 
     before(async () => {
@@ -25,15 +28,16 @@ describe("[CORE] Refresh auth tokens", function () {
     it("Setup (create and verify account)", async () => {
         const tokenData = await accountSetup(MODULE, testUser)
         expect(tokenData).to.not.be.null
-        if (tokenData) { tokens = tokenData }
+        if (tokenData) {
+            tokens = tokenData
+        }
     })
 
     it("Should refresh tokens (valid request)", async () => {
-
         const config = {
             headers: {
-                Cookie: `refreshToken=${tokens.refreshToken}`
-            }
+                Cookie: `refreshToken=${tokens.refreshToken}`,
+            },
         }
 
         const req = () => axios.post(refreshTokensURL, null, config)
@@ -42,31 +46,30 @@ describe("[CORE] Refresh auth tokens", function () {
 
         const newAccessToken = res?.data.tokens.accessToken
         expect(newAccessToken).to.not.be.null
-        
-        const cookies = res?.headers['set-cookie']
-        expect(cookies).to.be.an('array')
-        
-        const newRefreshToken = cookies?.find(cookie => cookie.startsWith('refreshToken='))?.split('=')[1].split(';')[0]
-        expect(newRefreshToken).to.not.be.null
 
+        const cookies = res?.headers["set-cookie"]
+        expect(cookies).to.be.an("array")
+
+        const newRefreshToken = cookies
+            ?.find((cookie) => cookie.startsWith("refreshToken="))
+            ?.split("=")[1]
+            .split(";")[0]
+        expect(newRefreshToken).to.not.be.null
     })
 
     it("Should reject request with invalid token", async () => {
-
         const config = {
             headers: {
-                Cookie: `refreshToken=${tokens.accessToken}` // wrong token
-            }
+                Cookie: `refreshToken=${tokens.accessToken}`, // wrong token
+            },
         }
 
         const req = () => axios.post(refreshTokensURL, null, config)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(401)
-
     })
 
     it("Should refresh and generate new authTokens", async () => {
-
         // Skip 1 hour time
         const startTime = new Date()
         clock = sinon.useFakeTimers(startTime.getTime())
@@ -75,24 +78,24 @@ describe("[CORE] Refresh auth tokens", function () {
 
         const config = {
             headers: {
-                Cookie: `refreshToken=${tokens.refreshToken}`
-            }
+                Cookie: `refreshToken=${tokens.refreshToken}`,
+            },
         }
 
         const req = () => axios.post(refreshTokensURL, null, config)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
-        
+
         const newAccessToken = res?.data.tokens.accessToken
-        const cookies = res?.headers['set-cookie']
-        const newRefreshToken = cookies?.find(cookie => cookie.startsWith('refreshToken='))?.split('=')[1].split(';')[0]
+        const cookies = res?.headers["set-cookie"]
+        const newRefreshToken = cookies
+            ?.find((cookie) => cookie.startsWith("refreshToken="))
+            ?.split("=")[1]
+            .split(";")[0]
 
         expect(newAccessToken).to.not.equal(tokens.accessToken)
         expect(newRefreshToken).to.not.equal(tokens.refreshToken)
 
         clock.restore()
-
     })
-
-
 })

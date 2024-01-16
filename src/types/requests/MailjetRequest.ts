@@ -1,4 +1,3 @@
-
 // Mailjet request data
 
 export interface MailjetRequest {

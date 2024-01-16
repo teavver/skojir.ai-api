@@ -3,13 +3,12 @@ import { expect } from "chai"
 import { testUser, setupTests, teardownTests, loginURL } from "../_setup.js"
 import { IUserCredentials, IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from "uuid"
 import { User } from "../../models/User.js"
 
 const MODULE = "loginUser"
 
 describe("[CORE] Login to an account", function () {
-
     this.timeout(5000)
 
     before(async () => {
@@ -25,30 +24,26 @@ describe("[CORE] Login to an account", function () {
     })
 
     it("Should reject login req with invalid credentials", async () => {
-
         const invalidUserData: IUserCredentials = {
             email: testUser.email,
-            password: testUser.password + "aaa"
+            password: testUser.password + "aaa",
         }
 
         const req = () => axios.post(loginURL, invalidUserData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(400)
-
     })
 
     it("Should reject login req with valid credentials but invalid request body", async () => {
-
         const invalidUserData = {
             email: testUser.email,
             password: testUser.password + "aaa",
-            someOtherField: "why"
+            someOtherField: "why",
         }
 
         const req = () => axios.post(loginURL, invalidUserData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(400)
-
     })
 
     it("Log in with valid credentials", async () => {
@@ -56,12 +51,11 @@ describe("[CORE] Login to an account", function () {
         const loginData: IUserCredentialsExt = {
             email: testUser.email,
             password: testUser.password,
-            deviceId: uuid
+            deviceId: uuid,
         }
         const req = () => axios.post(loginURL, loginData)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.be.equal(200)
-        
     })
 
     it("Log in on another device", async () => {
@@ -69,7 +63,7 @@ describe("[CORE] Login to an account", function () {
         const loginData: IUserCredentialsExt = {
             email: testUser.email,
             password: testUser.password,
-            deviceId: uuid
+            deviceId: uuid,
         }
         const req = () => axios.post(loginURL, loginData)
         const res = await testAxiosRequest(MODULE, req)
@@ -79,7 +73,5 @@ describe("[CORE] Login to an account", function () {
         // console.log(userData?.refreshTokens)
 
         expect(userData?.refreshTokens.length).to.be.greaterThan(1)
-        
     })
-
 })

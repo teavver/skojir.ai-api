@@ -7,8 +7,7 @@ import { UserAuthTokens } from "../types/AuthToken.js"
 
 const MODULE = "services :: refreshAuthTokens"
 
-export async function refreshAuthTokens(req:Request): Promise<ServiceResponse<UserAuthTokens>> {
-
+export async function refreshAuthTokens(req: Request): Promise<ServiceResponse<UserAuthTokens>> {
     const userData: IUserVerified = req.user!
     logger(MODULE, `Refresh token request for user: ${userData.email}`)
 
@@ -29,7 +28,6 @@ export async function refreshAuthTokens(req:Request): Promise<ServiceResponse<Us
     return {
         err: false,
         data: newUserTokens,
-        statusCode: 200
+        statusCode: 200,
     }
-
 }

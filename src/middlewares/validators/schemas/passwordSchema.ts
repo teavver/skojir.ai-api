@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { IUserPassword } from "../../../types/interfaces/IUserPassword";
+import Joi from "joi"
+import { IUserPassword } from "../../../types/interfaces/IUserPassword"
 
 // 8-64 characters
 // min 1 lowercase letter

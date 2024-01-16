@@ -17,23 +17,25 @@ const systemInstructions = (formatting: string) => `
     ${formatting}.`
 
 const gptSettings: GPTSettings = {
-
     minimal: {
-        system: systemInstructions(`*** Desired output format example: "(Question Number) - Answer/-s" Keep the answers very short and concise ***`),
-        max_tokens: 100
+        system: systemInstructions(
+            `*** Desired output format example: "(Question Number) - Answer/-s" Keep the answers very short and concise ***`,
+        ),
+        max_tokens: 100,
     },
 
     standard: {
-        system: systemInstructions(`*** Desired output format example: "(Question Nr) - Answer/s" Upper word limit: 300. Provide a short explanation for each answer (one to two sentences) ***`),
-        max_tokens: 300
-    }
+        system: systemInstructions(
+            `*** Desired output format example: "(Question Nr) - Answer/s" Upper word limit: 300. Provide a short explanation for each answer (one to two sentences) ***`,
+        ),
+        max_tokens: 300,
+    },
 }
 
 /**
  * Puts together and sends a full request (system, image, header, footer) to gpt-4-1106-vision-preview
  */
 export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceResponse<string>> {
-
     // check output format
     const validOutputFormat = validOutputFormats.includes(req.outputFormat)
     if (!validOutputFormat) {
@@ -42,7 +44,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: true,
             errMsg: err,
-            statusCode: 400
+            statusCode: 400,
         }
     }
 
@@ -51,27 +53,27 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
 
     try {
         const response = await openAIClient.chat.completions.create({
-        messages: [
-            {
-                role: "system",
-                content: system,
-            },
-            {
-                role: "user",
-                content: [
-                    {
-                        type: "image_url",
-                        image_url: {
-                            url: req.img,
-                            detail: "high",
+            messages: [
+                {
+                    role: "system",
+                    content: system,
+                },
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "image_url",
+                            image_url: {
+                                url: req.img,
+                                detail: "high",
+                            },
                         },
-                    },
-                ],
-            },
-        ],
-        model: "gpt-4-vision-preview",
-        max_tokens: max_tokens,
-        temperature: 0.25 // FIXME : Find good value
+                    ],
+                },
+            ],
+            model: "gpt-4-vision-preview",
+            max_tokens: max_tokens,
+            temperature: 0.25, // FIXME : Find good value
         })
 
         const res = response.choices[0].message.content
@@ -82,7 +84,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
             return {
                 err: true,
                 errMsg: err,
-                statusCode: 500
+                statusCode: 500,
             }
         }
 
@@ -90,16 +92,15 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: false,
             data: res,
-            statusCode: 200
+            statusCode: 200,
         }
-            
     } catch (err) {
         console.log(err)
         logger(MODULE, `Request err: ${err}`, LogType.ERR)
         return {
             err: true,
             errMsg: "Internal error",
-            statusCode: 500
+            statusCode: 500,
         }
     }
 }

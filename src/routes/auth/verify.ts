@@ -1,5 +1,5 @@
-import express from "express";
-import { verifyUser } from "../../controllers/user_controllers/verify.js";
+import express from "express"
+import { verifyUser } from "../../controllers/user_controllers/verify.js"
 
 const router = express.Router()
 router.post("/", verifyUser)

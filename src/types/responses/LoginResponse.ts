@@ -1,14 +1,14 @@
-import { UserTokens } from "../AuthToken.js";
-import { ResponseMessage, ResponseState } from "./ResponseMessage.js";
+import { UserTokens } from "../AuthToken.js"
+import { ResponseMessage, ResponseState } from "./ResponseMessage.js"
 
 export interface SuccessLoginResponse extends ResponseMessage {
-    state: 'success'
+    state: "success"
     tokens: UserTokens
 }
 
 export interface ErrorLoginResponse extends ResponseMessage {
-    state: Exclude<ResponseState, 'success'>
+    state: Exclude<ResponseState, "success">
     message: string
 }
 
-export type LoginResponse = SuccessLoginResponse | ErrorLoginResponse;
+export type LoginResponse = SuccessLoginResponse | ErrorLoginResponse

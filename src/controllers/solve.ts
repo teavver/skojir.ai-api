@@ -11,12 +11,11 @@ import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 const MODULE = "controllers :: solve"
 
 export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
-
     const validBody = validateRequestBody(req.body, ["img", "outputFormat"])
     if (!validBody) {
         return res.status(400).json({
             state: "error",
-            message: `Request body is empty or incomplete`
+            message: `Request body is empty or incomplete`,
         })
     }
 
@@ -24,13 +23,14 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
     if (!validOutputFormats.includes(outputFormat)) {
         return res.status(400).json({
             state: "error",
-            message: "Unsupported 'outputFormat' value"
+            message: "Unsupported 'outputFormat' value",
         })
     }
 
     logger(MODULE, "Sending context req to GCF")
     const contextPredictionData: PredictionRequest = {
-        img: img, threshold: threshold
+        img: img,
+        threshold: threshold,
     }
     const contextRes: ServiceResponse<PredictionRequest> = await requestContextPrediction(req, contextPredictionData)
     if (contextRes.err) {
@@ -54,12 +54,12 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
         logger(MODULE, gptRes.errMsg, LogType.ERR)
         return res.status(gptRes.statusCode).json({
             state: "error",
-            message: gptRes.errMsg
+            message: gptRes.errMsg,
         })
     }
 
     return res.status(gptRes.statusCode).json({
         state: "success",
-        message: gptRes.data as string
+        message: gptRes.data as string,
     })
 }

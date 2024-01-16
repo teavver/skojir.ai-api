@@ -1,12 +1,11 @@
-import { ServiceResponse } from "../../types/responses/ServiceResponse.js";
-import { logger, LogType } from "../../utils/logger.js";
-import { Request } from "express";
-import { AccountInfoResponse } from "../../types/responses/AccountInfoResponse.js";
+import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { logger, LogType } from "../../utils/logger.js"
+import { Request } from "express"
+import { AccountInfoResponse } from "../../types/responses/AccountInfoResponse.js"
 
 const MODULE = "services :: user_services :: accountInfo"
 
-export async function accountInfo(req:Request): Promise<ServiceResponse<AccountInfoResponse>> {
-
+export async function accountInfo(req: Request): Promise<ServiceResponse<AccountInfoResponse>> {
     logger(MODULE, `Get User: ${req.user!.email}`, LogType.SUCCESS)
     const userData: AccountInfoResponse = {
         email: req.user!.email,
@@ -16,13 +15,13 @@ export async function accountInfo(req:Request): Promise<ServiceResponse<AccountI
         userData.membership = {
             userId: undefined,
             isActive: req.user!.membershipDetails.isActive,
-            endDate: req.user!.membershipDetails.endDate
+            endDate: req.user!.membershipDetails.endDate,
         }
     }
-    
+
     return {
         err: false,
         data: userData,
-        statusCode: 200
+        statusCode: 200,
     }
 }

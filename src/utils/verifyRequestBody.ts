@@ -12,7 +12,7 @@ export const validateRequestBody = (body: Request["body"], expectedFields?: Arra
     }
     if (expectedFields) {
         for (let i = 0; i < expectedFields.length; i++) {
-            if(!body[expectedFields[i]]) return false
+            if (!body[expectedFields[i]]) return false
         }
     }
     return true

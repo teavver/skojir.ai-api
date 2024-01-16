@@ -1,6 +1,6 @@
-import { exec as execCallback } from "child_process";
-import { logger, LogType } from "./logger.js";
-import { promisify } from "util";
+import { exec as execCallback } from "child_process"
+import { logger, LogType } from "./logger.js"
+import { promisify } from "util"
 
 const exec = promisify(execCallback)
 
@@ -16,4 +16,4 @@ export async function asyncExec(command: string, errMsg: string, log: boolean = 
         logger(MODULE, `${errMsg}. Err: ${err}`, LogType.ERR)
         return ""
     }
-} 
+}

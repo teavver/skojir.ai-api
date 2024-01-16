@@ -12,16 +12,14 @@ const MODULE = "middlewares :: auth :: verifyToken"
 
 /**
  * Middleware for user authentication through JWT
- * 
+ *
  * @param expectedTokenType - Required token type. Defaults to `accessToken`
  */
 export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") => {
-
     return async <T>(req: Request<T>, res: Response<ResponseMessage>, next: NextFunction) => {
-        
         logger(MODULE, "Verifying auth tokens...")
         let token: string | undefined = undefined
-        
+
         if (expectedTokenType === "refreshToken") {
             token = req.cookies.refreshToken
         } else {
@@ -33,41 +31,46 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
             logger(MODULE, err, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
-                message: err
+                message: err,
             })
         }
 
         try {
-            const secret: string = (expectedTokenType === "accessToken") ? process.env.JWT_SECRET as string : process.env.JWT_REFRESH_SECRET as string
+            const secret: string =
+                expectedTokenType === "accessToken"
+                    ? (process.env.JWT_SECRET as string)
+                    : (process.env.JWT_REFRESH_SECRET as string)
             const authPayload = jwt.verify(token, secret, {
-                clockTolerance: 300 // Allow slight timing skews
+                clockTolerance: 300, // Allow slight timing skews
             }) as AuthTokenPayload
 
-            const user = await User.findOne({ email: authPayload.email }).populate({
-                path: 'membershipDetails',
-                match: { _id: { $exists: true } }
-            }) as IUserVerified | null
+            const user = (await User.findOne({
+                email: authPayload.email,
+            }).populate({
+                path: "membershipDetails",
+                match: { _id: { $exists: true } },
+            })) as IUserVerified | null
 
             if (!user) {
                 const err = "User does not match token payload."
                 logger(MODULE, err, LogType.ERR)
                 return res.status(401).json({
                     state: "unauthorized",
-                    message: "Invalid token."
+                    message: "Invalid token.",
                 })
             }
 
             if (!isUserVerified(user)) {
                 return res.status(401).json({
                     state: "unauthorized",
-                    message: "Account is not verified."
+                    message: "Account is not verified.",
                 })
             }
 
             if (authPayload.tokenType !== expectedTokenType) {
                 return res.status(401).json({
                     state: "unauthorized",
-                    message: "Invalid token type."
+                    message: "Invalid token type.",
                 })
             }
             req.user = user
@@ -75,15 +78,13 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
             logger(MODULE, "Auth tokens verified.")
 
             next()
-
         } catch (error) {
-
             if (error instanceof jwt.TokenExpiredError) {
                 const err = "Token expired."
                 logger(MODULE, err, LogType.ERR)
                 return res.status(401).json({
                     state: "unauthorized",
-                    message: err
+                    message: err,
                 })
             }
 
@@ -92,7 +93,7 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
                 logger(MODULE, err, LogType.ERR)
                 return res.status(401).json({
                     state: "unauthorized",
-                    message: err
+                    message: err,
                 })
             }
 
@@ -100,9 +101,8 @@ export const verifyToken = (expectedTokenType: AuthTokenType = "accessToken") =>
             logger(MODULE, `${err} : ${error}`, LogType.ERR)
             return res.status(401).json({
                 state: "unauthorized",
-                message: err
+                message: err,
             })
         }
-
     }
 }

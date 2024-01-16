@@ -12,7 +12,6 @@ const MODULE = "middlewares :: auth :: genToken"
  * @returns - Auth token as string
  */
 export function generateAuthToken(user: IUserVerified, tokenType: AuthTokenType): string {
-
     let secretKey: string
     let expiresIn: string
 
@@ -28,7 +27,7 @@ export function generateAuthToken(user: IUserVerified, tokenType: AuthTokenType)
 
     const payload: AuthTokenPayload = {
         email: user.email,
-        tokenType
+        tokenType,
     }
 
     logger(MODULE, `Auth token generated: email: ${payload.email}, tokenType: ${payload.tokenType}`)

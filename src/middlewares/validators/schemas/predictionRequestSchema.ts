@@ -6,8 +6,5 @@ export const predictionRequestSchema = Joi.object<PredictionRequest>({
         .min(10)
         .max(2500000) // ~2.5MB string
         .required(),
-    threshold: Joi.number()
-        .min(0.10)
-        .max(0.50)
-        .required()
+    threshold: Joi.number().min(0.1).max(0.5).required(),
 })

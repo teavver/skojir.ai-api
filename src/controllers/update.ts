@@ -1,13 +1,12 @@
-import { logger, LogType } from "../utils/logger.js";
-import { asyncExec } from '../utils/asyncExec.js';
-import { Request, Response } from "express";
-import { ResponseMessage } from "../types/responses/ResponseMessage.js";
-import { nextTick } from "process";
+import { logger, LogType } from "../utils/logger.js"
+import { asyncExec } from "../utils/asyncExec.js"
+import { Request, Response } from "express"
+import { ResponseMessage } from "../types/responses/ResponseMessage.js"
+import { nextTick } from "process"
 
 const MODULE = "controllers :: update"
 
 export async function performUpdate(req: Request, res: Response<ResponseMessage>) {
-
     nextTick(async () => {
         logger(MODULE, "Update: Pulling newest updates from GitHub...", LogType.SERVER)
         await asyncExec("git pull origin main", "Failed to pull changes from gh")
@@ -18,6 +17,6 @@ export async function performUpdate(req: Request, res: Response<ResponseMessage>
 
     res.status(200).json({
         state: "success",
-        message: "OK"
+        message: "OK",
     })
 }
