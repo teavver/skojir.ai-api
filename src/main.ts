@@ -27,10 +27,13 @@ async function init() {
     mailjetClient = createMailjetClient()
     await createDbClient()
 
+    const env: string = process.env.ENV as string
+    const corsWhitelist = ['http://localhost', 'http://127.0.0.1']
+
     app.use(express.json({ limit: "2.5mb" }))
     app.use(
         cors({
-            origin: "*",
+            origin: (env === "PROD") ? "*" : corsWhitelist,
             methods: ["GET", "POST", "PUT", "DELETE"],
             allowedHeaders: ["Content-Type", "Authorization"],
             credentials: true
