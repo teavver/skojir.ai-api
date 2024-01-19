@@ -13,6 +13,12 @@
 6. `pm2 monit`
 7. `pm2 logs skojir-api --lines 200 --out`
 
+# Running as a Docker image
+
+1. `docker build --build-arg ENV_FILE=./.env -t name .`
+2. `docker run -p PORT:PORT name`\
+**Make sure your PORT matches the one in .env**
+
 # .env
 
 ### Local config
