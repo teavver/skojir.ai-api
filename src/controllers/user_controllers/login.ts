@@ -26,12 +26,8 @@ export async function loginUser(req: Request<IUserCredentialsExt>, res: Response
     }
 
     const authTokens: UserAuthTokens = sRes.data
-    const env: string = process.env.ENV as string
-
     res.cookie("refreshToken", authTokens.refreshToken, {
         httpOnly: true,
-        secure: (env === "PROD"), // Enable HTTP on "DEV"
-        sameSite: (env === "PROD") ? "lax" : "none"
     })
     return res.status(sRes.statusCode).json({
         state: "success",

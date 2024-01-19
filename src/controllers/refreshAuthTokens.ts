@@ -15,13 +15,10 @@ export async function refreshAuthTokens(req: Request, res: Response<ResponseMess
         })
     }
 
-    const env: string = process.env.ENV as string
     const tokens: UserAuthTokens = sRes.data
     logger(MODULE, `Refreshed tokens for user: ${req.user!.email}`, LogType.SUCCESS)
     res.cookie("refreshToken", tokens.refreshToken, {
         httpOnly: true,
-        secure: (env === "PROD"),
-        sameSite: (env === "PROD") ? "lax" : "none"
     })
     return res.status(sRes.statusCode).json({
         state: "success",
