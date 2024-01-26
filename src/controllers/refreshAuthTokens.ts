@@ -18,7 +18,9 @@ export async function refreshAuthTokens(req: Request, res: Response<ResponseMess
     const tokens: UserAuthTokens = sRes.data
     logger(MODULE, `Refreshed tokens for user: ${req.user!.email}`, LogType.SUCCESS)
     res.cookie("refreshToken", tokens.refreshToken, {
+        sameSite: "none",
         httpOnly: true,
+        secure: true,
     })
     return res.status(sRes.statusCode).json({
         state: "success",

@@ -27,7 +27,9 @@ export async function loginUser(req: Request<IUserCredentialsExt>, res: Response
 
     const authTokens: UserAuthTokens = sRes.data
     res.cookie("refreshToken", authTokens.refreshToken, {
+        sameSite: "none",
         httpOnly: true,
+        secure: true,
     })
     return res.status(sRes.statusCode).json({
         state: "success",
