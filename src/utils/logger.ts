@@ -21,7 +21,7 @@ export function logger(
     overrideLog: boolean = false,
     time: boolean = true,
 ) {
-    const logMode = +process.env.LOG // log modes explained in README
+    const logMode = +process.env.LOG! // log modes explained in README
     const overrideSetting = overrideLog || logMode
     const timestamp = time ? `[${new Date().toLocaleTimeString()}] ` : ""
     const logContentRaw = `${timestamp}[${module}]: ${msg}`
