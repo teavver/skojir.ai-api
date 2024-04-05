@@ -1,5 +1,15 @@
 # Api for [skojir.ai](https://skojir.ai)
 
+# App setup
+
+1. `git clone https://github.com/teavver/skojir.ai-api && cd skojir.ai-api`
+1. `yarn`
+2. create `.env` file and config all keys
+3. test locally with
+    1. `yarn test-core` for core functionality and
+    2. `yarn test-services` for external services
+4. run locally with `yarn main` or [run with Docker](#running-as-a-docker-image)
+
 # Running in self-update mode
 
 ### The self-update mode allows GitHub to trigger seamless, automatic app update & restart logic
@@ -20,9 +30,11 @@
 **Make sure your PORT matches the one in .env**
 
 # .env
-
-### Local config
-- `LOG` - 1= all, 0= off
+### Misc
+- `LOG` - log mode
+    - 0: all off
+    - 1: log everything
+    - 2: log and save to logfile
 - `ENV`
     - `DEV` - uses the test db collection, rate limiting off
     - `PROD`
@@ -45,16 +57,6 @@
 
 ### Github
 - `GH_WEBHOOK_KEY`
-
----
-# App setup
-
-1. `yarn install` in root dir
-2. create `.env` file and config all keys
-3. test locally with
-    1. `yarn test-core` for core functionality and
-    2. `yarn test-services` for external services
-4. run with `yarn main`
 
 ---
 # Endpoints

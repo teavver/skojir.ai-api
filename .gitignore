@@ -1,10 +1,7 @@
 node_modules
-<<<<<<< HEAD
-=======
-
->>>>>>> b9cee41c303c937d0ebdeeffe827d05b84e8dbe1
-
 dist
 .env
 *.env*
 TODO
+*.log*
+.DS_Store
