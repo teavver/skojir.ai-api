@@ -12,7 +12,7 @@ export enum LogType {
 const __dirname = process.cwd()
 const MODULE = "utils :: logger"
 const LOG_FILE_PATH = path.join(__dirname, "app.log")
-const MAX_LOG_FILE_SIZE = 1024 * 10 // 16MB
+const MAX_LOG_FILE_SIZE = 8 * 1000 * 1000 // 8 MB
 
 export function logger(
     module: string,

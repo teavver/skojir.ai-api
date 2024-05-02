@@ -59,7 +59,7 @@ export async function getStatus(): Promise<ServiceResponse<string>> {
 
         return {
             err: false,
-            data: JSON.stringify(data),
+            data: JSON.stringify(data, null, 2),
             statusCode: 200,
         }
     } catch (err) {
