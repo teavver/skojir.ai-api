@@ -36,6 +36,7 @@ const gptSettings: GPTSettings = {
  * Puts together and sends a full request (system, image, header, footer) to gpt-4-1106-vision-preview
  */
 export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceResponse<string>> {
+
     // check output format
     const validOutputFormat = validOutputFormats.includes(req.outputFormat)
     if (!validOutputFormat) {
@@ -49,7 +50,6 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
     }
 
     const { system, max_tokens } = gptSettings[req.outputFormat as SolverOutputFormat]
-    logger(MODULE, "Sending the request to openAI...")
 
     try {
         const response = await openAIClient.chat.completions.create({
@@ -79,7 +79,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         const res = response.choices[0].message.content
 
         if (!res) {
-            const err = "Failed to get a response from ChatGPT"
+            const err = "Failed to get a response from OpenAI"
             logger(MODULE, err, LogType.ERR)
             return {
                 err: true,

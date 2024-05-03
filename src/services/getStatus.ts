@@ -29,12 +29,12 @@ export async function getStatus(): Promise<ServiceResponse<string>> {
 
         // backend
         try {
-            const backendRes = await axios.get(process.env.BACKEND_URL + "/status", {
+            const backendRes = await axios.get(process.env.BACKEND_URL + "/health", {
                 headers: {
                     "Content-Type": "application/json",
                 },
             })
-            backendStatus = backendRes.data.status
+            backendStatus = backendRes.data
         } catch (err) {
             logger(MODULE, `Backend status err: ${err}`, LogType.WARN)
             backendStatus = "offline"
@@ -59,7 +59,7 @@ export async function getStatus(): Promise<ServiceResponse<string>> {
 
         return {
             err: false,
-            data: JSON.stringify(data),
+            data: JSON.stringify(data, null, 2),
             statusCode: 200,
         }
     } catch (err) {

@@ -1,5 +1,7 @@
 # Api for [skojir.ai](https://skojir.ai)
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/teavver/skojir.ai-api/build-and-test.yml)
+
 # App setup
 
 1. `git clone https://github.com/teavver/skojir.ai-api && cd skojir.ai-api`
