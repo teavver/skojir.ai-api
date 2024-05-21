@@ -8,7 +8,7 @@ import { generateSalt } from "../../utils/crypto/salt.js"
 import { deriveKey } from "../../utils/crypto/pbkdf2.js"
 import { validateRequest } from "../../utils/validateRequest.js"
 import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js"
-import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js"
+import { generateOTP } from "../../utils/crypto/genOTP.js"
 import { sendEmail } from "../../utils/sendEmail.js"
 
 const MODULE = "services :: user_services :: createUser"
@@ -43,7 +43,7 @@ export async function createUser(req: Request<IUserCredentials>): Promise<Servic
     }
 
     const salt = generateSalt()
-    const verCode = generateVerificationCode()
+    const verCode = generateOTP()
     const saltedPwd = userCredentials.password + salt
     const hashedPwd = deriveKey({ password: saltedPwd, salt: salt })
 
@@ -51,8 +51,8 @@ export async function createUser(req: Request<IUserCredentials>): Promise<Servic
         email: userCredentials.email,
         password: hashedPwd,
         salt: salt,
-        verificationCode: verCode,
-        verificationCodeExpires: generateExpiryDate(), // 10 minutes by default
+        emailOTP: verCode,
+        emailOTPExpires: generateExpiryDate(), // 10 minutes by default
     })
 
     try {

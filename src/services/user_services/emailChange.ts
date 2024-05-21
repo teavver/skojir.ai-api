@@ -11,12 +11,11 @@ const MODULE = "services :: user_services :: emailChange"
 export async function emailChange(req: Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
     const reqData: IUserVerification = {
         email: req.body.email,
-        verificationCode: req.body.verificationCode,
+        otp: req.body.otp,
     }
 
     const vRes = await validateRequest<IUserVerification>(MODULE, reqData, verificationSchema)
     if (!vRes.isValid) {
-        console.log(vRes.error)
         logger(MODULE, `email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
@@ -25,7 +24,17 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         }
     }
 
-    if (!req.user?.isEmailVerified) {
+    if (!req.user) {
+        const err = "User not found"
+        logger(MODULE, `user not found, aborting.`, LogType.WARN)
+        return {
+            err: true,
+            errMsg: err,
+            statusCode: 404
+        }
+    }
+
+    if (!req.user.isEmailVerified) {
         logger(MODULE, `Failed to change email - user account is unverified`, LogType.WARN)
         return {
             err: true,
@@ -46,7 +55,8 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         }
     }
 
-    if (!req.user.verificationCodeExpires || new Date() >= req.user.verificationCodeExpires) {
+    // Check if no OTP provided or OTP is expired
+    if (!req.user.emailOTP || !req.user.emailOTPExpires || new Date() >= req.user.emailOTPExpires) {
         return {
             err: true,
             errMsg: `Your email change OTP code expired.`,
@@ -54,7 +64,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         }
     }
 
-    if (reqData.verificationCode !== req.user.verificationCode) {
+    if (reqData.otp !== req.user.emailOTP) {
         return {
             err: true,
             errMsg: `Invalid OTP code.`,
@@ -63,7 +73,8 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
     }
 
     try {
-        // const prevEmail = user.email
+        const prevEmail = req.user.email
+
         // TODO: Send email to old account & inform user about the change
 
         await User.updateOne(
@@ -73,8 +84,8 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
                     email: reqData.email,
                 },
                 $unset: {
-                    verificationCode: "",
-                    verificationCodeExpires: "",
+                    emailOTP: "",
+                    emailOTPExpires: "",
                 },
             },
         )

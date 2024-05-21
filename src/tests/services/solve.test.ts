@@ -62,7 +62,6 @@ describe("[SERVICES] Test backend service", function () {
         }
         const req = () => axios.post(solveURL, data, reqConf)
         const res = await testAxiosRequest(MODULE, req)
-        // console.log(res?.data)
         expect(res?.status).to.be.equal(200)
     })
 })

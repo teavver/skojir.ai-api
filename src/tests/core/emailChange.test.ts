@@ -47,7 +47,7 @@ describe("[CORE] Email (OTP + change)", function () {
         const newEmail = "test2@example.com"
         const reqData = {
             email: newEmail,
-            verificationCode: "100200",
+            otp: "100200",
         }
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
@@ -62,7 +62,7 @@ describe("[CORE] Email (OTP + change)", function () {
         const newEmail = testUser2.email
         const reqData = {
             email: newEmail,
-            verificationCode: user!.verificationCode,
+            otp: user!.emailOTP,
         }
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
@@ -80,7 +80,7 @@ describe("[CORE] Email (OTP + change)", function () {
         const user = await User.findOne({ email: testUser.email })
         const reqData = {
             email: newEmail,
-            verificationCode: user!.verificationCode,
+            otp: user!.emailOTP,
         }
         const req = () => axios.post(emailChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)

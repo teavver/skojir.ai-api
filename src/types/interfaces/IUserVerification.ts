@@ -1,6 +1,6 @@
 import { IUserBase } from "./IUserBase"
 
 export interface IUserVerification extends Partial<IUserBase> {
-    verificationCode: string
+    otp: string
     resend?: boolean
 }

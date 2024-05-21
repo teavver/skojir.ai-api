@@ -51,7 +51,7 @@ export async function accountSetup(
         const user = await User.findOne({ email: userData.email })
         const verifyData = {
             email: userData.email,
-            verificationCode: user?.verificationCode,
+            otp: user?.emailOTP,
         }
         const req = () => axios.post(verifyURL, verifyData)
         const res = await testAxiosRequest(module, req)

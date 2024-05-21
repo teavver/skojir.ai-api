@@ -97,7 +97,6 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
             statusCode: 200,
         }
     } catch (err) {
-        console.log(err)
         logger(MODULE, `Request err: ${err}`, LogType.ERR)
         return {
             err: true,

@@ -4,7 +4,7 @@ import { IUserVerification } from "../../../types/interfaces/IUserVerification.j
 
 export const verificationSchema = Joi.object<IUserVerification>({
     email: emailSchema,
-    verificationCode: Joi.string()
+    otp: Joi.string()
         .pattern(/^[0-9]{6}$/) // 6 digit code
         .required(),
     resend: Joi.bool().optional(),

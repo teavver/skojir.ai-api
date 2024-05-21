@@ -1,12 +1,12 @@
 import { logger } from "../logger.js"
 import { randomBytes } from "crypto"
 
-const MODULE = "utils :: generateVerificationCode"
+const MODULE = "utils :: generateOTP"
 
 /**
- * Generates a random 6-digit verification code and returns it as string
+ * Generates a random 6-digit verification code (OTP) and returns it as string
  */
-export function generateVerificationCode(): string {
+export function generateOTP(): string {
     const codeLength = 6
     let code: string = ""
 

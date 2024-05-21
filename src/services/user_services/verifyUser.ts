@@ -4,7 +4,7 @@ import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { IUserVerification } from "../../types/interfaces/IUserVerification.js"
 import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js"
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js"
-import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js"
+import { generateOTP } from "../../utils/crypto/genOTP.js"
 import { validateRequest } from "../../utils/validateRequest.js"
 import { sendEmail } from "../../utils/sendEmail.js"
 import { generateExpiryDate } from "../../utils/genExpiryDate.js"
@@ -15,7 +15,7 @@ const MODULE = "services :: user_services :: verifyUser"
 export async function verifyUser(req: Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
     const verificationData: IUserVerification = {
         email: req.body.email,
-        verificationCode: req.body.verificationCode,
+        otp: req.body.otp,
         resend: req.body.resend,
     }
 
@@ -49,7 +49,7 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
 
     // re-send case
     if (verificationData.resend) {
-        const newCode = generateVerificationCode()
+        const newCode = generateOTP()
         const newExpDate = generateExpiryDate()
 
         try {
@@ -57,8 +57,8 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
                 { email: user.email },
                 {
                     $set: {
-                        verificationCode: newCode,
-                        verificationCodeExpires: newExpDate,
+                        emailOTP: newCode,
+                        emailOTPExpires: newExpDate,
                     },
                 },
             )
@@ -94,7 +94,7 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
         }
     }
 
-    if (user.verificationCode !== verificationData.verificationCode) {
+    if (user.emailOTP !== verificationData.otp) {
         return {
             err: true,
             errMsg: "Invalid verification code.",
@@ -102,7 +102,7 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
         }
     }
 
-    if (new Date() >= user.verificationCodeExpires) {
+    if (new Date() >= user.emailOTPExpires) {
         return {
             err: true,
             errMsg: "Verification code expired.",
@@ -118,8 +118,8 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
                     isEmailVerified: true,
                 },
                 $unset: {
-                    verificationCode: "",
-                    verificationCodeExpires: "",
+                    emailOTP: "",
+                    emailOTPExpires: "",
                 },
             },
         )

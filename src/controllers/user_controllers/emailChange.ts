@@ -9,7 +9,7 @@ import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 const MODULE = "controllers :: user_controllers :: emailChange"
 
 export async function emailChange(req: Request<IUserVerification>, res: Response<ResponseMessage>) {
-    const validBody = validateRequestBody(req.body, ["verificationCode"])
+    const validBody = validateRequestBody(req.body, ["otp"])
     if (!validBody) {
         return res.status(400).json({
             state: "error",

@@ -2,7 +2,7 @@ import { User } from "../../models/User.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { logger, LogType } from "../../utils/logger.js"
 import { IUserBase } from "../../types/interfaces/IUserBase.js"
-import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js"
+import { generateOTP } from "../../utils/crypto/genOTP.js"
 import { sendEmail } from "../../utils/sendEmail.js"
 import { generateExpiryDate } from "../../utils/genExpiryDate.js"
 import { Request } from "express"
@@ -11,7 +11,8 @@ import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 const MODULE = "services :: user_services :: emailChangeOTP"
 
 export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUserBase>> {
-    const userData: IUserVerified = req.user!
+
+    const userData: IUserVerified = req.user as IUserVerified
     if (!userData.email) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
         return {
@@ -30,7 +31,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         }
     }
 
-    if (userData.verificationCodeExpires && new Date() >= userData.verificationCodeExpires) {
+    if (userData.emailOTP || userData.emailOTPExpires && new Date() >= userData.emailOTPExpires) {
         return {
             err: true,
             errMsg: "There is a valid OTP code already. Please wait before requesting another one.",
@@ -38,7 +39,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         }
     }
 
-    const emailOTP = generateVerificationCode()
+    const emailOTP = generateOTP()
     const emailOTPExpiry = generateExpiryDate()
     const emailChangeMsg = `Use this code to change the email address connected to your account: ${emailOTP}. It will expire in 10 minutes.`
 
@@ -47,8 +48,8 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
             { email: userData.email },
             {
                 $set: {
-                    verificationCode: emailOTP,
-                    verificationCodeExpires: emailOTPExpiry,
+                    emailOTP: emailOTP,
+                    emailOTPExpires: emailOTPExpiry,
                 },
             },
         )
