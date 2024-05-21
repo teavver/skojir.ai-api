@@ -4,6 +4,7 @@ import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import { SolveRequest, SolverOutputFormat } from "../types/requests/SolveRequest.js"
 import { GPTSettings } from "../types/GPTSettings.js"
 import { validOutputFormats } from "../types/requests/SolveRequest.js"
+import { responseCodes } from "../utils/responseCodes.js"
 
 const MODULE = "services :: sendVisionPrompt"
 
@@ -46,7 +47,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: true,
             errMsg: err,
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
@@ -86,7 +87,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
             return {
                 err: true,
                 errMsg: err,
-                statusCode: 500,
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR,
             }
         }
 
@@ -94,14 +95,14 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         return {
             err: false,
             data: res,
-            statusCode: 200,
+            statusCode: responseCodes.SUCCESS,
         }
     } catch (err) {
         logger(MODULE, `Request err: ${err}`, LogType.ERR)
         return {
             err: true,
             errMsg: "Internal error",
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 }

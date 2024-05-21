@@ -12,6 +12,7 @@ import { isNewDeviceId } from "../../utils/isNewDeviceId.js"
 import { IDeviceID } from "../../types/interfaces/IDeviceID.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { UserRefreshToken } from "../../types/interfaces/IUserVerified.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: loginUser"
 
@@ -41,7 +42,7 @@ export async function loginUser(req: Request<IUserCredentialsExt>): Promise<Serv
                 Please double check your email address.
                 If you haven't created an account yet, sign up using the "Create Account" button.
                 `,
-            statusCode: 404,
+            statusCode: responseCodes.NOT_FOUND,
         }
     }
 
@@ -54,7 +55,7 @@ export async function loginUser(req: Request<IUserCredentialsExt>): Promise<Serv
                 You need to verify your account first.
                 Check your email inbox for the verification code or click here to create a new one.
                 `,
-            statusCode: 409,
+            statusCode: responseCodes.CONFLICT,
         }
     }
 
@@ -69,7 +70,7 @@ export async function loginUser(req: Request<IUserCredentialsExt>): Promise<Serv
                 Incorrect password.
                 If you've forgotten your password, you can reset it using the "Forgot Password" button.
                 `,
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
@@ -109,6 +110,6 @@ export async function loginUser(req: Request<IUserCredentialsExt>): Promise<Serv
     return {
         err: false,
         data: userTokens,
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

@@ -19,6 +19,6 @@ export async function emailChangeOTP(req: Request, res: Response<ResponseMessage
     logger(MODULE, `User ${sRes.data.email} requested an email change.`, LogType.SUCCESS)
     return res.status(200).json({
         state: "success",
-        message: `Code sent. Please check your email for details`,
+        message: `Code sent. Please check your email for details.`,
     })
 }

@@ -5,6 +5,8 @@ import { validateRequest } from "../../utils/validateRequest.js"
 import { IUserVerification } from "../../types/interfaces/IUserVerification.js"
 import { Request } from "express"
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js"
+import { sendEmail } from "../../utils/sendEmail.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: emailChange"
 
@@ -30,7 +32,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: err,
-            statusCode: 404
+            statusCode: responseCodes.NOT_FOUND
         }
     }
 
@@ -39,7 +41,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: `Only verified accounts can perform this action.`,
-            statusCode: 401,
+            statusCode: responseCodes.UNAUTHORIZED,
         }
     }
 
@@ -51,7 +53,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: msg,
-            statusCode: 409,
+            statusCode: responseCodes.CONFLICT,
         }
     }
 
@@ -60,7 +62,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: `Your email change OTP code expired.`,
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
@@ -68,14 +70,23 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: `Invalid OTP code.`,
-            statusCode: 401,
+            statusCode: responseCodes.UNAUTHORIZED,
         }
     }
 
     try {
-        const prevEmail = req.user.email
-
-        // TODO: Send email to old account & inform user about the change
+        const emailRes = await sendEmail(
+            req.user.email,
+            `Account email change`,
+            `You just changed your Skojir account email address. New address: '${reqData.email}'. If this wasn't you, please contact support immediately.`
+        )
+        if (emailRes.err) {
+            return {
+                err: true,
+                errMsg: "Internal error",
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR
+            }
+        }
 
         await User.updateOne(
             { email: reqData.email },
@@ -95,13 +106,13 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: `Internal database error.`,
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 
     return {
         err: false,
         data: reqData,
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

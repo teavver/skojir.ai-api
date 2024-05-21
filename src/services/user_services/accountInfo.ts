@@ -2,6 +2,7 @@ import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { logger, LogType } from "../../utils/logger.js"
 import { Request } from "express"
 import { AccountInfoResponse } from "../../types/responses/AccountInfoResponse.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: accountInfo"
 
@@ -22,6 +23,6 @@ export async function accountInfo(req: Request): Promise<ServiceResponse<Account
     return {
         err: false,
         data: userData,
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

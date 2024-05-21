@@ -8,6 +8,7 @@ import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 import { passwordSchema } from "../../middlewares/validators/schemas/passwordSchema.js"
 import { IUserBase } from "../../types/interfaces/IUserBase.js"
 import { User } from "../../models/User.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: deleteUser"
 
@@ -29,7 +30,7 @@ export async function deleteUser(req: Request<IUserPassword>): Promise<ServiceRe
         return {
             err: true,
             errMsg: `Sorry, we couldn't find your account.`,
-            statusCode: 404,
+            statusCode: responseCodes.NOT_FOUND,
         }
     }
 
@@ -43,7 +44,7 @@ export async function deleteUser(req: Request<IUserPassword>): Promise<ServiceRe
         return {
             err: true,
             errMsg: `Failed to delete account - incorrect password.`,
-            statusCode: 401,
+            statusCode: responseCodes.UNAUTHORIZED,
         }
     }
 
@@ -52,6 +53,6 @@ export async function deleteUser(req: Request<IUserPassword>): Promise<ServiceRe
     return {
         err: false,
         data: { email: userData.email },
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

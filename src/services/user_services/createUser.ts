@@ -10,6 +10,7 @@ import { validateRequest } from "../../utils/validateRequest.js"
 import { userCredentialsSchema } from "../../middlewares/validators/schemas/userCredentialsSchema.js"
 import { generateOTP } from "../../utils/crypto/genOTP.js"
 import { sendEmail } from "../../utils/sendEmail.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: createUser"
 
@@ -38,7 +39,7 @@ export async function createUser(req: Request<IUserCredentials>): Promise<Servic
                 If this is your email address, please try logging in instead.
                 If you've forgotten your password, you can reset it using the "Forgot Password" button.
                 `,
-            statusCode: 409,
+            statusCode: responseCodes.CONFLICT,
         }
     }
 
@@ -65,7 +66,7 @@ export async function createUser(req: Request<IUserCredentials>): Promise<Servic
             return {
                 err: true,
                 errMsg: "Internal error",
-                statusCode: 500,
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR
             }
         }
 
@@ -76,13 +77,13 @@ export async function createUser(req: Request<IUserCredentials>): Promise<Servic
         return {
             err: true,
             errMsg: `createUser req rejected: Error while updating db`,
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 
     return {
         err: false,
         data: userCredentials,
-        statusCode: 201,
+        statusCode: responseCodes.CREATED,
     }
 }

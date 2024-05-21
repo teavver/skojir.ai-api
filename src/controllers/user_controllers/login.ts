@@ -5,13 +5,14 @@ import { LoginResponse } from "../../types/responses/LoginResponse.js"
 import { IUserCredentialsExt } from "../../types/interfaces/IUserCredentials.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "controllers :: user_controllers :: login"
 
 export async function loginUser(req: Request<IUserCredentialsExt>, res: Response<LoginResponse>) {
     const validBody = validateRequestBody(req.body, ["email", "password", "deviceId"])
     if (!validBody) {
-        return res.status(400).json({
+        return res.status(responseCodes.BAD_REQUEST).json({
             state: "error",
             message: `Request body is empty or incomplete`,
         })

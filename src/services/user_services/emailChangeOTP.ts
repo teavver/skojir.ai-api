@@ -7,6 +7,7 @@ import { sendEmail } from "../../utils/sendEmail.js"
 import { generateExpiryDate } from "../../utils/genExpiryDate.js"
 import { Request } from "express"
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: emailChangeOTP"
 
@@ -18,7 +19,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         return {
             err: true,
             errMsg: `Sorry, we couldn't find your account.`,
-            statusCode: 404,
+            statusCode: responseCodes.NOT_FOUND,
         }
     }
 
@@ -27,7 +28,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         return {
             err: true,
             errMsg: `Your account must be verified to perform this action.`,
-            statusCode: 401,
+            statusCode: responseCodes.UNAUTHORIZED,
         }
     }
 
@@ -35,7 +36,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         return {
             err: true,
             errMsg: "There is a valid OTP code already. Please wait before requesting another one.",
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
@@ -70,13 +71,13 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         return {
             err: true,
             errMsg: errMsg,
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 
     return {
         err: false,
         data: { email: userData.email },
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

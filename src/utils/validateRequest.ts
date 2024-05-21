@@ -1,5 +1,6 @@
 import { logger, LogType } from "./logger.js"
 import { ValidatorResponse } from "../types/responses/ValidatorResponse.js"
+import { responseCodes } from "./responseCodes.js"
 import { Schema } from "joi"
 
 export async function validateRequest<T>(module: string, reqData: T, schema: Schema): Promise<ValidatorResponse<T>> {
@@ -15,7 +16,7 @@ export async function validateRequest<T>(module: string, reqData: T, schema: Sch
         return {
             isValid: false,
             error: `Invalid data`,
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 }

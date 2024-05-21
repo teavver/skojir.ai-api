@@ -6,6 +6,7 @@ import { logger, LogType } from "../utils/logger.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import { Request } from "express"
 import { SolveRequest } from "../types/requests/SolveRequest.js"
+import { responseCodes } from "../utils/responseCodes.js"
 
 const MODULE = "services :: predictContext"
 const DEFAULT_THRESHOLD_VALUE = parseFloat("0.2")
@@ -28,7 +29,7 @@ export async function requestContextPrediction(
         return {
             err: true,
             errMsg: err,
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
@@ -45,7 +46,7 @@ export async function requestContextPrediction(
         return {
             err: false,
             data: res.data,
-            statusCode: 200,
+            statusCode: responseCodes.SUCCESS,
         }
     } catch (err) {
         let res: AxiosResponse | undefined = undefined
@@ -53,7 +54,7 @@ export async function requestContextPrediction(
         return {
             err: true,
             errMsg: res ? res.data : "Internal service error",
-            statusCode: res ? res.status : 500,
+            statusCode: res ? res.status : responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 }

@@ -2,6 +2,7 @@ import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import mongoose from "mongoose"
 import axios from "axios"
 import { logger, LogType } from "../utils/logger.js"
+import { responseCodes } from "../utils/responseCodes.js"
 
 const MODULE = "services :: getStatus"
 
@@ -42,7 +43,8 @@ export async function getStatus(): Promise<ServiceResponse<string>> {
 
         // openai
         try {
-            const openAIRes = await axios.get("https://status.openai.com/api/v2/status.json")
+            const openAIStatusURL = "https://status.openai.com/api/v2/status.json"
+            const openAIRes = await axios.get(openAIStatusURL)
             const status = openAIRes.data.status.description
             logger(MODULE, status)
             openAIStatus = status
@@ -60,14 +62,14 @@ export async function getStatus(): Promise<ServiceResponse<string>> {
         return {
             err: false,
             data: JSON.stringify(data, null, 2),
-            statusCode: 200,
+            statusCode: responseCodes.SUCCESS,
         }
     } catch (err) {
         logger(MODULE, `Get status err: ${err}`, LogType.WARN)
         return {
             err: true,
             errMsg: (err as Error).message,
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 }
