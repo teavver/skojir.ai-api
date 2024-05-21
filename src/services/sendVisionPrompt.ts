@@ -7,28 +7,29 @@ import { validOutputFormats } from "../types/requests/SolveRequest.js"
 
 const MODULE = "services :: sendVisionPrompt"
 
-const systemInstructions = (formatting: string) => `
-    You are an AI specialized in assisting with homework assignments.
-    Your task includes analyzing images (screenshots) and solve the problems presented.
-    Apply advanced image recognition and analytical skills to accurately decipher the questions.
+const systemInstructions = (formattingInstr: string) => `
+    You are an AI specialized in assisting with educational assignments.
+    Your task includes analyzing attached images and solving the problems presented.
+    The assignment's question language may vary, but you always answer in English.
     If the solution isn't clear, you're allowed to make an educated guess.
-    Your Responses should strictly follow user's formatting preferences.
-    Response format instructions will start and end with three asterisk characters.
-    ${formatting}.`
+    Your responses should be as short as possible, respecting User's upper word limits.
+    You are allowed to use MathJax syntax in your responses when needed.
+    It is your responsibility to fit the solution in the specified word limit (including any MathJax content).
+    ${formattingInstr}.`
 
 const gptSettings: GPTSettings = {
     minimal: {
         system: systemInstructions(
-            `*** Desired output format example: "(Question Number) - Answer/-s" Keep the answers very short and concise ***`,
+            `Keep the answers very short and concise. Upper word limit: 40`,
         ),
-        max_tokens: 100,
+        max_tokens: 120,
     },
 
     standard: {
         system: systemInstructions(
-            `*** Desired output format example: "(Question Nr) - Answer/s" Upper word limit: 300. Provide a short explanation for each answer (one to two sentences) ***`,
+            `Provide a very short explanation with your answer (one to two sentences). Upper word limit: 100`
         ),
-        max_tokens: 300,
+        max_tokens: 900,
     },
 }
 
@@ -77,6 +78,7 @@ export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceRespon
         })
 
         const res = response.choices[0].message.content
+        logger(MODULE, JSON.stringify(res, null, 4)) // DEBUG
 
         if (!res) {
             const err = "Failed to get a response from OpenAI"
