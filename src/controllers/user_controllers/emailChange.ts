@@ -29,7 +29,7 @@ export async function emailChange(req: Request<IUserVerification>, res: Response
     const vData: IUserVerification = sRes.data
     const oldEmail = req.user!.email
     logger(MODULE, `User ${oldEmail} changed their email to: ${vData.email}.`, LogType.SUCCESS)
-    return res.status(200).json({
+    return res.status(responseCodes.SUCCESS).json({
         state: "success",
         message: `Email successfully changed.`,
     })

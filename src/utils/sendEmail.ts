@@ -2,6 +2,7 @@ import { logger, LogType } from "./logger.js"
 import { mailjetClient } from "../main.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import { MailjetRequest } from "../types/requests/MailjetRequest.js"
+import { responseCodes } from "./responseCodes.js"
 
 const MODULE = "utils :: sendEmail"
 
@@ -38,7 +39,7 @@ export async function sendEmail(userEmail: string, subject: string, text: string
         return {
             err: false,
             data: request.body as string,
-            statusCode: 200,
+            statusCode: responseCodes.SUCCESS,
         }
     } catch (err) {
         const errMsg = (err as Error).message
@@ -46,7 +47,7 @@ export async function sendEmail(userEmail: string, subject: string, text: string
         return {
             err: true,
             errMsg: errMsg,
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 }

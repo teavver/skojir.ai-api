@@ -30,7 +30,7 @@ export async function deleteUser(req: Request<IUserPassword>, res: Response<Resp
 
     const vData: IUserBase = sRes.data
     logger(MODULE, `User ${vData.email} deleted their account`, LogType.SUCCESS)
-    return res.status(200).json({
+    return res.status(responseCodes.SUCCESS).json({
         state: "success",
         message: "Account deleted.",
     })
