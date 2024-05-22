@@ -15,7 +15,6 @@ export async function requestContextPrediction(
     req: Request<SolveRequest>,
     predReqData: PredictionRequest,
 ): Promise<ServiceResponse<string>> {
-
     // Handle optional threshold value before validating data
     if (!predReqData.threshold) {
         predReqData.threshold = +DEFAULT_THRESHOLD_VALUE

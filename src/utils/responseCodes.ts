@@ -1,4 +1,3 @@
-
 export const responseCodes = {
     SUCCESS: 200,
     CREATED: 201,

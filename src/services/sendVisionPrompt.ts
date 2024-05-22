@@ -20,15 +20,13 @@ const systemInstructions = (formattingInstr: string) => `
 
 const gptSettings: GPTSettings = {
     minimal: {
-        system: systemInstructions(
-            `Keep the answers very short and concise. Upper word limit: 40`,
-        ),
+        system: systemInstructions(`Keep the answers very short and concise. Upper word limit: 40`),
         max_tokens: 120,
     },
 
     standard: {
         system: systemInstructions(
-            `Provide a very short explanation with your answer (one to two sentences). Upper word limit: 100`
+            `Provide a very short explanation with your answer (one to two sentences). Upper word limit: 100`,
         ),
         max_tokens: 900,
     },
@@ -38,7 +36,6 @@ const gptSettings: GPTSettings = {
  * Puts together and sends a full request (system, image, header, footer) to gpt-4-1106-vision-preview
  */
 export async function sendVisionPrompt(req: SolveRequest): Promise<ServiceResponse<string>> {
-
     // check output format
     const validOutputFormat = validOutputFormats.includes(req.outputFormat)
     if (!validOutputFormat) {

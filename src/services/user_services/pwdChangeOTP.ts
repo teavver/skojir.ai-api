@@ -1,4 +1,3 @@
-
 import { User } from "../../models/User.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { logger, LogType } from "../../utils/logger.js"
@@ -13,7 +12,6 @@ import { responseCodes } from "../../utils/responseCodes.js"
 const MODULE = "services :: user_services :: pwdChangeOTP"
 
 export async function pwdChangeOTP(req: Request): Promise<ServiceResponse<IUserBase>> {
-
     const userData: IUserVerified = req.user as IUserVerified
     if (!userData.email) {
         logger(MODULE, `Failed to send pwd change OTP - user does not exist`, LogType.WARN)
@@ -33,7 +31,7 @@ export async function pwdChangeOTP(req: Request): Promise<ServiceResponse<IUserB
         }
     }
 
-    if (userData.pwdChangeOTP || userData.pwdChangeOTPExpires && new Date() >= userData.pwdChangeOTPExpires) {
+    if (userData.pwdChangeOTP || (userData.pwdChangeOTPExpires && new Date() >= userData.pwdChangeOTPExpires)) {
         return {
             err: true,
             errMsg: "There is a valid OTP code already. Please wait before requesting another one.",

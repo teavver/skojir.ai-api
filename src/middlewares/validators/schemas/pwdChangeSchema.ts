@@ -1,6 +1,6 @@
-import Joi from "joi";
-import { IUserPwdChange } from "../../../types/interfaces/IUserVerification";
-import { passwordSchema } from "./passwordSchema.js";
+import Joi from "joi"
+import { IUserPwdChange } from "../../../types/interfaces/IUserVerification"
+import { passwordSchema } from "./passwordSchema.js"
 
 export const pwdChangeSchema = Joi.object<IUserPwdChange>({
     otp: Joi.string()

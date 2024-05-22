@@ -28,15 +28,15 @@ async function init() {
     await createDbClient()
 
     const env: string = process.env.ENV as string
-    const corsWhitelistDev = ['http://localhost:5173', 'http://127.0.0.1:5173']
+    const corsWhitelistDev = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     app.use(express.json({ limit: "2.5mb" }))
     app.use(
         cors({
-            origin: (env === "PROD") ? "*" : corsWhitelistDev,
+            origin: env === "PROD" ? "*" : corsWhitelistDev,
             methods: ["GET", "POST", "PUT", "DELETE"],
             allowedHeaders: ["Content-Type", "Authorization"],
-            credentials: true
+            credentials: true,
         }),
     )
     app.use(cookieParser())

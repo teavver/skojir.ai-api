@@ -1,8 +1,16 @@
-import * as sinon from 'sinon';
+import * as sinon from "sinon"
 import axios from "axios"
 import { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { testUser, setupTests, teardownTests, emailChangeURL, testUser2, pwdChangeOTPURL, pwdChangeURL } from "../_setup.js"
+import {
+    testUser,
+    setupTests,
+    teardownTests,
+    emailChangeURL,
+    testUser2,
+    pwdChangeOTPURL,
+    pwdChangeURL,
+} from "../_setup.js"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
 import { User } from "../../models/User.js"
@@ -58,7 +66,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
     it("Should reject request to change password (invalid OTP code)", async () => {
         const reqData = {
             otp: "100200",
-            newPwd: newStrongPwd
+            newPwd: newStrongPwd,
         }
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
@@ -72,7 +80,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         const user = await User.findOne({ email: testUser.email })
         const reqData = {
             otp: user!.pwdChangeOTP,
-            newPwd: testUser.password // Same one that was used in account-setup in _setup
+            newPwd: testUser.password, // Same one that was used in account-setup in _setup
         }
         const reqConf: AxiosRequestConfig = {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
@@ -80,7 +88,6 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         const req = () => axios.post(pwdChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(409)
-
     })
 
     it("Should reject request to change pwd (missing/wrong keys in req body)", async () => {
@@ -90,7 +97,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         }
         // Missing  'otp' key in body
         const reqData = {
-            newPwd: newStrongPwd
+            newPwd: newStrongPwd,
         }
         const req = () => axios.post(emailChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
@@ -99,7 +106,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         // Missing 'newPwd' key in body
         const reqData2 = {
             otp: user?.pwdChangeOTP,
-            newPwd: newStrongPwd
+            newPwd: newStrongPwd,
         }
         const req2 = () => axios.post(emailChangeURL, reqData2, reqConf)
         const res2 = await testAxiosRequest(MODULE, req2)
@@ -107,7 +114,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
 
         // Attached 'email' key in body for some reason
         const reqData3 = {
-            newPwd: newStrongPwd
+            newPwd: newStrongPwd,
         }
         const req3 = () => axios.post(emailChangeURL, reqData3, reqConf)
         const res3 = await testAxiosRequest(MODULE, req3)
@@ -121,14 +128,13 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         }
         const reqData = {
             otp: user!.pwdChangeOTP,
-            newPwd: newWeakPwd
+            newPwd: newWeakPwd,
         }
 
         const req = () => axios.post(pwdChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(400)
     })
-
 
     it("Should reject a password change before requesting OTP (wrong order)", async () => {
         const user2 = await User.findOne({ email: testUser2.email })
@@ -137,7 +143,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         }
         const reqData = {
             otp: user2!.pwdChangeOTP, // Going to be undefined, so we get 400
-            newPwd: newStrongPwd
+            newPwd: newStrongPwd,
         }
 
         // User2 never requested a pwdChange OTP code
@@ -165,7 +171,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
                 newPwd: newStrongPwd,
             }
 
-            clock.tick(45 * 60 * 1000); // Pass 45 mins
+            clock.tick(45 * 60 * 1000) // Pass 45 mins
             const req = () => axios.post(pwdChangeURL, reqData, reqConf)
             const res = await testAxiosRequest(MODULE, req)
             expect(res?.status).to.equal(400)
@@ -183,13 +189,11 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         }
         const reqData = {
             otp: user!.pwdChangeOTP,
-            newPwd: newStrongPwd
+            newPwd: newStrongPwd,
         }
 
         const req = () => axios.post(pwdChangeURL, reqData, reqConf)
         const res = await testAxiosRequest(MODULE, req)
         expect(res?.status).to.equal(200)
-
     })
-
 })

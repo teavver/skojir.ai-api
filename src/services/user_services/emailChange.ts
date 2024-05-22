@@ -33,7 +33,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         return {
             err: true,
             errMsg: err,
-            statusCode: responseCodes.NOT_FOUND
+            statusCode: responseCodes.NOT_FOUND,
         }
     }
 
@@ -80,13 +80,13 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         const emailRes = await sendEmail(
             req.user.email,
             `Account email changed`,
-            `You just changed your Skojir account email address. New address: '${reqData.email}'. If this wasn't you, please contact support immediately.`
+            `You just changed your Skojir account email address. New address: '${reqData.email}'. If this wasn't you, please contact support immediately.`,
         )
         if (emailRes.err) {
             return {
                 err: true,
                 errMsg: "Internal error",
-                statusCode: responseCodes.INTERNAL_SERVER_ERROR
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR,
             }
         }
 

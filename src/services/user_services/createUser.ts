@@ -66,7 +66,7 @@ export async function createUser(req: Request<IUserCredentials>): Promise<Servic
             return {
                 err: true,
                 errMsg: "Internal error",
-                statusCode: responseCodes.INTERNAL_SERVER_ERROR
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR,
             }
         }
 

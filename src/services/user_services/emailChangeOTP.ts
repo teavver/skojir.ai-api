@@ -12,7 +12,6 @@ import { responseCodes } from "../../utils/responseCodes.js"
 const MODULE = "services :: user_services :: emailChangeOTP"
 
 export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUserBase>> {
-
     const userData: IUserVerified = req.user as IUserVerified
     if (!userData.email) {
         logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
@@ -32,7 +31,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         }
     }
 
-    if (userData.emailOTP || userData.emailOTPExpires && new Date() >= userData.emailOTPExpires) {
+    if (userData.emailOTP || (userData.emailOTPExpires && new Date() >= userData.emailOTPExpires)) {
         return {
             err: true,
             errMsg: "There is a valid OTP code already. Please wait before requesting another one.",

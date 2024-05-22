@@ -34,7 +34,7 @@ export async function pwdChange(req: Request<IUserPwdChange>): Promise<ServiceRe
         return {
             err: true,
             errMsg: err,
-            statusCode: responseCodes.NOT_FOUND
+            statusCode: responseCodes.NOT_FOUND,
         }
     }
 
@@ -64,7 +64,7 @@ export async function pwdChange(req: Request<IUserPwdChange>): Promise<ServiceRe
         return {
             err: true,
             errMsg: `New password must be different from the current one.`,
-            statusCode: responseCodes.CONFLICT
+            statusCode: responseCodes.CONFLICT,
         }
     }
 
@@ -80,13 +80,13 @@ export async function pwdChange(req: Request<IUserPwdChange>): Promise<ServiceRe
         const emailRes = await sendEmail(
             req.user.email,
             `Account password changed`,
-            `You just changed your Skojir account password. If this wasn't you, please contact support immediately.`
+            `You just changed your Skojir account password. If this wasn't you, please contact support immediately.`,
         )
         if (emailRes.err) {
             return {
                 err: true,
                 errMsg: "Internal error",
-                statusCode: responseCodes.INTERNAL_SERVER_ERROR
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR,
             }
         }
 

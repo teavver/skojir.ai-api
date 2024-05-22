@@ -50,7 +50,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
 
     // Save prediction result to file in development
     if (process.env.ENV === "DEV") {
-        const buf = Buffer.from(b64String, 'base64')
+        const buf = Buffer.from(b64String, "base64")
         const fname = `img ${Date.now()}.png`
         const fpath = path.join(process.cwd(), fname)
         writeFile(fpath, buf, (err) => {
