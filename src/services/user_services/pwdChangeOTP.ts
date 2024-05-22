@@ -1,3 +1,4 @@
+
 import { User } from "../../models/User.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { logger, LogType } from "../../utils/logger.js"
@@ -9,13 +10,13 @@ import { Request } from "express"
 import { IUserVerified } from "../../types/interfaces/IUserVerified.js"
 import { responseCodes } from "../../utils/responseCodes.js"
 
-const MODULE = "services :: user_services :: emailChangeOTP"
+const MODULE = "services :: user_services :: pwdChangeOTP"
 
-export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUserBase>> {
+export async function pwdChangeOTP(req: Request): Promise<ServiceResponse<IUserBase>> {
 
     const userData: IUserVerified = req.user as IUserVerified
     if (!userData.email) {
-        logger(MODULE, `Failed to send email change OTP - user does not exist`, LogType.WARN)
+        logger(MODULE, `Failed to send pwd change OTP - user does not exist`, LogType.WARN)
         return {
             err: true,
             errMsg: `Sorry, we couldn't find your account.`,
@@ -24,7 +25,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
     }
 
     if (!userData.isEmailVerified) {
-        logger(MODULE, `Failed to send email change OTP - account is not verified`, LogType.WARN)
+        logger(MODULE, `Failed to send pwd change OTP - account is not verified`, LogType.WARN)
         return {
             err: true,
             errMsg: `Your account must be verified to perform this action.`,
@@ -32,7 +33,7 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         }
     }
 
-    if (userData.emailOTP || userData.emailOTPExpires && new Date() >= userData.emailOTPExpires) {
+    if (userData.pwdChangeOTP || userData.pwdChangeOTPExpires && new Date() >= userData.pwdChangeOTPExpires) {
         return {
             err: true,
             errMsg: "There is a valid OTP code already. Please wait before requesting another one.",
@@ -40,22 +41,22 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
         }
     }
 
-    const emailOTP = generateOTP()
-    const emailOTPExpiry = generateExpiryDate()
-    const emailChangeMsg = `Use this code to change the email address connected to your Skojir account: ${emailOTP}. The code will expire in 10 minutes.`
+    const pwdOTP = generateOTP()
+    const pwdOTPExpiry = generateExpiryDate()
+    const pwdChangeMsg = `Use this code to change the password associated with your Skojir account: ${pwdOTP}. The code will expire in 10 minutes.`
 
     try {
         await User.updateOne(
             { email: userData.email },
             {
                 $set: {
-                    emailOTP: emailOTP,
-                    emailOTPExpires: emailOTPExpiry,
+                    pwdChangeOTP: pwdOTP,
+                    pwdChangeOTPExpires: pwdOTPExpiry,
                 },
             },
         )
 
-        const emailRes = await sendEmail(userData.email, `Skojir account email change`, emailChangeMsg)
+        const emailRes = await sendEmail(userData.email, `Skoijir account password change`, pwdChangeMsg)
         if (emailRes.err) {
             return {
                 err: true,
@@ -64,10 +65,10 @@ export async function emailChangeOTP(req: Request): Promise<ServiceResponse<IUse
             }
         }
 
-        logger(MODULE, `Email change OTP code sent to ${userData.email}, code: ${emailOTP}`)
+        logger(MODULE, `Pwd change OTP code sent to ${userData.email}, code: ${pwdOTP}`)
     } catch (err) {
         const errMsg = (err as Error).message
-        logger(MODULE, `Failed to send email change OTP code to email. Err: ${errMsg}`, LogType.WARN)
+        logger(MODULE, `Failed to send password change OTP code to email. Err: ${errMsg}`, LogType.WARN)
         return {
             err: true,
             errMsg: errMsg,

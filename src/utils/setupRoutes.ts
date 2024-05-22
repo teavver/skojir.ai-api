@@ -6,6 +6,7 @@ import solverRoute from "../routes/solver.js"
 import statusRoute from "../routes/status.js"
 import rootRoute from "../routes/root.js"
 import registerRoute from "../routes/user_routes/register.js"
+import pwdChangeOTPRoute from "../routes/user_routes/pwdChangeOTP.js"
 import emailChangeOTPRoute from "../routes/user_routes/emailChangeOTP.js"
 import emailChangeRoute from "../routes/user_routes/emailChange.js"
 import accountInfoRoute from "../routes/user_routes/accountInfo.js"
@@ -46,6 +47,7 @@ export function setupRoutes(app: Express) {
     // user routes
     app.use("/register", conditionalMiddleware(userRoutesLimiter), registerRoute)
     app.use("/delete", conditionalMiddleware(userRoutesLimiter), deleteRoute)
+    app.use("/pwd-change-otp", conditionalMiddleware(userRoutesLimiter), pwdChangeOTPRoute)
     app.use("/email-change-otp", conditionalMiddleware(userRoutesLimiter), emailChangeOTPRoute)
     app.use("/email-change", conditionalMiddleware(userRoutesLimiter), emailChangeRoute)
     app.use("/account-info", conditionalMiddleware(userRoutesLimiter), accountInfoRoute)
