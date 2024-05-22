@@ -16,6 +16,6 @@ export function generateOTP(): string {
         code += digit.toString()
     }
 
-    logger(MODULE, `Verification code generated: ${code}`)
+    logger(MODULE, `Verification code generated: "${code}"`)
     return code
 }

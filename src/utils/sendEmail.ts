@@ -35,7 +35,7 @@ export async function sendEmail(userEmail: string, subject: string, text: string
             ],
         })
 
-        logger(MODULE, `Email (subject: ${subject}) sent to: ${userEmail}`)
+        logger(MODULE, `Email (subject: "${subject}") sent to: ${userEmail}`)
         return {
             err: false,
             data: request.body as string,
