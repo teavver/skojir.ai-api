@@ -2,24 +2,25 @@ import { User } from "../../models/User.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { logger, LogType } from "../../utils/logger.js"
 import { validateRequest } from "../../utils/validateRequest.js"
-import { IUserVerification } from "../../types/interfaces/IUserVerification.js"
+import { IUserPwdChange } from "../../types/interfaces/IUserVerification.js"
 import { Request } from "express"
-import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js"
 import { sendEmail } from "../../utils/sendEmail.js"
 import { responseCodes } from "../../utils/responseCodes.js"
 import { isUserVerified } from "../../utils/isUserVerified.js"
+import { deriveKey } from "../../utils/crypto/pbkdf2.js"
+import { pwdChangeSchema } from "../../middlewares/validators/schemas/pwdChangeSchema.js"
 
-const MODULE = "services :: user_services :: emailChange"
+const MODULE = "services :: user_services :: pwdChange"
 
-export async function emailChange(req: Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
-    const reqData: IUserVerification = {
-        email: req.body.email,
+export async function pwdChange(req: Request<IUserPwdChange>): Promise<ServiceResponse<IUserPwdChange>> {
+    const reqData: IUserPwdChange = {
         otp: req.body.otp,
+        newPwd: req.body.newPwd,
     }
 
-    const vRes = await validateRequest<IUserVerification>(MODULE, reqData, verificationSchema)
+    const vRes = await validateRequest<IUserPwdChange>(MODULE, reqData, pwdChangeSchema)
     if (!vRes.isValid) {
-        logger(MODULE, `Email change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
+        logger(MODULE, `Pwd change req rejected: Failed to validate input. Err: ${vRes.error}`, LogType.WARN)
         return {
             err: true,
             errMsg: vRes.error,
@@ -39,7 +40,7 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
 
     const userVerified = isUserVerified(req.user)
     if (!userVerified) {
-        logger(MODULE, `Failed to change account email - user account is unverified`, LogType.WARN)
+        logger(MODULE, `Failed to change account pwd - user account is unverified`, LogType.WARN)
         return {
             err: true,
             errMsg: `Only verified accounts can perform this action.`,
@@ -47,20 +48,8 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         }
     }
 
-    // Check if user is trying to change their email to an already existing account
-    const targetEmailUser = await User.findOne({ email: reqData.email })
-    if (targetEmailUser) {
-        const msg = `There's already an account with that email account.`
-        logger(MODULE, msg, LogType.WARN)
-        return {
-            err: true,
-            errMsg: msg,
-            statusCode: responseCodes.CONFLICT,
-        }
-    }
-
     // Check if no OTP provided or OTP is expired
-    if (!req.user.emailOTP || !req.user.emailOTPExpires || new Date() >= req.user.emailOTPExpires) {
+    if (!req.user.pwdChangeOTP || !req.user.pwdChangeOTPExpires || new Date() >= req.user.pwdChangeOTPExpires) {
         return {
             err: true,
             errMsg: `Your email change OTP code expired.`,
@@ -68,7 +57,18 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
         }
     }
 
-    if (reqData.otp !== req.user.emailOTP) {
+    // Check if password is different from the current one
+    const saltedNewPwd = reqData.newPwd + req.user.salt
+    const hashedNewPwd = deriveKey({ password: saltedNewPwd, salt: req.user.salt })
+    if (hashedNewPwd === req.user.password) {
+        return {
+            err: true,
+            errMsg: `New password must be different from the current one.`,
+            statusCode: responseCodes.CONFLICT
+        }
+    }
+
+    if (reqData.otp !== req.user.pwdChangeOTP) {
         return {
             err: true,
             errMsg: `Invalid OTP code.`,
@@ -79,8 +79,8 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
     try {
         const emailRes = await sendEmail(
             req.user.email,
-            `Account email changed`,
-            `You just changed your Skojir account email address. New address: '${reqData.email}'. If this wasn't you, please contact support immediately.`
+            `Account password changed`,
+            `You just changed your Skojir account password. If this wasn't you, please contact support immediately.`
         )
         if (emailRes.err) {
             return {
@@ -97,8 +97,8 @@ export async function emailChange(req: Request<IUserVerification>): Promise<Serv
                     email: reqData.email,
                 },
                 $unset: {
-                    emailOTP: "",
-                    emailOTPExpires: "",
+                    pwdChangeOTP: "",
+                    pwdChangeOTPExpires: "",
                 },
             },
         )

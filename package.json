@@ -14,7 +14,7 @@
         "test-core": "cross-env LOG=4 ENV=DEV PORT=3000 mocha --grep '\\[CORE\\]' -r dotenv/config --exit",
         "test-services": "cross-env LOG=1 ENV=DEV PORT=3000 mocha --grep '\\[SERVICES\\]' -r dotenv/config --exit",
         "test-single": "cross-env LOG=1 ENV=DEV PORT=3000 mocha -r dotenv/config --exit --grep",
-        "test-full": "cross-env LOG=1 ENV=DEV PORT=3000 mocha -r dotenv/config --exit",
+        "test-full": "cross-env LOG=4 ENV=DEV PORT=3000 mocha -r dotenv/config --exit",
         "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\" --tab-width 4 --no-semi --print-width 120"
     },
     "keywords": [],

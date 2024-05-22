@@ -1,10 +1,9 @@
 import axios from "axios"
 import { AxiosRequestConfig } from "axios"
 import { expect } from "chai"
-import { testUser, setupTests, teardownTests, emailChangeURL, testUser2, pwdChangeOTPURL } from "../_setup.js"
+import { testUser, setupTests, teardownTests, emailChangeURL, testUser2, pwdChangeOTPURL, pwdChangeURL } from "../_setup.js"
 import { accountSetup, testAxiosRequest } from "../_utils.js"
 import { UserAuthTokens } from "../../types/AuthToken.js"
-import { User } from "../../models/User.js"
 
 const MODULE = "pwdChangeOTP + pwdChange"
 
@@ -16,6 +15,9 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         refreshToken: "",
         membershipToken: "",
     }
+
+    let newStrongPwd = "@Some$Really0732strong0Pwd"
+    let newWeakPwd = "@weak123weak"
 
     before(async () => {
         await setupTests(MODULE)
@@ -40,24 +42,21 @@ describe("[CORE] pwdChange (OTP + change)", function () {
         }
         const req = () => axios.get(pwdChangeOTPURL, reqConf)
         const res = await testAxiosRequest(MODULE, req)
-        // const userData = await User.findOne({ email: testUser.email })
-        // console.log('t ', userData)
         expect(res?.status).to.equal(200)
     })
 
-    // it("Should reject request to change email with invalid OTP code", async () => {
-    //     const newEmail = "test2@example.com"
-    //     const reqData = {
-    //         email: newEmail,
-    //         otp: "100200",
-    //     }
-    //     const reqConf: AxiosRequestConfig = {
-    //         headers: { Authorization: `Bearer ${tokens.accessToken}` },
-    //     }
-    //     const req = () => axios.post(emailChangeURL, reqData, reqConf)
-    //     const res = await testAxiosRequest(MODULE, req)
-    //     expect(res?.status).to.equal(401)
-    // })
+    it("Should reject request to change password (invalid OTP code)", async () => {
+        const reqData = {
+            otp: "100200",
+            newPwd: newStrongPwd
+        }
+        const reqConf: AxiosRequestConfig = {
+            headers: { Authorization: `Bearer ${tokens.accessToken}` },
+        }
+        const req = () => axios.post(pwdChangeURL, reqData, reqConf)
+        const res = await testAxiosRequest(MODULE, req)
+        expect(res?.status).to.equal(401)
+    })
 
     // it("Should reject request to change email to an already existing account", async () => {
     //     const user = await User.findOne({ email: testUser.email })
@@ -69,7 +68,7 @@ describe("[CORE] pwdChange (OTP + change)", function () {
     //     const reqConf: AxiosRequestConfig = {
     //         headers: { Authorization: `Bearer ${tokens.accessToken}` },
     //     }
-    //     const req = () => axios.post(emailChangeURL, reqData, reqConf)
+    //     const req = () => axios.post(pwdChangeURL, reqData, reqConf)
     //     const res = await testAxiosRequest(MODULE, req)
     //     expect(res?.status).to.equal(409)
     // })

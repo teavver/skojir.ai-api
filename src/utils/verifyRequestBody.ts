@@ -1,5 +1,7 @@
 import { Request } from "express"
 
+// TODO: Extend this function to return the missing 'key' as well
+
 /**
  * Checks for missing or empty body in POST requests
  * @param body - Request body

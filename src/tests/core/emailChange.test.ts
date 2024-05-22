@@ -43,7 +43,7 @@ describe("[CORE] Email (OTP + change)", function () {
         expect(res?.status).to.equal(200)
     })
 
-    it("Should reject request to change email with invalid OTP code", async () => {
+    it("Should reject request to change email (invalid OTP code)", async () => {
         const newEmail = "test2@example.com"
         const reqData = {
             email: newEmail,
