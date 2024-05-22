@@ -4,6 +4,7 @@ import { logger } from "../utils/logger.js"
 import { generateAuthToken } from "../middlewares/auth/genToken.js"
 import { IUserVerified } from "../types/interfaces/IUserVerified.js"
 import { UserAuthTokens } from "../types/AuthToken.js"
+import { responseCodes } from "../utils/responseCodes.js"
 
 const MODULE = "services :: refreshAuthTokens"
 
@@ -28,6 +29,6 @@ export async function refreshAuthTokens(req: Request): Promise<ServiceResponse<U
     return {
         err: false,
         data: newUserTokens,
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

@@ -9,13 +9,14 @@ import { validateRequestBody } from "../utils/verifyRequestBody.js"
 import { ServiceResponse } from "../types/responses/ServiceResponse.js"
 import { writeFile } from "fs"
 import path from "path"
+import { responseCodes } from "../utils/responseCodes.js"
 
 const MODULE = "controllers :: solve"
 
 export async function solveScreenshot(req: Request<SolveRequest>, res: Response<ResponseMessage>) {
     const validBody = validateRequestBody(req.body, ["img", "outputFormat"])
     if (!validBody) {
-        return res.status(400).json({
+        return res.status(responseCodes.BAD_REQUEST).json({
             state: "error",
             message: `Request body is empty or incomplete`,
         })
@@ -23,7 +24,7 @@ export async function solveScreenshot(req: Request<SolveRequest>, res: Response<
 
     const { img, outputFormat, threshold } = req.body
     if (!validOutputFormats.includes(outputFormat)) {
-        return res.status(400).json({
+        return res.status(responseCodes.BAD_REQUEST).json({
             state: "error",
             message: "Unsupported 'outputFormat' value",
         })

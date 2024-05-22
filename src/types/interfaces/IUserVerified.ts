@@ -10,9 +10,13 @@ export interface IUserVerified extends IUserCredentials {
 
     refreshTokens: Array<UserRefreshToken>
 
-    // ↓ Only while changing account's email
-    verificationCode?: string
-    verificationCodeExpires?: Date
+    // ↓ Only if changing account's email
+    emailOTP?: string
+    emailOTPExpires?: Date
+
+    // ↓ Only if changing password
+    pwdChangeOTP?: string
+    pwdChangeOTPExpires?: Date
 }
 
 export interface UserRefreshToken {

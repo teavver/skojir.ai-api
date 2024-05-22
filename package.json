@@ -11,10 +11,10 @@
         "start": "nodemon ./dist/server.js",
         "main": "yarn build-clean && yarn start",
         "ci": "act --env-file ./.env",
-        "test-core": "cross-env LOG=1 ENV=DEV PORT=3000 mocha --grep '\\[CORE\\]' -r dotenv/config --exit",
+        "test-core": "cross-env LOG=4 ENV=DEV PORT=3000 mocha --grep '\\[CORE\\]' -r dotenv/config --exit",
         "test-services": "cross-env LOG=1 ENV=DEV PORT=3000 mocha --grep '\\[SERVICES\\]' -r dotenv/config --exit",
         "test-single": "cross-env LOG=1 ENV=DEV PORT=3000 mocha -r dotenv/config --exit --grep",
-        "test-full": "cross-env LOG=1 ENV=DEV PORT=3000 mocha -r dotenv/config --exit",
+        "test-full": "cross-env LOG=4 ENV=DEV PORT=3000 mocha -r dotenv/config --exit",
         "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\" --tab-width 4 --no-semi --print-width 120"
     },
     "keywords": [],
@@ -58,7 +58,7 @@
         "nodemon": "^3.0.1",
         "openai": "^4.17.1",
         "pm2": "^5.3.0",
-        "sinon": "^17.0.1",
+        "sinon": "^18.0.0",
         "sjcl": "^1.0.8",
         "uuid": "^9.0.1",
         "yarn": "^1.22.19"

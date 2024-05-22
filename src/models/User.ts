@@ -22,10 +22,18 @@ const userSchema = new Schema({
         default: false,
         required: true,
     },
-    verificationCode: {
+    // emailOTP is used both as a code to verify the account
+    // and as a code to change the email of a verified account
+    emailOTP: {
         type: String,
     },
-    verificationCodeExpires: {
+    emailOTPExpires: {
+        type: Date,
+    },
+    pwdChangeOTP: {
+        type: String,
+    },
+    pwdChangeOTPExpires: {
         type: Date,
     },
     membershipDetails: {

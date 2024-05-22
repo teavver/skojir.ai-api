@@ -37,6 +37,7 @@
     - 0: all off
     - 1: log everything
     - 2: log and save to logfile
+    - 3: (DEBUG MODE): log only warnings and errors
 - `ENV`
     - `DEV` - uses the test db collection, rate limiting off
     - `PROD`
@@ -84,7 +85,7 @@ Email must have a valid [TLD](https://data.iana.org/TLD/tlds-alpha-by-domain.txt
 Password must be 8 chars min, min 1 upper + lower, min 1 special char
 
 On success, an email will be sent to the user. They will need to verify their account using the /verify endpoint in order to log in.\
-Verification code expires after 10 minutes and requires re-generating it using the `"resend": true` property in the [`/auth/verify`](#post-apiauthverify---verify-account-with-code-or-resend-code) request body.
+Verification code (otp) expires after 10 minutes and requires re-generating it using the `"resend": true` property in the [`/auth/verify`](#post-apiauthverify---verify-account-with-code-or-resend-code) request body.
 
 ```json
 {
@@ -137,7 +138,7 @@ Will send a notification email to both addresses on success.
 ```json
 {
     "email": "yourNewEmail",
-    "verificationCode": "6 digit OTP code",
+    "otp": "6 digit OTP code",
 }
 ```
 
@@ -161,7 +162,7 @@ Used to verify registered users to finish up creating the account. Requires the 
 ```json
 {
     "email": "email",
-    "verificationCode": "228822"
+    "otp": "228822"
 }
 ```
 #### Requesting new codes
@@ -169,7 +170,7 @@ The same endpoint can also be used to **re-send the verification code** - genera
 ```json
 {
     "email": "userEmail",
-    "verificationCode": "w/e",
+    "otp": "w/e",
     "resend": true
 }
 ```

@@ -5,13 +5,14 @@ import { verifyUser as verifyService } from "../../services/user_services/verify
 import { validateRequestBody } from "../../utils/verifyRequestBody.js"
 import { IUserVerification } from "../../types/interfaces/IUserVerification.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "controllers :: user_controllers :: verify"
 
 export async function verifyUser(req: Request<IUserVerification>, res: Response<ResponseMessage>) {
-    const validBody = validateRequestBody(req.body, ["email", "verificationCode"])
+    const validBody = validateRequestBody(req.body, ["email", "otp"])
     if (!validBody) {
-        return res.status(400).json({
+        return res.status(responseCodes.BAD_REQUEST).json({
             state: "error",
             message: `Request body is empty or incomplete.`,
         })

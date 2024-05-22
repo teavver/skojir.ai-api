@@ -4,18 +4,19 @@ import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
 import { IUserVerification } from "../../types/interfaces/IUserVerification.js"
 import { IUserUnverified } from "../../types/interfaces/IUserUnverified.js"
 import { verificationSchema } from "../../middlewares/validators/schemas/verificationSchema.js"
-import { generateVerificationCode } from "../../utils/crypto/genVerificationCode.js"
+import { generateOTP } from "../../utils/crypto/genOTP.js"
 import { validateRequest } from "../../utils/validateRequest.js"
 import { sendEmail } from "../../utils/sendEmail.js"
 import { generateExpiryDate } from "../../utils/genExpiryDate.js"
 import { Request } from "express"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "services :: user_services :: verifyUser"
 
 export async function verifyUser(req: Request<IUserVerification>): Promise<ServiceResponse<IUserVerification>> {
     const verificationData: IUserVerification = {
         email: req.body.email,
-        verificationCode: req.body.verificationCode,
+        otp: req.body.otp,
         resend: req.body.resend,
     }
 
@@ -35,7 +36,7 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
         return {
             err: true,
             errMsg: `User does not exist.`,
-            statusCode: 404,
+            statusCode: responseCodes.NOT_FOUND,
         }
     }
 
@@ -43,13 +44,13 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
         return {
             err: true,
             errMsg: `Account is already verified.`,
-            statusCode: 409,
+            statusCode: responseCodes.CONFLICT,
         }
     }
 
     // re-send case
     if (verificationData.resend) {
-        const newCode = generateVerificationCode()
+        const newCode = generateOTP()
         const newExpDate = generateExpiryDate()
 
         try {
@@ -57,8 +58,8 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
                 { email: user.email },
                 {
                     $set: {
-                        verificationCode: newCode,
-                        verificationCodeExpires: newExpDate,
+                        emailOTP: newCode,
+                        emailOTPExpires: newExpDate,
                     },
                 },
             )
@@ -81,7 +82,7 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
             return {
                 err: false,
                 data: verificationData,
-                statusCode: 200,
+                statusCode: responseCodes.SUCCESS,
             }
         } catch (err) {
             const errMsg = (err as Error).message
@@ -89,24 +90,24 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
             return {
                 err: true,
                 errMsg: errMsg,
-                statusCode: 500,
+                statusCode: responseCodes.INTERNAL_SERVER_ERROR,
             }
         }
     }
 
-    if (user.verificationCode !== verificationData.verificationCode) {
+    if (user.emailOTP !== verificationData.otp) {
         return {
             err: true,
             errMsg: "Invalid verification code.",
-            statusCode: 400,
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
-    if (new Date() >= user.verificationCodeExpires) {
+    if (new Date() >= user.emailOTPExpires) {
         return {
             err: true,
-            errMsg: "Verification code expired.",
-            statusCode: 400,
+            errMsg: "Verification code has expired.",
+            statusCode: responseCodes.BAD_REQUEST,
         }
     }
 
@@ -118,8 +119,8 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
                     isEmailVerified: true,
                 },
                 $unset: {
-                    verificationCode: "",
-                    verificationCodeExpires: "",
+                    emailOTP: "",
+                    emailOTPExpires: "",
                 },
             },
         )
@@ -129,13 +130,13 @@ export async function verifyUser(req: Request<IUserVerification>): Promise<Servi
         return {
             err: true,
             errMsg: `Internal database error.`,
-            statusCode: 500,
+            statusCode: responseCodes.INTERNAL_SERVER_ERROR,
         }
     }
 
     return {
         err: false,
         data: verificationData,
-        statusCode: 200,
+        statusCode: responseCodes.SUCCESS,
     }
 }

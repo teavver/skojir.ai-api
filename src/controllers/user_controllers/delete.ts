@@ -7,13 +7,14 @@ import { deleteUser as deleteUserService } from "../../services/user_services/de
 import { IUserPassword } from "../../types/interfaces/IUserPassword.js"
 import { IUserBase } from "../../types/interfaces/IUserBase.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "controllers :: user_controllers :: delete"
 
 export async function deleteUser(req: Request<IUserPassword>, res: Response<ResponseMessage>) {
     const validBody = validateRequestBody(req.body, ["password"])
     if (!validBody) {
-        return res.status(400).json({
+        return res.status(responseCodes.BAD_REQUEST).json({
             state: "error",
             message: "Invalid request body.",
         })
@@ -29,7 +30,7 @@ export async function deleteUser(req: Request<IUserPassword>, res: Response<Resp
 
     const vData: IUserBase = sRes.data
     logger(MODULE, `User ${vData.email} deleted their account`, LogType.SUCCESS)
-    return res.status(200).json({
+    return res.status(responseCodes.SUCCESS).json({
         state: "success",
         message: "Account deleted.",
     })

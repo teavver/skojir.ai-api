@@ -44,7 +44,7 @@ describe("[CORE] Verify an account", function () {
     it("Should reject verify req with invalid code", async () => {
         const invalidVerifyData = {
             email: dummyEmail,
-            verificationCode: "123123",
+            otp: "123123",
         }
 
         const req = () => axios.post(verifyURL, invalidVerifyData)
@@ -57,7 +57,7 @@ describe("[CORE] Verify an account", function () {
 
         const validVerifyData = {
             email: dummyEmail,
-            verificationCode: user?.verificationCode,
+            otp: user?.emailOTP,
         }
 
         const req = () => axios.post(verifyURL, validVerifyData)
@@ -76,14 +76,14 @@ describe("[CORE] Verify an account", function () {
         expect(res?.status).to.equal(201)
 
         const user = await User.findOne({ email: dummyEmail2 })
-        expect(user?.verificationCode).to.not.be.undefined
-        if (user?.verificationCode) oldCode = user?.verificationCode
+        expect(user?.emailOTP).to.not.be.undefined
+        if (user?.emailOTP) oldCode = user?.emailOTP
     })
 
-    it("Request a verification code resend", async () => {
+    it("Request a verification code (OTP) resend", async () => {
         const data = {
             email: dummyEmail2,
-            verificationCode: "000000", // value does not matter if 'resend'
+            otp: "000000", // value does not matter if 'resend'
             resend: true,
         }
         const req = () => axios.post(verifyURL, data)
@@ -91,8 +91,8 @@ describe("[CORE] Verify an account", function () {
         expect(res?.status).to.be.equal(200)
 
         const user = await User.findOne({ email: dummyEmail2 })
-        expect(user?.verificationCode).to.not.be.undefined
-        if (user?.verificationCode) newCode = user?.verificationCode
+        expect(user?.emailOTP).to.not.be.undefined
+        if (user?.emailOTP) newCode = user?.emailOTP
     })
 
     it("Verify dummyUser2 with the new code", async () => {
@@ -100,7 +100,7 @@ describe("[CORE] Verify an account", function () {
 
         const data = {
             email: dummyEmail2,
-            verificationCode: newCode,
+            otp: newCode,
         }
 
         const req = () => axios.post(verifyURL, data)

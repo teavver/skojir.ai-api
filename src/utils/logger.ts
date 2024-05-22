@@ -25,6 +25,11 @@ export function logger(
     const overrideSetting = overrideLog || logMode
     const timestamp = time ? `[${new Date().toLocaleTimeString()}] ` : ""
     const logContentRaw = `${timestamp}[${module}]: ${msg}`
+    if (logMode === 4) {
+        if (logType !== LogType.ERR && logType !== LogType.WARN) {
+            return // log only errs and warnings in DEBUG=4 mode
+        }
+    }
     overrideSetting && console.log(`${logType}${logContentRaw}${LogType.NORMAL}`)
     if (logMode === 2) {
         writeToLogFile(logContentRaw)

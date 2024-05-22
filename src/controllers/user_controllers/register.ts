@@ -5,13 +5,14 @@ import { IUserCredentials } from "../../types/interfaces/IUserCredentials.js"
 import { createUser } from "../../services/user_services/createUser.js"
 import { validateRequestBody } from "../../utils/verifyRequestBody.js"
 import { ServiceResponse } from "../../types/responses/ServiceResponse.js"
+import { responseCodes } from "../../utils/responseCodes.js"
 
 const MODULE = "controllers :: user_controllers :: register"
 
 export async function registerUser(req: Request<IUserCredentials>, res: Response<ResponseMessage>) {
     const validBody = validateRequestBody(req.body, ["email", "password"])
     if (!validBody) {
-        return res.status(400).json({
+        return res.status(responseCodes.BAD_REQUEST).json({
             state: "error",
             message: `Request body is empty or incomplete`,
         })
