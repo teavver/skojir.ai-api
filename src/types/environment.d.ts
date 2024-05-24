@@ -1,4 +1,4 @@
-export {}
+export { }
 
 declare global {
     namespace NodeJS {
@@ -13,6 +13,9 @@ declare global {
 
             // gcf
             BACKEND_URL: string
+
+            // stripe
+            STRIPE_SECRET_KEY: string
 
             // mail
             MAILJET_API_KEY: string

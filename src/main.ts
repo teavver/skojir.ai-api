@@ -7,16 +7,19 @@ import { logger, LogType } from "./utils/logger.js"
 import { createOpenAIClient } from "./clients/openAI.js"
 import { createDbClient } from "./clients/db.js"
 import { envSetup } from "./utils/envSetup.js"
+import Stripe from "stripe"
 import bodyParser from "body-parser"
 import { setupRoutes } from "./utils/setupRoutes.js"
 import { createMailjetClient } from "./clients/mailjet.js"
 import { asyncExec } from "./utils/asyncExec.js"
+import { createStripeClient } from "./clients/stripe.js"
 
 const MODULE = "main"
 
 const app: Express = express()
 let openAIClient: OpenAI
 let mailjetClient: Mailjet
+let stripeClient: Stripe
 
 async function init() {
     const validEnv = envSetup()
@@ -26,6 +29,7 @@ async function init() {
 
     openAIClient = createOpenAIClient()
     mailjetClient = createMailjetClient()
+    stripeClient = createStripeClient()
     await createDbClient()
 
     const env: string = process.env.ENV as string

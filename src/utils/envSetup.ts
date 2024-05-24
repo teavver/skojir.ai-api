@@ -24,6 +24,7 @@ export function envSetup(): boolean {
         "JWT_SECRET",
         "JWT_REFRESH_SECRET",
         "GH_WEBHOOK_KEY",
+        "STRIPE_SECRET_KEY",
     ]
 
     for (const key of envKeys) {
