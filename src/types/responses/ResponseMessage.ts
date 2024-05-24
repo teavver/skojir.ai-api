@@ -12,3 +12,7 @@ export interface ResponseMessageExt extends ResponseMessage {
     user?: AccountInfoResponse
     tokens?: UserTokens
 }
+
+export interface StripeResponseMessage extends ResponseMessage {
+    clientSecret?: string // '/create-payment-intent' sends this back to client
+}

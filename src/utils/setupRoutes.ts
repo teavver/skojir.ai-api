@@ -16,6 +16,8 @@ import refreshRoute from "../routes/auth/refreshTokens.js"
 import verifyRoute from "../routes/auth/verify.js"
 import loginRoute from "../routes/auth/login.js"
 import updateRoute from "../routes/update.js"
+import stripePaymentIntentRoute from "../routes/payments/stripe/paymentIntent.js"
+import stripeWebhookRoute from "../routes/payments/stripe/webhook.js"
 
 const MODULE = "utils :: setupRoutes"
 
@@ -63,6 +65,10 @@ export function setupRoutes(app: Express) {
 
     // github
     app.use("/update", updateRoute)
+
+    // stripe
+    app.use("/stripe/webhook", stripeWebhookRoute)
+    app.use("/stripe/create-payment-intent", stripePaymentIntentRoute)
 
     logger(MODULE, `Routes set up`, LogType.SERVER)
 }

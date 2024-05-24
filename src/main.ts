@@ -36,6 +36,9 @@ async function init() {
     const corsWhitelistDev = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     app.use(bodyParser.json())
+    // app.use(bodyParser.raw({ type: 'application/json' }))
+    app.use(cookieParser())
+
     app.use(express.json({ limit: "2.5mb" }))
     app.use(
         cors({
@@ -45,7 +48,6 @@ async function init() {
             credentials: true,
         }),
     )
-    app.use(cookieParser())
 
     setupRoutes(app)
 
@@ -54,4 +56,4 @@ async function init() {
     logger(MODULE, "All set up.", LogType.SUCCESS)
 }
 
-export { app, init, openAIClient, mailjetClient }
+export { app, init, openAIClient, mailjetClient, stripeClient }
