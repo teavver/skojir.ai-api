@@ -7,6 +7,7 @@ import { logger, LogType } from "./utils/logger.js"
 import { createOpenAIClient } from "./clients/openAI.js"
 import { createDbClient } from "./clients/db.js"
 import { envSetup } from "./utils/envSetup.js"
+import bodyParser from "body-parser"
 import { setupRoutes } from "./utils/setupRoutes.js"
 import { createMailjetClient } from "./clients/mailjet.js"
 import { asyncExec } from "./utils/asyncExec.js"
@@ -30,6 +31,7 @@ async function init() {
     const env: string = process.env.ENV as string
     const corsWhitelistDev = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
+    app.use(bodyParser.json())
     app.use(express.json({ limit: "2.5mb" }))
     app.use(
         cors({
